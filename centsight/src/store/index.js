@@ -1,8 +1,11 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
 
-const categoryState = {};
+const categoryState = { categories: {}, subcategories: {} };
 
-createSlice({
+const categorySlice = createSlice({
   name: 'categories',
   initialState: categoryState,
+  reducers: {},
 });
+
+const store = configureStore({ reducer: { category: categorySlice.reducer } });
