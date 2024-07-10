@@ -21,4 +21,7 @@ const store = configureStore({
   },
 });
 
+export const categoryActions = categorySlice.actions;
+export const transactionActions = transactionSlice.actions;
+
 export default store;
