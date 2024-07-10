@@ -17,12 +17,14 @@ No features are implemented at this time.
 - Users can view networth over time.
 - Users can view spending by time intervals (week/month/year/all time).
 - Users can view spending by category.
+- Users can view their investment returns over time.
 - Users can compare their spending with their budgeted amount by total or by category.
 #### Category Creation
 - Users can add, update, and delete categories and subcategories.
 #### Budget Creation
 - Users can create a budget, divided by categories.
 #### Investment Accounts
+- Users can input investment holdings.
 ****
 ### Technologies
 **Frontend**:
