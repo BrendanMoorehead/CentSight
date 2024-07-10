@@ -9,3 +9,5 @@ const categorySlice = createSlice({
 });
 
 const store = configureStore({ reducer: { category: categorySlice.reducer } });
+
+export default store;
