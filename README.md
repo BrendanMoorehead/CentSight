@@ -33,6 +33,8 @@ No features are implemented at this time.
 - Framer Motion
 - Tailwind CSS
 - Material UI
+
 **Backend**: 
+
 **Database**:
 - Supabase
