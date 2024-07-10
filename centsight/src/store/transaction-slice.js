@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+
 const transactionState = { transactions: {} };
 
 export const transactionSlice = createSlice({
