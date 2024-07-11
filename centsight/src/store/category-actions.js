@@ -22,6 +22,7 @@ export const fetchCategoryData = () => {
     };
     try {
       const data = await fetchData();
+      console.log(data);
       dispatch(categoryActions.replaceCategories(data));
     } catch (error) {
       console.log('Failed to fetch category data');
