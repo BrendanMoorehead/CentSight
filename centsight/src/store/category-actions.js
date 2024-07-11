@@ -1,5 +1,6 @@
 import supabase from './../utils/supabase';
 import { categoryActions } from './category-slice';
+import nestCategories from '../../utils/nestCategories';
 
 export const fetchCategoryData = () => {
   return async (dispatch) => {
@@ -16,8 +17,8 @@ export const fetchCategoryData = () => {
       if (subcategoryError) throw new Error('Failed to fetch subcategory data');
 
       //Map subcategories to categories.
-      
-      return categories;
+      const nestedCategories = nestCategories(categories, subcategories);
+      return nestedCategories;
     };
     try {
       const data = await fetchData();
