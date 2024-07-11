@@ -6,36 +6,26 @@ describe('Supabase Client', () => {
   it('should be defined', () => {
     expect(supabase).toBeDefined();
   });
-  it('should login user', async () => {
+  it('should login test user via email and password', async () => {
     const email = 'test@gmail.com';
     const password = '1234';
 
-    try {
-      const { user, session, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+    const { data: user, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-      // Log the response for debugging
-      console.log('Login response:', { user, session, error });
-
-      // Assertions
-      expect(error).toBeNull();
-      expect(user).toBeDefined(); // Check if user object is defined
-      expect(session).toBeDefined(); // Check if session object is defined
-    } catch (error) {
-      console.error('Error logging in:', error.message);
-      throw error; // Re-throw the error to fail the test explicitly
-    }
+    expect(error).toBeNull();
+    expect(user).toBeDefined();
   });
-  test('data fetched from categories table', async () => {
+  test('should fetch one or more categories from categories table', async () => {
     const { data: categories, error } = await supabase
       .from('categories')
       .select('*');
     expect(categories.length).toBeGreaterThan(0);
     expect(error).toBeNull();
   });
-  test('data fetched from subcategories table', async () => {
+  test('should fetch one or more subcategories from subcategories table', async () => {
     const { data: subcategories, error } = await supabase
       .from('subcategories')
       .select('*');
