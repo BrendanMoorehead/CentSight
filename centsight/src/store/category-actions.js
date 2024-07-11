@@ -1,4 +1,4 @@
-import supabase from './../utils/supabase';
+import supabase from './../../utils/supabase';
 import { categoryActions } from './category-slice';
 import nestCategories from '../../utils/nestCategories';
 
