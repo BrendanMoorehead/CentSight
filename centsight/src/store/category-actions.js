@@ -16,6 +16,7 @@ export const fetchCategoryData = () => {
       if (subcategoryError) throw new Error('Failed to fetch subcategory data');
 
       //Map subcategories to categories.
+      
       return categories;
     };
     try {
