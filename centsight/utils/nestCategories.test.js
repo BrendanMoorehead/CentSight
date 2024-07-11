@@ -1,5 +1,5 @@
 import supabase from './supabase';
-import { it, describe, expect, test } from 'vitest';
+import { it, describe, expect } from 'vitest';
 import nestCategories from './nestCategories';
 
 describe('Nest categories', () => {
