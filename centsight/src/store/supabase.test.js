@@ -1,5 +1,8 @@
+import supabase from './../utils/supabase';
 /* eslint-disable no-undef */
-
-test('this is a test', () => {
-  return true;
+describe('Supabase connection', () => {
+  test('data fetched from categories table', async () => {
+    const { data, error } = await supabase.from('categories').select();
+    expect(data);
+  });
 });
