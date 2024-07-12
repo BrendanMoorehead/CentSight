@@ -11,7 +11,16 @@ function App() {
     dispatch(fetchCategoryData());
   }, [dispatch]);
 
-  return <p>helo</p>;
+  return <>
+  {categories.map((cat) => (
+    <>
+    <p key={cat.id}>{cat.name}</p>
+    {cat.subcategories.map((subcat) => (
+      <p key={subcat.id}>{subcat.name}</p>
+    ))}
+    </>
+  ))}
+  </>;
 }
 
 export default App;
