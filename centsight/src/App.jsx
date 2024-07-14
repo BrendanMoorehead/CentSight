@@ -2,6 +2,14 @@ import { useEffect, useState } from 'react';
 import { fetchCategoryData } from './store/category-actions';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
+//Routing
+import {createBrowserRouter} from 'react-router-dom';
+
+createBrowserRouter([
+  {path: ''},
+  {path: ''}
+])
+
 function App() {
   const [isInitial, setIsInitial] = useState(true);
   const dispatch = useDispatch();
