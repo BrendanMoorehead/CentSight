@@ -1,5 +1,8 @@
 import { useDispatch } from 'react-redux';
-import { registerUserWithPassword } from '../store/auth-actions';
+import {
+  registerUserWithPassword,
+  loginUserWithPassword,
+} from '../store/auth-actions';
 import { useState } from 'react';
 const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -11,6 +14,12 @@ const LoginPage = () => {
     dispatch(registerUserWithPassword(username, password));
   };
 
+  const handleLogin = (e) => {
+    console.log('login');
+    e.preventDefault();
+    dispatch(loginUserWithPassword(username, password));
+  };
+
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
     console.log(username);
@@ -19,7 +28,7 @@ const LoginPage = () => {
 
   return (
     <div>
-      <form onSubmit={handleSignup}>
+      <form onSubmit={handleLogin}>
         <input
           type="text"
           placeholder="Username"
