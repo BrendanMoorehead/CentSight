@@ -12,7 +12,12 @@ const authState = {
 export const authSlice = createSlice({
   name: 'auth',
   initialState: authState,
-  reducers: {},
+  reducers: {
+    loginUser(state, action) {
+      //TODO: Massage data to match state
+      state.auth = action.payload;
+    },
+  },
 });
 
 export const authActions = authSlice.actions;
