@@ -1,14 +1,10 @@
 import { useEffect, useState } from 'react';
 import { fetchCategoryData } from './store/category-actions';
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 //Routing
-import {createBrowserRouter} from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
 
-createBrowserRouter([
-  {path: ''},
-  {path: ''}
-])
+createBrowserRouter([{ path: '' }, { path: '' }]);
 
 function App() {
   const [isInitial, setIsInitial] = useState(true);
@@ -19,16 +15,18 @@ function App() {
     dispatch(fetchCategoryData());
   }, [dispatch]);
 
-  return <>
-  {categories.map((cat) => (
+  return (
     <>
-    <p key={cat.id}>{cat.name}</p>
-    {cat.subcategories.map((subcat) => (
-      <p key={subcat.id}>{subcat.name}</p>
-    ))}
+      {categories.map((cat) => (
+        <>
+          <p key={cat.id}>{cat.name}</p>
+          {cat.subcategories.map((subcat) => (
+            <p key={subcat.id}>{subcat.name}</p>
+          ))}
+        </>
+      ))}
     </>
-  ))}
-  </>;
+  );
 }
 
 export default App;
