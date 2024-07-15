@@ -1,5 +1,5 @@
 import supabase from './../../utils/supabase';
-import { createSlice } from '@reduxjs.toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 const authState = {
   loading: false,

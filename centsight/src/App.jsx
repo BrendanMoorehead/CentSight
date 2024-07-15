@@ -3,6 +3,7 @@ import { fetchCategoryData } from './store/category-actions';
 import { useSelector, useDispatch } from 'react-redux';
 //Routing
 import { createBrowserRouter } from 'react-router-dom';
+import LoginPage from './Pages/LoginPage';
 
 createBrowserRouter([{ path: '' }, { path: '' }]);
 
@@ -23,6 +24,7 @@ function App() {
           {cat.subcategories.map((subcat) => (
             <p key={subcat.id}>{subcat.name}</p>
           ))}
+          <LoginPage />
         </>
       ))}
     </>
