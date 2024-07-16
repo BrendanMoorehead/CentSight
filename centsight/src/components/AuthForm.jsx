@@ -13,12 +13,14 @@ import {
   registerUserWithPassword,
 } from '../store/auth-actions';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const AuthForm = ({ type, changeForm }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleEmailChange = (e) => setEmail(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
@@ -29,6 +31,7 @@ const AuthForm = ({ type, changeForm }) => {
     } else {
       dispatch(loginUserWithPassword(email, password));
     }
+    navigate('/dashboard');
   };
 
   return (
