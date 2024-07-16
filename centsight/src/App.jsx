@@ -6,9 +6,11 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { getUser } from './store/auth-actions';
 import LandingPage from './pages/LandingPage.jsx';
 import AuthPage from './pages/AuthPage';
+import DashboardPage from './pages/DashboardPage.jsx';
 const router = createBrowserRouter([
   { path: '/', element: <LandingPage /> },
   { path: '/auth', element: <AuthPage /> },
+  { path: '/dashboard', element: <DashboardPage /> },
 ]);
 
 function App() {
