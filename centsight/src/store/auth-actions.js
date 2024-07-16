@@ -41,6 +41,7 @@ export const loginUserWithPassword = (email, password) => {
       localStorage.setItem('token', data.session.access_token);
     } catch (error) {
       console.error('Failed to login user: ', error.message);
+      throw new Error('Failed to login user: ', error.message);
     }
   };
 };
