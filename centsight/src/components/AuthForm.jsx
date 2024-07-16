@@ -7,20 +7,25 @@ import {
   Heading,
 } from '@chakra-ui/react';
 import PasswordInput from './PasswordInput';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   loginUserWithPassword,
   registerUserWithPassword,
 } from '../store/auth-actions';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 const AuthForm = ({ type, changeForm }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (auth.user) navigate('/dashboard');
+  }, [auth, navigate]);
 
   const handleEmailChange = (e) => setEmail(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
