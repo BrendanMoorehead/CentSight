@@ -21,17 +21,32 @@ const FloatButtonGroup = ({ onOpenModal }) => {
         <FloatButtonElement
           label="New category"
           icon={<MdCategory />}
-          onClick={() => onOpenModal(<CategoryForm />)}
+          onClick={() =>
+            onOpenModal({
+              component: <CategoryForm />,
+              title: 'New Category',
+            })
+          }
         />
         <FloatButtonElement
           label="New account"
           icon={<MdAccountBalance />}
-          onClick={() => onOpenModal(<AccountForm />)}
+          onClick={() =>
+            onOpenModal({
+              component: <AccountForm />,
+              title: 'New Account',
+            })
+          }
         />
         <FloatButtonElement
           label="New transaction"
           icon={<FaWallet />}
-          onClick={() => onOpenModal(<TransactionForm />)}
+          onClick={() =>
+            onOpenModal({
+              component: <TransactionForm />,
+              title: 'New Transaction',
+            })
+          }
         />
       </FloatButton.Group>
     </>

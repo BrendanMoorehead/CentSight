@@ -18,7 +18,7 @@ const ModalWrapper = ({ isOpen, onClose, title, children }) => {
         <ModalBody>{children}</ModalBody>
 
         <ModalFooter>
-          <Button variant="ghost" mr={3}>
+          <Button variant="ghost" mr={3} onClick={onClose}>
             Cancel
           </Button>
           <Button colorScheme="blue" onClick={onClose}>

@@ -14,13 +14,15 @@ import { useState } from 'react';
 const DashboardPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedComponent, setSelectedComponent] = useState(null);
+  const [title, setTitle] = useState('');
   //TODO: User specific data should be fetched here
   const dispatch = useDispatch();
   const handleLogout = () => {
     dispatch(logoutUser());
   };
-  const handleOpenModal = (component) => {
+  const handleOpenModal = ({ component, title }) => {
     setSelectedComponent(component);
+    setTitle(title);
     onOpen();
   };
 
@@ -29,11 +31,7 @@ const DashboardPage = () => {
       <div>
         <Header />
         <SideMenu />
-        <ModalWrapper
-          isOpen={isOpen}
-          onClose={onClose}
-          title={'New Transaction'}
-        >
+        <ModalWrapper isOpen={isOpen} onClose={onClose} title={title}>
           {selectedComponent}
         </ModalWrapper>
       </div>

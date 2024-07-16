@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { fetchCategoryData } from './store/category-actions';
 import { useDispatch } from 'react-redux';
+
 //Routing
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { getUser } from './store/auth-actions';
