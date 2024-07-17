@@ -11,11 +11,14 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Formik, Field, Form } from 'formik';
 const CategoryForm = () => {
   const categories = useSelector((state) => state.category.categories);
   //TODO: Move setting data to parent
-  const [formData, setFormData] = useState({ type: 'Category', name: '' });
+  const [formData, setFormData] = useState({
+    type: 'Category',
+    name: '',
+    category_id: null,
+  });
   const typeString =
     formData.type.charAt(0).toUpperCase() + formData.type.slice(1) + ' name';
   const handleNameChange = (e) => {
@@ -29,7 +32,11 @@ const CategoryForm = () => {
         size="large"
         options={['Category', 'Subcategory']}
         onChange={(value) => {
-          setFormData({ type: value });
+          setFormData((prevData) => ({
+            ...prevData,
+            type: value,
+            category_id: null,
+          }));
         }}
       />
       <FormControl>
@@ -53,10 +60,12 @@ const CategoryForm = () => {
             style={{
               width: '100%',
             }}
-            onChange={handleChange}
+            onChange={(value) =>
+              setFormData((prevData) => ({ ...prevData, category_id: value }))
+            }
             options={categories.map((category) => ({
               label: category.name,
-              value: category.name,
+              value: category.id,
             }))}
           />
           <FormHelperText>
