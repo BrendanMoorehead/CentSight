@@ -15,14 +15,16 @@ const DashboardPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedComponent, setSelectedComponent] = useState(null);
   const [title, setTitle] = useState('');
+  const [modalSaveFn, setModalSaveFn] = useState(() => {});
   //TODO: User specific data should be fetched here
   const dispatch = useDispatch();
   const handleLogout = () => {
     dispatch(logoutUser());
   };
-  const handleOpenModal = ({ component, title }) => {
+  const handleOpenModal = ({ component, title, saveFn }) => {
     setSelectedComponent(component);
     setTitle(title);
+    setModalSaveFn(() => saveFn);
     onOpen();
   };
 
@@ -31,7 +33,12 @@ const DashboardPage = () => {
       <div>
         <Header />
         <SideMenu />
-        <ModalWrapper isOpen={isOpen} onClose={onClose} title={title}>
+        <ModalWrapper
+          isOpen={isOpen}
+          onClose={onClose}
+          title={title}
+          onConfirm={modalSaveFn}
+        >
           {selectedComponent}
         </ModalWrapper>
       </div>

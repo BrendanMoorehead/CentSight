@@ -10,6 +10,16 @@ import CategoryForm from '../forms/CategoryForm';
 import AccountForm from '../forms/AccountForm';
 import TransactionForm from '../forms/TransactionForm';
 const FloatButtonGroup = ({ onOpenModal }) => {
+  const saveCategory = () => {
+    console.log('Save category function executed');
+  };
+  const saveTransaction = () => {
+    console.log('Save transaction function executed');
+  };
+  const saveAccount = () => {
+    console.log('Save account function executed');
+  };
+
   return (
     <>
       <FloatButton.Group
@@ -25,6 +35,7 @@ const FloatButtonGroup = ({ onOpenModal }) => {
             onOpenModal({
               component: <CategoryForm />,
               title: 'New Category',
+              saveFn: saveCategory,
             })
           }
         />
@@ -35,6 +46,7 @@ const FloatButtonGroup = ({ onOpenModal }) => {
             onOpenModal({
               component: <AccountForm />,
               title: 'New Account',
+              saveFn: saveAccount,
             })
           }
         />
@@ -45,6 +57,7 @@ const FloatButtonGroup = ({ onOpenModal }) => {
             onOpenModal({
               component: <TransactionForm />,
               title: 'New Transaction',
+              saveFn: saveTransaction,
             })
           }
         />

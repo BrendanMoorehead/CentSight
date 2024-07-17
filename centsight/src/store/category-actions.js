@@ -29,3 +29,14 @@ export const fetchCategoryData = () => {
     }
   };
 };
+
+export const addCategory = (data) => {
+  return async (dispatch) => {
+    const addData = async (data) => {
+      const { error } = await supabase
+        .from('user_categories')
+        .insert({ id: 1, name: 'Denmark' });
+    };
+  };
+};
+export const addSubcategory = () => {};
