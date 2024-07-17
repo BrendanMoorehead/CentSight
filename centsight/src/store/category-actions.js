@@ -37,9 +37,10 @@ export const addCategory = (data) => {
         .from('user_categories')
         .insert({ user_id: data.user_id, name: data.name });
 
-      if (error) throw new Error('Failed to add category to database.');
+      if (error) throw new Error(error.message);
     };
     try {
+      console.log(data);
       await addData(data);
       dispatch(categoryActions.addCategory(data));
     } catch (error) {

@@ -1,53 +1,58 @@
-import React from 'react';
+import { useFormik } from 'formik';
 import { Segmented, Select } from 'antd';
 import {
   FormControl,
   FormLabel,
   FormErrorMessage,
   Input,
-  FormHelperText,
-  Flex,
-  Spacer,
+  Button,
 } from '@chakra-ui/react';
-import { useState } from 'react';
 import { useSelector } from 'react-redux';
-const CategoryForm = () => {
+
+const validate = (values) => {
+  const errors = {};
+  if (values.name === '') {
+    errors.name = 'Required';
+  }
+  if (values.category_id === null && values.category_type === 'Subcategory') {
+    errors.category_id = 'Required';
+  }
+  return errors;
+};
+
+const CategoryForm = ({handleSubmit}) => {
   const categories = useSelector((state) => state.category.categories);
-  //TODO: Move setting data to parent
-  const [formData, setFormData] = useState({
-    type: 'Category',
-    name: '',
-    category_id: null,
+  const formik = useFormik({
+    initialValues: { name: '', category_type: 'Category', category_id: null },
+    validate,
+    onSubmit: (values) => {
+      console.log(values);
+      handleSubmit(values);
+    },
   });
-  const typeString =
-    formData.type.charAt(0).toUpperCase() + formData.type.slice(1) + ' name';
-  const handleNameChange = (e) => {
-    setFormData((prevData) => ({ ...prevData, name: e.target.value }));
-    console.log(formData);
-  };
+
   return (
-    <Flex direction="column" gap="6" p="4">
+    <form onSubmit={formik.handleSubmit}>
       <Segmented
         block
         size="large"
         options={['Category', 'Subcategory']}
-        onChange={(value) => {
-          setFormData((prevData) => ({
-            ...prevData,
-            type: value,
-            category_id: null,
-          }));
-        }}
+        onChange={(value) => formik.setFieldValue('category_type', value)}
+        name="category_type"
+        value={formik.values.category_type}
       />
-      <FormControl>
-        <FormLabel>Name</FormLabel>
+      <FormControl isInvalid={formik.errors.name}>
         <Input
-          placeholder={typeString}
-          onChange={(e) => handleNameChange(e)}
-        ></Input>
+          onChange={formik.handleChange}
+          value={formik.values.name}
+          name="name"
+          placeholder="Name"
+        />
+        <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
       </FormControl>
-      {formData.type === 'Subcategory' && (
-        <FormControl>
+
+      {formik.values.category_type === 'Subcategory' && (
+        <FormControl isInvalid={formik.errors.category_id}>
           <FormLabel>Parent Category</FormLabel>
           <Select
             showSearch
@@ -60,20 +65,22 @@ const CategoryForm = () => {
             style={{
               width: '100%',
             }}
-            onChange={(value) =>
-              setFormData((prevData) => ({ ...prevData, category_id: value }))
-            }
+            onChange={(value) => formik.setFieldValue('category_id', value)}
+            name="category_id"
+            value={formik.values.category_id}
             options={categories.map((category) => ({
               label: category.name,
               value: category.id,
             }))}
           />
-          <FormHelperText>
-            The category your subcategory will be under
-          </FormHelperText>
+
+          <FormErrorMessage>{formik.errors.category_id}</FormErrorMessage>
         </FormControl>
       )}
-    </Flex>
+      <Button colorScheme="blue" type="submit">
+        Save
+      </Button>
+    </form>
   );
 };
 

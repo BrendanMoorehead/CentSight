@@ -16,16 +16,19 @@ const DashboardPage = () => {
   const [selectedComponent, setSelectedComponent] = useState(null);
   const [title, setTitle] = useState('');
   const [modalSaveFn, setModalSaveFn] = useState(() => {});
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const toggleModal = () => setIsModalVisible((prev) => !prev);
+
   //TODO: User specific data should be fetched here
   const dispatch = useDispatch();
   const handleLogout = () => {
     dispatch(logoutUser());
   };
-  const handleOpenModal = ({ component, title, saveFn }) => {
+  const handleOpenModal = ({ component }) => {
     setSelectedComponent(component);
-    setTitle(title);
-    setModalSaveFn(() => saveFn);
-    onOpen();
+    toggleModal();
   };
 
   return (
@@ -33,14 +36,7 @@ const DashboardPage = () => {
       <div>
         <Header />
         <SideMenu />
-        <ModalWrapper
-          isOpen={isOpen}
-          onClose={onClose}
-          title={title}
-          onConfirm={modalSaveFn}
-        >
-          {selectedComponent}
-        </ModalWrapper>
+        {selectedComponent}
       </div>
       <FloatButtonGroup onOpenModal={handleOpenModal} />
     </>
