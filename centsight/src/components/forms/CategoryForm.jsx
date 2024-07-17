@@ -15,10 +15,13 @@ import { Formik, Field, Form } from 'formik';
 const CategoryForm = () => {
   const categories = useSelector((state) => state.category.categories);
   //TODO: Move setting data to parent
-  const [formData, setFormData] = useState({ type: 'Category' });
+  const [formData, setFormData] = useState({ type: 'Category', name: '' });
   const typeString =
     formData.type.charAt(0).toUpperCase() + formData.type.slice(1) + ' name';
-  const handleChange = () => {};
+  const handleNameChange = (e) => {
+    setFormData((prevData) => ({ ...prevData, name: e.target.value }));
+    console.log(formData);
+  };
   return (
     <Flex direction="column" gap="6" p="4">
       <Segmented
@@ -31,7 +34,10 @@ const CategoryForm = () => {
       />
       <FormControl>
         <FormLabel>Name</FormLabel>
-        <Input placeholder={typeString}></Input>
+        <Input
+          placeholder={typeString}
+          onChange={(e) => handleNameChange(e)}
+        ></Input>
       </FormControl>
       {formData.type === 'Subcategory' && (
         <FormControl>

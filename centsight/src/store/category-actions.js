@@ -35,8 +35,16 @@ export const addCategory = (data) => {
     const addData = async (data) => {
       const { error } = await supabase
         .from('user_categories')
-        .insert({ id: 1, name: 'Denmark' });
+        .insert({ user_id: data.user_id, name: data.name });
+
+      if (error) throw new Error('Failed to add category to database.');
     };
+    try {
+      await addData(data);
+      dispatch(categoryActions.addCategory(data));
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 };
 export const addSubcategory = () => {};

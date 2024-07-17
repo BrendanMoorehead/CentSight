@@ -9,6 +9,9 @@ export const categorySlice = createSlice({
     replaceCategories(state, action) {
       state.categories = action.payload;
     },
+    addCategory(state, action) {
+      state.categories.push(action.payload);
+    },
   },
 });
 
