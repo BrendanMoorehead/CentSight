@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Input,
   InputGroup,
@@ -7,7 +6,6 @@ import {
   Box,
   Heading,
   Grid,
-  GridItem,
 } from '@chakra-ui/react';
 import PasswordInput from './PasswordInput';
 import { useState, useEffect } from 'react';

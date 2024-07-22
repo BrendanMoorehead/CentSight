@@ -10,12 +10,10 @@ export const fetchCategoryData = () => {
         .from('categories')
         .select();
 
-      console.log('USERID:', data.user.id);
       const { data: userCategories, userCategoryError } = await supabase
         .from('user_categories')
         .select()
         .eq('user_id', data.user.id);
-      console.log('USER CATEGORIES:', userCategories);
 
       const { data: subcategories, subcategoryError } = await supabase
         .from('subcategories')
