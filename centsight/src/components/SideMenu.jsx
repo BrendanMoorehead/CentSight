@@ -1,10 +1,12 @@
 import React from 'react';
 import { Menu } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
 const items = [
   {
     key: 'dashboard',
     label: 'Dashboard',
+    path: '/dashboard',
   },
   {
     key: 'budget',
@@ -28,15 +30,36 @@ const items = [
   {
     key: 'categories',
     label: 'Categories',
+    path: '/categories',
   },
 ];
 const SideMenu = () => {
+  const navigate = useNavigate();
+  const handleClick = (e) => {
+    const item = findMenuItemByKey(items, e.key);
+    if (item && item.path) {
+      navigate(item.path);
+    }
+  };
+
+  const findMenuItemByKey = (menuItems, key) => {
+    for (let item of menuItems) {
+      if (item.key === key) return item;
+      if (item.children) {
+        const found = findMenuItemByKey(item.children, key);
+        if (found) return found;
+      }
+    }
+    return null;
+  };
+
   return (
     <Menu
       style={{ width: 256 }}
-      defaultSelectedKeys={['1']}
+      defaultSelectedKeys={['dashboard']}
       mode="inline"
       items={items}
+      onClick={handleClick}
     />
   );
 };

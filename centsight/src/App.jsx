@@ -10,11 +10,21 @@ import AuthPage from './pages/AuthPage';
 import DashboardPage from './pages/DashboardPage.jsx';
 import supabase from '../utils/supabase.js';
 import CategoriesPage from './pages/CategoriesPage.jsx';
+import MainLayout from './components/MainLayout.jsx';
 const router = createBrowserRouter([
   { path: '/', element: <LandingPage /> },
   { path: '/auth', element: <AuthPage /> },
-  { path: '/dashboard', element: <DashboardPage /> },
-  { path: '/categories', element: <CategoriesPage /> },
+  {
+    path: '/',
+    element: <MainLayout />,
+    children: [
+      {
+        path: '/dashboard',
+        element: <DashboardPage />,
+      },
+      { path: 'categories', element: <CategoriesPage /> },
+    ],
+  },
 ]);
 
 function App() {
