@@ -1,5 +1,6 @@
 import supabase from '../../utils/supabase';
 import { authActions } from './auth-slice';
+import { categoryActions } from './category-slice';
 
 //TODO: Set state error in catch cases
 export const registerUserWithPassword = (email, password) => {
@@ -37,7 +38,9 @@ export const loginUserWithPassword = (email, password) => {
     };
     try {
       const data = await loginUser(email, password);
+
       dispatch(authActions.loginUser(data));
+      dispatch(categoryActions.fetchCategoryData());
       localStorage.setItem('token', data.session.access_token);
     } catch (error) {
       console.error('Failed to login user: ', error.message);

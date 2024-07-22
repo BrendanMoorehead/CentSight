@@ -4,26 +4,43 @@ import { MdAccountBalance } from 'react-icons/md';
 import { FaWallet } from 'react-icons/fa';
 import { MdCategory } from 'react-icons/md';
 import FloatButtonElement from './FloatButtonElement';
-import CategoryForm from '../forms/CategoryForm';
 import AccountForm from '../forms/AccountForm';
 import TransactionForm from '../forms/TransactionForm';
-import { useDispatch } from 'react-redux';
-import { addCategory, addSubcategory } from '../../store/category-actions';
-import { useSelector } from 'react-redux';
 import CategoryModal from '../modals/CategoryModal';
-import { useState } from 'react';
-
+import { useEffect, useState } from 'react';
+import supabase from '../../../utils/supabase';
+import TransactionModal from '../modals/TransactionModal';
+import AccountModal from '../modals/AccountModal';
 const FloatButtonGroup = ({ onOpenModal }) => {
+  const [userId, setUserId] = useState(null);
   const [openCategoryModal, setOpenCategoryModal] = useState(false);
+  const [openTransactionModal, setOpenTransactionModal] = useState(false);
+  const [openAccountModal, setOpenAccountModal] = useState(false);
 
-  const auth_id = useSelector((state) => state.auth.user.user.id);
-  const dispatch = useDispatch();
-
+  useEffect(() => {
+    const getId = async () => {
+      const id = await supabase.auth.getUser().id;
+      return id;
+    };
+    const user_id = getId();
+    setUserId(user_id);
+  }, []);
   return (
     <>
       <CategoryModal
         isOpen={openCategoryModal}
+        userId={userId}
         closeModal={() => setOpenCategoryModal(false)}
+      />
+      <TransactionModal
+        isOpen={openTransactionModal}
+        userId={userId}
+        closeModal={() => setOpenTransactionModal(false)}
+      />
+      <AccountModal
+        isOpen={openAccountModal}
+        userId={userId}
+        closeModal={() => setOpenAccountModal(false)}
       />
       <FloatButton.Group
         trigger="hover"
@@ -39,20 +56,12 @@ const FloatButtonGroup = ({ onOpenModal }) => {
         <FloatButtonElement
           label="New account"
           icon={<MdAccountBalance />}
-          onClick={() =>
-            onOpenModal({
-              component: <AccountForm />,
-            })
-          }
+          onClick={() => setOpenAccountModal(true)}
         />
         <FloatButtonElement
           label="New transaction"
           icon={<FaWallet />}
-          onClick={() =>
-            onOpenModal({
-              component: <TransactionForm />,
-            })
-          }
+          onClick={() => setOpenTransactionModal(true)}
         />
       </FloatButton.Group>
     </>

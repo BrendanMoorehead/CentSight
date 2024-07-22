@@ -3,19 +3,19 @@ import { Menu } from 'antd';
 
 const items = [
   {
-    key: 'sub1',
+    key: 'dashboard',
     label: 'Dashboard',
   },
   {
-    key: 'sub2',
+    key: 'budget',
     label: 'Budget',
   },
   {
-    key: 'sub3',
+    key: 'transactions',
     label: 'Transactions',
   },
   {
-    key: 'sub4',
+    key: 'accounts',
     label: 'Accounts',
     children: [
       {
@@ -26,7 +26,7 @@ const items = [
     ],
   },
   {
-    key: 'sub5',
+    key: 'categories',
     label: 'Categories',
   },
 ];

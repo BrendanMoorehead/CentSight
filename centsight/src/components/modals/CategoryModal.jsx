@@ -1,20 +1,21 @@
-import { useSelector } from 'react-redux';
-import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addCategory, addSubcategory } from '../../store/category-actions';
 import ModalWrapper from '../ModalWrapper';
 import CategoryForm from '../forms/CategoryForm';
-const CategoryModal = ({ isOpen, closeModal }) => {
+
+const CategoryModal = ({ isOpen, closeModal, userId }) => {
   const dispatch = useDispatch();
-  const auth_id = useSelector((state) => state.auth.user.user.id);
 
   const handleOk = (data) => {
+    //TODO: Add notification if user isn't authenticated
     if (data.category_type === 'Category') {
-      dispatch(addCategory({ ...data, user_id: auth_id }));
+      dispatch(addCategory({ ...data, user_id: userId }));
     } else {
-      dispatch(addSubcategory({ ...data, user_id: auth_id }));
+      dispatch(addSubcategory({ ...data, user_id: userId }));
     }
   };
+
+  if (!userId) return <p>Loading...</p>;
 
   return (
     <ModalWrapper isOpen={isOpen} onClose={closeModal} title="New Category">
