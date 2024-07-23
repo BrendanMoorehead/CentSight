@@ -9,7 +9,12 @@ const CategoriesPage = () => {
         <>
           <p>{cat.name}</p>
           {cat.subcategories.map((subcat) => (
-            <SubcategoryChip key={subcat.id} name={subcat.name} />
+            <SubcategoryChip
+              key={subcat.id}
+              name={subcat.name}
+              id={subcat.id}
+              parent_id={subcat.category_id}
+            />
           ))}
         </>
       ))}

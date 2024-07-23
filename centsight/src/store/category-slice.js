@@ -14,13 +14,27 @@ export const categorySlice = createSlice({
       state.categories.push(action.payload);
     },
     addSubcategory(state, action) {
-      let parent;
-      console.log('Payload', action.payload);
-      parent = state.categories.find(
+      const parent = state.categories.find(
         ({ id }) => id === action.payload.category_id
       );
 
       parent.subcategories.push(action.payload);
+    },
+    deleteCategory(state, action) {},
+    deleteSubcategory(state, action) {
+      console.log('Delete', action.payload);
+      const parent = state.categories.find(
+        ({ id }) => id === action.payload.category_id
+      );
+      const index = parent.subcategories.findIndex(
+        (sub) => sub.id === action.payload.id
+      );
+      if (index === -1) return; // Early return if the subcategory is not found
+
+      // Remove the subcategory immutably
+      parent.subcategories = parent.subcategories.filter(
+        (sub) => sub.id !== action.payload.id
+      );
     },
   },
 });

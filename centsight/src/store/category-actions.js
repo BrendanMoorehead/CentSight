@@ -89,3 +89,22 @@ export const addSubcategory = (data) => {
     }
   };
 };
+
+export const deleteSubcategory = (data) => {
+  return async (dispatch) => {
+    const deleteSubcategory = async (data) => {
+      const response = await supabase
+        .from('user_subcategories')
+        .delete()
+        .eq('id', data.id);
+      console.log(response);
+      if (response.error) throw new Error(response.error.message);
+    };
+    try {
+      await deleteSubcategory(data);
+      dispatch(categoryActions.deleteSubcategory(data));
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+};

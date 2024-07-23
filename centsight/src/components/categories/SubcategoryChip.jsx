@@ -1,6 +1,13 @@
 import { Button, Flex } from '@chakra-ui/react';
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
+import { deleteSubcategory } from '../../store/category-actions';
+import { useDispatch } from 'react-redux';
 const SubcategoryChip = ({ name, id, parent_id }) => {
+  const dispatch = useDispatch();
+  const handleDelete = () => {
+    dispatch(deleteSubcategory({ name, id, category_id: parent_id }));
+  };
+
   return (
     <Flex
       justify="space-between"
@@ -15,7 +22,7 @@ const SubcategoryChip = ({ name, id, parent_id }) => {
         <Button p={2}>
           <EditIcon />
         </Button>
-        <Button p={2}>
+        <Button p={2} onClick={handleDelete}>
           <DeleteIcon />
         </Button>
       </Flex>
