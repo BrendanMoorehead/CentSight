@@ -7,6 +7,7 @@ const CategoryModal = ({ isOpen, closeModal, userId }) => {
   const dispatch = useDispatch();
 
   const handleOk = (data) => {
+    console.log(userId);
     //TODO: Add notification if user isn't authenticated
     if (data.category_type === 'Category') {
       dispatch(addCategory({ ...data, user_id: userId }));

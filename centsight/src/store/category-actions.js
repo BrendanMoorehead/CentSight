@@ -19,14 +19,23 @@ export const fetchCategoryData = () => {
         .from('subcategories')
         .select();
 
+      const { data: userSubcategories, userSubcategoryError } = await supabase
+        .from('user_subcategories')
+        .select()
+        .eq('user_id', data.user.id);
+
+      console.log('USER SUBCATEGORIES', userSubcategories);
+
       if (categoryError) throw new Error(categoryError.message);
       if (userCategoryError)
         throw new Error('Failed to fetch user category data');
       if (subcategoryError) throw new Error('Failed to fetch subcategory data');
+      if (userSubcategoryError) throw new Error(userSubcategoryError.message);
 
       const combinedCats = categories.concat(userCategories);
+      const combinedSubcats = subcategories.concat(userSubcategories);
       //Map subcategories to categories.
-      const nestedCategories = nestCategories(combinedCats, subcategories);
+      const nestedCategories = nestCategories(combinedCats, combinedSubcats);
       return nestedCategories;
     };
     try {
@@ -58,4 +67,25 @@ export const addCategory = (data) => {
     }
   };
 };
-export const addSubcategory = () => {};
+export const addSubcategory = (data) => {
+  return async (dispatch) => {
+    const addData = async (catData) => {
+      const { data, error } = await supabase.from('user_subcategories').insert({
+        user_id: catData.user_id,
+        name: catData.name,
+        category_id: catData.category_id,
+        user_category_id: catData.user_category_id,
+      });
+      if (error) throw new Error(error.message);
+      console.log('Subcat data:', data);
+      return catData;
+    };
+    try {
+      const catData = await addData(data);
+      console.log(catData);
+      dispatch(categoryActions.addSubcategory(catData));
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+};

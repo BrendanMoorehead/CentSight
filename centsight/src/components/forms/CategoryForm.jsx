@@ -20,10 +20,15 @@ const validate = (values) => {
   return errors;
 };
 
-const CategoryForm = ({handleSubmit}) => {
+const CategoryForm = ({ handleSubmit }) => {
   const categories = useSelector((state) => state.category.categories);
   const formik = useFormik({
-    initialValues: { name: '', category_type: 'Category', category_id: null },
+    initialValues: {
+      name: '',
+      category_type: 'Category',
+      category_id: null,
+      user_category_id: null,
+    },
     validate,
     onSubmit: (values) => {
       console.log(values);
@@ -65,7 +70,10 @@ const CategoryForm = ({handleSubmit}) => {
             style={{
               width: '100%',
             }}
-            onChange={(value) => formik.setFieldValue('category_id', value)}
+            onChange={(value) => {
+              formik.setFieldValue('category_id', value);
+              formik.setFieldValue('user_category_id', value);
+            }}
             name="category_id"
             value={formik.values.category_id}
             options={categories.map((category) => ({

@@ -19,11 +19,11 @@ const FloatButtonGroup = ({ onOpenModal }) => {
 
   useEffect(() => {
     const getId = async () => {
-      const id = await supabase.auth.getUser().id;
-      return id;
+      const id = await supabase.auth.getUser();
+      console.log(id);
+      setUserId(id.data.user.id);
     };
-    const user_id = getId();
-    setUserId(user_id);
+    getId();
   }, []);
   return (
     <>

@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { addSubcategory } from './category-actions';
 
 const categoryState = { categories: [] };
 
@@ -11,6 +12,15 @@ export const categorySlice = createSlice({
     },
     addCategory(state, action) {
       state.categories.push(action.payload);
+    },
+    addSubcategory(state, action) {
+      let parent;
+      console.log('Payload', action.payload);
+      parent = state.categories.find(
+        ({ id }) => id === action.payload.category_id
+      );
+
+      parent.subcategories.push(action.payload);
     },
   },
 });

@@ -33,11 +33,6 @@ const DashboardPage = () => {
 
   return (
     <>
-      {/* <div>
-        <Header />
-        <SideMenu />
-        {selectedComponent}
-      </div> */}
       <FloatButtonGroup onOpenModal={handleOpenModal} />
     </>
   );
