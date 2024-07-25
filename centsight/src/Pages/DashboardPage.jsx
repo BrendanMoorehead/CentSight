@@ -11,6 +11,7 @@ import CategoryForm from '../components/forms/CategoryForm';
 import AccountForm from '../components/forms/AccountForm';
 import TransactionForm from '../components/forms/TransactionForm';
 import { useState } from 'react';
+import {Chip} from "@nextui-org/chip";
 const DashboardPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedComponent, setSelectedComponent] = useState(null);
@@ -33,7 +34,9 @@ const DashboardPage = () => {
 
   return (
     <>
+      <p className="text-3xl font-headline">Dashboard</p>
       <FloatButtonGroup onOpenModal={handleOpenModal} />
+      <Chip>Chip</Chip>
     </>
   );
 };

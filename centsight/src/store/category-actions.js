@@ -49,18 +49,19 @@ export const fetchCategoryData = () => {
 
 export const addCategory = (data) => {
   return async (dispatch) => {
-    const addData = async (data) => {
-      const { data: catData, error } = await supabase
+    const addData = async (catData) => {
+      const { data, error } = await supabase
         .from('user_categories')
-        .insert({ user_id: data.user_id, name: data.name });
+        .insert({ user_id: catData.user_id, name: catData.name })
+        .select('*');
 
       if (error) throw new Error(error.message);
-      console.log('CATDATA: ', catData, data);
-      return catData;
+      console.log('Async add:', data);
+      return data[0];
     };
     try {
-      console.log(data);
       const catData = await addData(data);
+      console.log('CAT DATA: ' + catData);
       dispatch(categoryActions.addCategory(catData));
     } catch (error) {
       console.log(error.message);
@@ -70,15 +71,18 @@ export const addCategory = (data) => {
 export const addSubcategory = (data) => {
   return async (dispatch) => {
     const addData = async (catData) => {
-      const { data, error } = await supabase.from('user_subcategories').insert({
-        user_id: catData.user_id,
-        name: catData.name,
-        category_id: catData.category_id,
-        user_category_id: catData.user_category_id,
-      });
+      const { data, error } = await supabase
+        .from('user_subcategories')
+        .insert({
+          user_id: catData.user_id,
+          name: catData.name,
+          category_id: catData.category_id,
+          user_category_id: catData.user_category_id,
+        })
+        .select('*');
       if (error) throw new Error(error.message);
       console.log('Subcat data:', data);
-      return catData;
+      return data[0];
     };
     try {
       const catData = await addData(data);
@@ -104,6 +108,24 @@ export const deleteSubcategory = (data) => {
       await deleteSubcategory(data);
       dispatch(categoryActions.deleteSubcategory(data));
     } catch (error) {
+      console.log(error.message);
+    }
+  };
+};
+export const deleteCategory = (data) => {
+  return async (dispatch) => {
+    const deleteCategory = async (data) => {
+      const response = await supabase
+        .from('user_categories')
+        .delete()
+        .eq('id', data.id);
+      if (response.error) throw new Error(response.error.message);
+    };
+    try {
+      await deleteCategory(data);
+      dispatch(categoryActions.deleteCategory(data));
+    } catch (error) {
+      //TODO: Have some visual element for errors.
       console.log(error.message);
     }
   };

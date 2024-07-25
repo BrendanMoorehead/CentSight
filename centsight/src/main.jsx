@@ -5,6 +5,9 @@ import { store } from './store/index.js';
 import { Provider } from 'react-redux';
 import { ChakraProvider } from '@chakra-ui/react';
 import { ConfigProvider } from 'antd';
+import { PrimeReactProvider } from 'primereact/api';
+import {NextUIProvider} from '@nextui-org/react'
+import './index.css';
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ConfigProvider
@@ -16,11 +19,17 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         },
       }}
     >
-      <ChakraProvider>
-        <Provider store={store}>
-          <App />
-        </Provider>
-      </ChakraProvider>
+      <PrimeReactProvider>
+        <ChakraProvider>
+        <NextUIProvider>
+          <Provider store={store}>
+          <main className="dark text-foreground bg-background">
+            <App />
+            </main>
+          </Provider>
+          </NextUIProvider>
+        </ChakraProvider>
+      </PrimeReactProvider>
     </ConfigProvider>
   </React.StrictMode>
 );

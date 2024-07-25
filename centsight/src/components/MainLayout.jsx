@@ -3,13 +3,13 @@ import SideMenu from './SideMenu';
 import Header from './Header';
 const MainLayout = () => {
   return (
-    <>
+    <div className="h-screen flex flex-col">
       <Header />
-      <div style={{ display: 'flex' }}>
-        <SideMenu />
+
+      <div className="2xl:px-80">
         <Outlet />
       </div>
-    </>
+    </div>
   );
 };
 

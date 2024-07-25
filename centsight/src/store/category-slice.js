@@ -20,7 +20,11 @@ export const categorySlice = createSlice({
 
       parent.subcategories.push(action.payload);
     },
-    deleteCategory(state, action) {},
+    deleteCategory(state, action) {
+      state.categories = state.categories.filter(
+        (cat) => cat.id !== action.payload.id
+      );
+    },
     deleteSubcategory(state, action) {
       console.log('Delete', action.payload);
       const parent = state.categories.find(
