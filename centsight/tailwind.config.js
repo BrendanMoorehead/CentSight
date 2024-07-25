@@ -29,6 +29,7 @@ export default {
             yellow: '#f2e291',
             yellowOrange: '#f2b84b',
             orange: '#f28749',
+            text: '#ffffff',
           },
         },
       },

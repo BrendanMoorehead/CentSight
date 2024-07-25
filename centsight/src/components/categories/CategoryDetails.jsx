@@ -20,7 +20,12 @@ const CategoryDetails = ({ name }) => {
             <Button variant="bordered">Edit Category</Button>
           </DropdownTrigger>
           <DropdownMenu aria-label="Static Actions">
-            <DropdownItem key="new">Edit name</DropdownItem>
+            <DropdownItem className="text-white" key="new">
+              Edit name
+            </DropdownItem>
+            <DropdownItem className="text-white" key="new">
+              Add subcategory
+            </DropdownItem>
             <DropdownItem key="delete" className="text-danger" color="danger">
               Delete category
             </DropdownItem>
