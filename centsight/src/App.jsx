@@ -14,6 +14,7 @@ import MainLayout from './components/MainLayout.jsx';
 import BudgetPage from './pages/BudgetPage.jsx';
 import TransactionsPage from './pages/TransactionsPage.jsx';
 import AccountsPage from './pages/AccountsPage.jsx';
+import { fetchTransactionsData } from './store/transaction-actions.js';
 const router = createBrowserRouter([
   { path: '/', element: <LandingPage /> },
   { path: '/auth', element: <AuthPage /> },
@@ -45,6 +46,7 @@ function App() {
 
     dispatch(getUser());
     dispatch(fetchCategoryData());
+    dispatch(fetchTransactionsData());
     getData();
   }, [dispatch]);
 

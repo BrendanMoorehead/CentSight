@@ -6,23 +6,24 @@ export const fetchCategoryData = () => {
   return async (dispatch) => {
     const fetchData = async () => {
       const { data, error } = await supabase.auth.getUser();
-      const { data: categories, categoryError } = await supabase
+      const { data: categories, error: categoryError } = await supabase
         .from('categories')
         .select();
 
-      const { data: userCategories, userCategoryError } = await supabase
+      const { data: userCategories, error: userCategoryError } = await supabase
         .from('user_categories')
         .select()
         .eq('user_id', data.user.id);
 
-      const { data: subcategories, subcategoryError } = await supabase
+      const { data: subcategories, error: subcategoryError } = await supabase
         .from('subcategories')
         .select();
 
-      const { data: userSubcategories, userSubcategoryError } = await supabase
-        .from('user_subcategories')
-        .select()
-        .eq('user_id', data.user.id);
+      const { data: userSubcategories, error: userSubcategoryError } =
+        await supabase
+          .from('user_subcategories')
+          .select()
+          .eq('user_id', data.user.id);
 
       console.log('USER SUBCATEGORIES', userSubcategories);
 
