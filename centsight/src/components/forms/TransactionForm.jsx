@@ -10,16 +10,44 @@ import {
   getLocalTimeZone,
   today,
 } from '@internationalized/date';
-const validate = (values) => {};
+const validate = (values) => {
+  const errors = {};
+  if (values.amount === null) {
+    errors.amount = 'Required';
+  }
+  if (values.category === '') {
+    errors.category = 'Required';
+  }
+  if (values.subcategory === '') {
+    errors.subcategory = 'Required';
+  }
+  if (
+    values.sendingAccount === '' &&
+    (values.type === 'expense' || values.type === 'transfer')
+  ) {
+    errors.sendingAccount = 'Required';
+  }
+
+  if (
+    values.recievingAccount === '' &&
+    (values.type === 'income' || values.type === 'transfer')
+  ) {
+    errors.recievingAccount = 'Required';
+  }
+  if (values.date === '') {
+    errors.date = 'Required';
+  }
+  return errors;
+};
 
 const TransactionForm = ({ handleSubmit }) => {
   const accounts = useSelector((state) => state.account.accounts);
   const categories = useSelector((state) => state.category.categories);
   let defaultDate = today(getLocalTimeZone());
-  let now = today(getLocalTimeZone());
   const formik = useFormik({
     initialValues: {
       type: 'expense',
+      category: '',
       subcategory: '',
       note: '',
       sendingAccount: '',
