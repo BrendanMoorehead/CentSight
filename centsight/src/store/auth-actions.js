@@ -1,6 +1,8 @@
 import supabase from '../../utils/supabase';
+import { accountActions } from './account-slice';
 import { authActions } from './auth-slice';
 import { categoryActions } from './category-slice';
+import { transactionActions } from './transaction-slice';
 
 //TODO: Set state error in catch cases
 export const registerUserWithPassword = (email, password) => {
@@ -73,10 +75,16 @@ export const logoutUser = () => {
     const logoutUser = async () => {
       dispatch(authActions.setLoading(true));
       const { error } = await supabase.auth.signOut();
-      return error;
+      if (error) throw new Error(error.message);
     };
-    const error = await logoutUser();
-    if (error) throw error;
-    dispatch(authActions.logoutUser());
+    try {
+      await logoutUser();
+      dispatch(accountActions.clearAccounts());
+      dispatch(transactionActions.clearTransactions());
+      dispatch(categoryActions.clearCategories());
+      dispatch(authActions.logoutUser());
+    } catch (error) {
+      console.error('Failed to log out user: ', error.message);
+    }
   };
 };

@@ -6,9 +6,6 @@ import {
   NavbarBrand,
   NavbarContent,
   NavbarItem,
-  NavbarMenuToggle,
-  NavbarMenu,
-  NavbarMenuItem,
   Button,
   Link,
 } from '@nextui-org/react';
@@ -101,7 +98,7 @@ const Header = () => {
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem>
-          <Button className="bg-yellow">Log out</Button>
+          <Button onClick={handleLogout}>Log out</Button>
         </NavbarItem>
       </NavbarContent>
     </Navbar>

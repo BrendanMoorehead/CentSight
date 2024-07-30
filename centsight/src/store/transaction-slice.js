@@ -9,6 +9,9 @@ export const transactionSlice = createSlice({
     replaceTransactions(state, action) {
       state.transactions = action.payload;
     },
+    clearTransactions(state) {
+      state.transactions = null;
+    },
     addTransaction(state, action) {
       state.transactions.push(action.payload);
     },

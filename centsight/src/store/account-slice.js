@@ -9,6 +9,9 @@ export const accountSlice = createSlice({
     replaceAccounts(state, action) {
       state.accounts = action.payload;
     },
+    clearAccounts(state) {
+      state.accounts = null;
+    },
     addAccount(state, action) {
       state.accounts.push(action.payload);
     },
