@@ -4,6 +4,7 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
+  Link,
 } from '@nextui-org/react';
 import { Input } from '@nextui-org/react';
 import { useFormik } from 'formik';
@@ -24,14 +25,14 @@ const validate = (values) => {
   return errors;
 };
 
-const LoginForm = () => {
+const LoginForm = ({ changeType }) => {
   const error = useSelector((state) => state.auth.error);
   const toast = useToast();
   const dispatch = useDispatch();
   const formik = useFormik({
     initialValues: {
-      email: null,
-      password: null,
+      email: '',
+      password: '',
     },
     validate,
     onSubmit: (values) => {
@@ -86,10 +87,13 @@ const LoginForm = () => {
             name="password"
           />
         </CardBody>
-        <CardFooter>
+        <CardFooter className="grid gap-2 justify-center">
           <Button className="flex-1" type="submit">
             Login
           </Button>
+          <p className="py-2">
+            Don't have an account? <Link onClick={changeType}>sign up!</Link>
+          </p>
         </CardFooter>
       </Card>
     </form>

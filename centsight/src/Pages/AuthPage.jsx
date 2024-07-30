@@ -2,18 +2,30 @@ import { useState } from 'react';
 import AuthForm from '../components/AuthForm';
 import { Center, Box } from '@chakra-ui/react';
 import LoginForm from '../components/forms/LoginForm';
-const AuthPage = ({ initialForm = 'signup' }) => {
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+const AuthPage = ({ initialForm = 'login' }) => {
+  const auth = useSelector((state) => state.auth);
+  const navigate = useNavigate();
   const [form, setForm] = useState(initialForm);
 
-  const handleFormChange = () => {
+  useEffect(() => {
+    if (auth.user) navigate('/dashboard');
+  }, [auth, navigate]);
+
+  const handleChangeType = () => {
     if (form === 'signup') setForm('login');
     else setForm('signup');
   };
 
   return (
     <Center height="100vh">
-      <LoginForm />
-      {/* <AuthForm type={form} changeForm={handleFormChange} /> */}
+      {form === 'login' ? (
+        <LoginForm changeType={handleChangeType} />
+      ) : (
+        <p>signup</p>
+      )}
     </Center>
   );
 };
