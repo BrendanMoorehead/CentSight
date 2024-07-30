@@ -4,6 +4,7 @@ import { Center, Box } from '@chakra-ui/react';
 import LoginForm from '../components/forms/LoginForm';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import SignupForm from '../components/forms/SignupForm';
 import { useEffect } from 'react';
 const AuthPage = ({ initialForm = 'login' }) => {
   const auth = useSelector((state) => state.auth);
@@ -24,7 +25,7 @@ const AuthPage = ({ initialForm = 'login' }) => {
       {form === 'login' ? (
         <LoginForm changeType={handleChangeType} />
       ) : (
-        <p>signup</p>
+        <SignupForm changeType={handleChangeType} />
       )}
     </Center>
   );

@@ -1,19 +1,19 @@
 import {
   Modal,
-  ModalOverlay,
   ModalContent,
   ModalHeader,
   ModalBody,
-  ModalCloseButton,
-} from '@chakra-ui/react';
+  ModalFooter,
+  Button,
+  useDisclosure,
+} from '@nextui-org/react';
 
 const ModalWrapper = ({ isOpen, onClose, title, children }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
       <ModalContent>
-        <ModalHeader>{title}</ModalHeader>
-        <ModalCloseButton />
+        <ModalHeader className="text-white text-xl">{title}</ModalHeader>
+
         <ModalBody>{children}</ModalBody>
       </ModalContent>
     </Modal>
