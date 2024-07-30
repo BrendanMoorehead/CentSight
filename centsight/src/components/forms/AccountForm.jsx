@@ -37,7 +37,7 @@ const AccountForm = ({ handleSubmit }) => {
         placeholder="Account name"
         label="Name"
         labelPlacement="outside"
-        errorMessage="Account name is required"
+        errorMessage="Required"
         isInvalid={formik.errors.name && formik.touched.name}
         value={formik.values.name}
         onChange={(e) => formik.setFieldValue('name', e.target.value)}
@@ -49,7 +49,7 @@ const AccountForm = ({ handleSubmit }) => {
         placeholder="0.00"
         labelPlacement="outside"
         isInvalid={formik.errors.balance && formik.touched.balance}
-        errorMessage="Account balance is required"
+        errorMessage="Required"
         value={formik.values.balance}
         onChange={(e) => {
           formik.setFieldValue('balance', e.target.value);

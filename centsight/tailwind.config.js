@@ -18,10 +18,6 @@ export default {
     nextui({
       defaultTheme: 'dark',
       themes: {
-        light: {
-          layout: {},
-          colors: {},
-        },
         dark: {
           layout: {},
           colors: {

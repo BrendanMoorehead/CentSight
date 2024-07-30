@@ -14,6 +14,7 @@ const CategoryModal = ({ isOpen, closeModal, userId }) => {
     } else {
       dispatch(addSubcategory({ ...data, user_id: userId }));
     }
+    closeModal();
   };
 
   if (!userId) return <p>Loading...</p>;

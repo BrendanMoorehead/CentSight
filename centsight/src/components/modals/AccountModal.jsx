@@ -6,12 +6,10 @@ const AccountModal = ({ isOpen, closeModal, userId }) => {
   const dispatch = useDispatch();
 
   const handleOk = (data) => {
-    console.log(" OK Handle: ", data);
-    //TODO: Add notification if user isn't authenticated
-    dispatch(addAccount({...data, user_id: userId}));
-    // dispatch(addCategory({ ...data, user_id: userId }));
-
-    // dispatch(addSubcategory({ ...data, user_id: userId }));
+    console.log(' OK Handle: ', data);
+    //TODO: Add notification if successful
+    dispatch(addAccount({ ...data, user_id: userId }));
+    closeModal();
   };
 
   if (!userId) return <p>Loading...</p>;
