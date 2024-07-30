@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import AuthForm from '../components/AuthForm';
 import { Center, Box } from '@chakra-ui/react';
+import LoginForm from '../components/forms/LoginForm';
 const AuthPage = ({ initialForm = 'signup' }) => {
   const [form, setForm] = useState(initialForm);
 
@@ -11,7 +12,8 @@ const AuthPage = ({ initialForm = 'signup' }) => {
 
   return (
     <Center height="100vh">
-      <AuthForm type={form} changeForm={handleFormChange} />
+      <LoginForm />
+      {/* <AuthForm type={form} changeForm={handleFormChange} /> */}
     </Center>
   );
 };

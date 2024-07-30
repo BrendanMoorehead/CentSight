@@ -16,6 +16,8 @@ const FloatButtonGroup = () => {
   const [openTransactionModal, setOpenTransactionModal] = useState(false);
   const [openAccountModal, setOpenAccountModal] = useState(false);
 
+  if (!auth.user) return null;
+
   return (
     <>
       <CategoryModal

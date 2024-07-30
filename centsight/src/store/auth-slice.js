@@ -8,14 +8,19 @@ export const authSlice = createSlice({
   reducers: {
     setLoading(state, action) {
       state.loading = action.payload;
+      state.error = null;
     },
     loginUser(state, action) {
-      state.loading = false;
       state.user = action.payload;
+      state.loading = false;
     },
     logoutUser(state) {
       state.loading = false;
       state.user = null;
+    },
+    setError(state, action) {
+      state.error = action.payload;
+      state.loading = false;
     },
   },
 });

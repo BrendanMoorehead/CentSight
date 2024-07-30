@@ -42,11 +42,10 @@ export const loginUserWithPassword = (email, password) => {
       const data = await loginUser(email, password);
 
       dispatch(authActions.loginUser(data));
-      dispatch(categoryActions.fetchCategoryData());
       localStorage.setItem('token', data.session.access_token);
     } catch (error) {
-      console.error('Failed to login user: ', error.message);
-      throw new Error('Failed to login user: ', error.message);
+      console.log(error.message);
+      dispatch(authActions.setError(error.message));
     }
   };
 };
