@@ -10,7 +10,7 @@ import {
 
 const ModalWrapper = ({ isOpen, onClose, title, children }) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} isDismissable={false}>
       <ModalContent>
         <ModalHeader className="text-white text-xl">{title}</ModalHeader>
 
