@@ -44,6 +44,9 @@ const TransactionForm = ({ handleSubmit }) => {
   const accounts = useSelector((state) => state.account.accounts);
   const categories = useSelector((state) => state.category.categories);
   let defaultDate = today(getLocalTimeZone());
+
+  console.log('Transaction Categories: ', categories);
+
   const formik = useFormik({
     initialValues: {
       type: 'expense',
@@ -61,6 +64,10 @@ const TransactionForm = ({ handleSubmit }) => {
       handleSubmit(values);
     },
   });
+
+  const selectedCategory = categories.find(
+    (cat) => cat.id === formik.values.category
+  );
   return (
     <form className="flex flex-col gap-4" onSubmit={formik.handleSubmit}>
       <Input
@@ -99,19 +106,38 @@ const TransactionForm = ({ handleSubmit }) => {
         value={formik.values.date}
       />
       <div className="flex gap-4">
-        <Select label="Category">
+        <Select
+          label="Category"
+          onSelectionChange={(value) => {
+            console.log(value.anchorKey);
+            formik.setFieldValue('category', value.anchorKey);
+            formik.setFieldValue('subcategory', '');
+          }}
+        >
           {categories.map((cat) => (
-            <SelectItem className="text-text" key={cat.key}>
+            <SelectItem className="text-text" key={cat.id}>
               {cat.name}
             </SelectItem>
           ))}
         </Select>
-        <Select label="Subcategory">
-          {categories.map((cat) => (
-            <SelectItem className="text-text" key={cat.key}>
-              {cat.name}
-            </SelectItem>
-          ))}
+        <Select
+          label="Subcategory"
+          onSelectionChange={(value) =>
+            formik.setFieldValue('subcategory', value)
+          }
+          value={formik.values.subcategory}
+          disabled={!selectedCategory}
+        >
+          {selectedCategory &&
+            selectedCategory.subcategories.map((subcat) => (
+              <SelectItem
+                className="text-text"
+                key={subcat.id}
+                value={subcat.id}
+              >
+                {subcat.name}
+              </SelectItem>
+            ))}
         </Select>
       </div>
 

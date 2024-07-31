@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { addSubcategory } from './category-actions';
 
-const categoryState = { categories: [] };
+const categoryState = { categories: {} };
 
 export const categorySlice = createSlice({
   name: 'categories',
