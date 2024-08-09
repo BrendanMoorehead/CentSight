@@ -47,6 +47,14 @@ const columns = [
     uid: 'account_to_id',
   },
   {
+    name: 'CATEGORY',
+    uid: '',
+  },
+  {
+    name: 'SUBCATEGORY',
+    uid: '',
+  },
+  {
     name: 'NOTE',
     uid: 'note',
   },
@@ -115,6 +123,14 @@ const TransactionsPage = () => {
     const cellValue = user[columnKey];
 
     switch (columnKey) {
+      case 'amount':
+        return <p>{'$' + user.amount.toFixed(2)}</p>;
+      case 'type':
+        return (
+          <p>
+            {user.type[0].toUpperCase() + user.type.slice(1, user.type.length)}
+          </p>
+        );
       case 'account_to_id':
         return <p>{user.receivingAccountName}</p>;
       case 'account_from_id':
