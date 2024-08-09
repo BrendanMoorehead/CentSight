@@ -1,5 +1,6 @@
 import { transactionActions } from './transaction-slice';
 import supabase from './../../utils/supabase';
+import { addSubcategory } from './category-actions';
 export const fetchTransactionsData = () => {
   return async (dispatch) => {
     const fetchData = async () => {
@@ -20,6 +21,41 @@ export const fetchTransactionsData = () => {
       console.log(data);
     } catch (error) {
       console.error('Failed to fetch transactions');
+    }
+  };
+};
+
+export const addTransaction = (data) => {
+  return async (dispatch) => {
+    const addData = async (transactionData) => {
+      if (transactionData.sendingAccount === '')
+        transactionData.sendingAccount = transactionData.recievingAccount;
+      if (transactionData.recievingAccount === '')
+        transactionData.recievingAccount = transactionData.sendingAccount;
+
+      const { data, error } = await supabase
+        .from('user_transactions')
+        .insert({
+          amount: transactionData.amount,
+          category_id: transactionData.category,
+          subcategory_id: transactionData.subcategory,
+          user_id: transactionData.user_id,
+          account_to_id: transactionData.sendingAccount,
+          account_from_id: transactionData.recievingAccount,
+          date: transactionData.date,
+          note: transactionData.note,
+          type: transactionData.type,
+        })
+        .select('*');
+      if (error) throw new Error(error.message);
+      console.log('Transaction add:', data);
+      return data[0];
+    };
+    try {
+      const transactionData = await addData(data);
+      dispatch(transactionActions.addTransaction(transactionData));
+    } catch (error) {
+      console.log(error.message);
     }
   };
 };

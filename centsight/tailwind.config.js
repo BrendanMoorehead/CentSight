@@ -13,10 +13,10 @@ export default {
     },
     extend: {},
   },
-  darkMode: 'class',
   plugins: [
     nextui({
       defaultTheme: 'dark',
+      defaultExtendTheme: 'dark',
       themes: {
         dark: {
           layout: {},

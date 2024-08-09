@@ -61,6 +61,15 @@ const TransactionForm = ({ handleSubmit }) => {
     validate,
     onSubmit: (values) => {
       console.log(values);
+      const date = new Date(
+        values.date.year,
+        values.date.month - 1,
+        values.date.day
+      );
+      const formattedDate = `${date.getFullYear()}, ${
+        date.getMonth() + 1
+      }, ${date.getDate()}`;
+      values.date = formattedDate;
       handleSubmit(values);
     },
   });
@@ -102,17 +111,18 @@ const TransactionForm = ({ handleSubmit }) => {
       </Tabs>
       <DatePicker
         label="Transaction date"
-        onSelectionChange={(value) => formik.setFieldValue('date', value)}
+        onChange={(value) => formik.setFieldValue('date', value)}
         value={formik.values.date}
       />
       <div className="flex gap-4">
         <Select
           label="Category"
           onSelectionChange={(value) => {
-            console.log(value.anchorKey);
+            console.log(value);
             formik.setFieldValue('category', value.anchorKey);
             formik.setFieldValue('subcategory', '');
           }}
+          value={formik.values.category}
         >
           {categories.map((cat) => (
             <SelectItem className="text-text" key={cat.id}>
@@ -123,7 +133,7 @@ const TransactionForm = ({ handleSubmit }) => {
         <Select
           label="Subcategory"
           onSelectionChange={(value) =>
-            formik.setFieldValue('subcategory', value)
+            formik.setFieldValue('subcategory', value.anchorKey)
           }
           value={formik.values.subcategory}
           disabled={!selectedCategory}
@@ -143,9 +153,14 @@ const TransactionForm = ({ handleSubmit }) => {
 
       {(formik.values.type === 'expense' ||
         formik.values.type === 'transfer') && (
-        <Select label="Sending account">
+        <Select
+          label="Sending account"
+          onSelectionChange={(value) =>
+            formik.setFieldValue('sendingAccount', value.anchorKey)
+          }
+        >
           {accounts.map((cat) => (
-            <SelectItem className="text-text" key={cat.key}>
+            <SelectItem className="text-text" key={cat.id} value={cat.id}>
               {cat.name}
             </SelectItem>
           ))}
@@ -153,9 +168,14 @@ const TransactionForm = ({ handleSubmit }) => {
       )}
       {(formik.values.type === 'income' ||
         formik.values.type === 'transfer') && (
-        <Select label="Recieving account">
+        <Select
+          label="Recieving account"
+          onSelectionChange={(value) =>
+            formik.setFieldValue('recievingAccount', value.anchorKey)
+          }
+        >
           {accounts.map((cat) => (
-            <SelectItem className="text-text" key={cat.key}>
+            <SelectItem className="text-text" key={cat.id} value={cat.id}>
               {cat.name}
             </SelectItem>
           ))}
