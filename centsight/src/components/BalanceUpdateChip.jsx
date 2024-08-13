@@ -14,7 +14,11 @@ const BalanceUpdateChip = (props) => {
   }
   return (
     <Chip color={style.color} variant="flat">
-      {style.prefix + props.amount.toFixed(2)}
+      {style.prefix +
+        props.amount.toLocaleString('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}
     </Chip>
   );
 };

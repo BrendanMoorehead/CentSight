@@ -2,6 +2,9 @@ import supabase from './../../utils/supabase';
 import { categoryActions } from './category-slice';
 import nestCategories from '../../utils/nestCategories';
 import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 export const fetchCategoryData = () => {
   return async (dispatch) => {
     const fetchData = async () => {
@@ -41,9 +44,15 @@ export const fetchCategoryData = () => {
     };
     try {
       const data = await fetchData();
-      dispatch(categoryActions.replaceCategories(data));
+      const result = dispatch(categoryActions.replaceCategories(data));
+      if (result.meta.requestStatus === 'fulfilled') {
+        toast.success('Subcategory added successfully!');
+      } else {
+        throw new Error();
+      }
     } catch (error) {
       console.log('Failed to fetch category data');
+      toast.error('Failed to fetch category data.');
     }
   };
 };
@@ -64,8 +73,10 @@ export const addCategory = (data) => {
       const catData = await addData(data);
       console.log('CAT DATA: ' + catData);
       dispatch(categoryActions.addCategory(catData));
+      toast.success('Category added successfully!');
     } catch (error) {
       console.log(error.message);
+      toast.error('Failed to add subcategory');
     }
   };
 };
@@ -89,8 +100,10 @@ export const addSubcategory = (data) => {
       const catData = await addData(data);
       console.log(catData);
       dispatch(categoryActions.addSubcategory(catData));
+      toast.success('${catData.name} Added successfully!');
     } catch (error) {
       console.log(error.message);
+      toast.error('Failed to add subcategory');
     }
   };
 };
@@ -108,8 +121,10 @@ export const deleteSubcategory = (data) => {
     try {
       await deleteSubcategory(data);
       dispatch(categoryActions.deleteSubcategory(data));
+      toast.success('Subcategory deleted successfully!');
     } catch (error) {
       console.log(error.message);
+      toast.error('Failed to delete subcategory');
     }
   };
 };

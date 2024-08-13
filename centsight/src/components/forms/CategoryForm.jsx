@@ -1,13 +1,16 @@
 import { useFormik } from 'formik';
-import { Segmented, Select } from 'antd';
-import {
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  Input,
-  Button,
-} from '@chakra-ui/react';
+
 import { useSelector } from 'react-redux';
+import { Tabs, Tab } from '@nextui-org/tabs';
+
+import { Button, Input } from '@nextui-org/react';
+import { Select, SelectSection, SelectItem } from '@nextui-org/react';
+import {
+  startOfWeek,
+  startOfMonth,
+  getLocalTimeZone,
+  today,
+} from '@internationalized/date';
 
 const validate = (values) => {
   const errors = {};
@@ -37,56 +40,47 @@ const CategoryForm = ({ handleSubmit }) => {
   });
 
   return (
-    <form onSubmit={formik.handleSubmit}>
-      <Segmented
-        block
-        size="large"
-        options={['Category', 'Subcategory']}
-        onChange={(value) => formik.setFieldValue('category_type', value)}
-        name="category_type"
-        value={formik.values.category_type}
-      />
-      <FormControl isInvalid={formik.errors.name}>
-        <Input
-          onChange={formik.handleChange}
-          value={formik.values.name}
-          name="name"
-          placeholder="Name"
-        />
-        <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
-      </FormControl>
+    <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
+      <Tabs
+        fullWidth
+        aria-label="Options"
+        className="flex"
+        selectedKey={formik.values.category_type}
+        onSelectionChange={(value) =>
+          formik.setFieldValue('category_type', value)
+        }
+      >
+        <Tab key="category" title="Category"></Tab>
+        <Tab key="subcategory" title="Subcategory"></Tab>
+      </Tabs>
 
-      {formik.values.category_type === 'Subcategory' && (
-        <FormControl isInvalid={formik.errors.category_id}>
-          <FormLabel>Parent Category</FormLabel>
-          <Select
-            showSearch
-            filterSort={(optionA, optionB) =>
-              (optionA?.label ?? '')
-                .toLowerCase()
-                .localeCompare((optionB?.label ?? '').toLowerCase())
-            }
-            size="large"
-            style={{
-              width: '100%',
-            }}
-            onChange={(value) => {
-              formik.setFieldValue('category_id', value);
-              formik.setFieldValue('user_category_id', value);
-            }}
-            name="category_id"
-            value={formik.values.category_id}
-            options={categories.map((category) => ({
-              label: category.name,
-              value: category.id,
-            }))}
-          />
-
-          <FormErrorMessage>{formik.errors.category_id}</FormErrorMessage>
-        </FormControl>
+      {formik.values.category_type === 'subcategory' && (
+        <Select
+          label="Category"
+          onSelectionChange={(value) => {
+            console.log(value);
+            formik.setFieldValue('category_id', value.anchorKey);
+            formik.setFieldValue('user_category_id', value.anchorKey);
+            formik.setFieldValue('subcategory', '');
+          }}
+          value={formik.values.category}
+        >
+          {categories.map((cat) => (
+            <SelectItem className="text-text" key={cat.id}>
+              {cat.name}
+            </SelectItem>
+          ))}
+        </Select>
       )}
-      <Button colorScheme="blue" type="submit">
-        Save
+      <Input
+        type="text"
+        label="Name"
+        value={formik.values.name}
+        onChange={(e) => formik.setFieldValue('name', e.target.value)}
+        name="name"
+      />
+      <Button color="primary" className="my-2" type="submit">
+        Add
       </Button>
     </form>
   );

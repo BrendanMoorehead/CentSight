@@ -17,8 +17,12 @@ export const categorySlice = createSlice({
       state.categories.push(action.payload);
     },
     addSubcategory(state, action) {
-      const parent = state.categories.find(
+      let parent;
+      parent = state.categories.find(
         ({ id }) => id === action.payload.category_id
+      );
+      parent = state.categories.find(
+        ({ id }) => id === action.payload.user_category_id
       );
 
       parent.subcategories.push(action.payload);
