@@ -17,11 +17,13 @@ import {
 } from '@nextui-org/react';
 import { SearchIcon } from '@chakra-ui/icons';
 import { BsThreeDotsVertical } from 'react-icons/bs';
+import TransactionModal from '../components/modals/TransactionModal';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 // import { SearchIcon } from './SearchIcon';
 
 import { useSelector } from 'react-redux';
 import { useState, useMemo, useCallback } from 'react';
+import BalanceUpdateChip from '../components/BalanceUpdateChip';
 
 const columns = [
   {
@@ -43,16 +45,16 @@ const columns = [
     uid: 'account_from_id',
   },
   {
-    name: 'RECIEVING',
+    name: 'RECEIVING',
     uid: 'account_to_id',
   },
   {
     name: 'CATEGORY',
-    uid: '',
+    uid: 'category',
   },
   {
     name: 'SUBCATEGORY',
-    uid: '',
+    uid: 'subcategory',
   },
   {
     name: 'NOTE',
@@ -67,8 +69,13 @@ const columns = [
 const TransactionsPage = () => {
   const [filterValue, setFilterValue] = React.useState('');
   const [page, setPage] = useState(1);
+  const [openTransactionModal, setOpenTransactionModal] = useState(false);
+
   const transactions = useSelector((state) => state.transaction.transactions);
   const accounts = useSelector((state) => state.account.accounts);
+  const categories = useSelector((state) => state.category.categories);
+  const auth = useSelector((state) => state.auth);
+
   const rowsPerPage = 10;
   const hasSearchFilter = Boolean(filterValue);
 
@@ -79,6 +86,9 @@ const TransactionsPage = () => {
   const transactionsList = transactions.map((transaction) => {
     let matchingSendingAccount = '';
     let matchingReceivingAccount = '';
+    let matchingCategory = '';
+    let matchingSubcategory = '';
+
     if (transaction.type === 'expense' || transaction.type === 'transfer') {
       matchingSendingAccount = accounts.find(
         (account) => account.id === transaction.account_from_id
@@ -90,10 +100,29 @@ const TransactionsPage = () => {
       );
     }
 
+    if (transaction.category_id) {
+      matchingCategory = categories.find(
+        (cat) => cat.id === transaction.category_id
+      );
+      console.log('Cat Match', matchingCategory);
+      matchingSubcategory = matchingCategory.subcategories.find(
+        (cat) => cat.id === transaction.subcategory_id
+      );
+    } else if (transaction.user_category_id) {
+      matchingCategory = categories.find(
+        (cat) => cat.id === transaction.user_category_id
+      );
+      matchingSubcategory = matchingCategory.subcategories.find(
+        (cat) => cat.id === transaction.user_subcategory_id
+      );
+    }
+
     return {
       ...transaction,
       sendingAccountName: matchingSendingAccount.name,
       receivingAccountName: matchingReceivingAccount.name,
+      category: matchingCategory.name,
+      subcategory: matchingSubcategory.name,
     };
   });
 
@@ -124,7 +153,7 @@ const TransactionsPage = () => {
 
     switch (columnKey) {
       case 'amount':
-        return <p>{'$' + user.amount.toFixed(2)}</p>;
+        return <BalanceUpdateChip case={user.type} amount={user.amount} />;
       case 'type':
         return (
           <p>
@@ -179,8 +208,12 @@ const TransactionsPage = () => {
 
   return (
     <div className="p-12">
+      <TransactionModal
+        isOpen={openTransactionModal}
+        userId={auth.user.user.id}
+        closeModal={() => setOpenTransactionModal(false)}
+      />
       <p className="text-headline text-2xl font-normal pb-6">Transactions</p>
-
       {/* SEARCH BY NOTE */}
       <Input
         isClearable
@@ -191,7 +224,7 @@ const TransactionsPage = () => {
         onClear={() => onClear()}
         onValueChange={onSearchChange}
       />
-      {/*  */}
+      {/* SENDING ACCOUNT FILTER */}
       <Dropdown>
         <DropdownTrigger className="hidden sm:flex">
           <Button
@@ -211,8 +244,51 @@ const TransactionsPage = () => {
             <DropdownItem key={account.id}>{account.name}</DropdownItem>
           ))}
         </DropdownMenu>
+      </Dropdown>{' '}
+      {/* RECEIVING ACCOUNT FILTER */}
+      <Dropdown>
+        <DropdownTrigger className="hidden sm:flex">
+          <Button
+            endContent={<ChevronDownIcon className="text-small" />}
+            variant="flat"
+          >
+            Receiving Account
+          </Button>
+        </DropdownTrigger>
+        <DropdownMenu
+          disallowEmptySelection
+          aria-label="Table Columns"
+          closeOnSelect={false}
+          selectionMode="multiple"
+        >
+          {accounts.map((account) => (
+            <DropdownItem key={account.id}>{account.name}</DropdownItem>
+          ))}
+        </DropdownMenu>
       </Dropdown>
-
+      {/* CATEGORY FILTER */}
+      <Dropdown>
+        <DropdownTrigger className="hidden sm:flex">
+          <Button
+            endContent={<ChevronDownIcon className="text-small" />}
+            variant="flat"
+          >
+            Category
+          </Button>
+        </DropdownTrigger>
+        <DropdownMenu
+          disallowEmptySelection
+          aria-label="Table Columns"
+          closeOnSelect={false}
+          selectionMode="multiple"
+        >
+          {accounts.map((account) => (
+            <DropdownItem key={account.id}>{account.name}</DropdownItem>
+          ))}
+        </DropdownMenu>
+      </Dropdown>
+      {/* ADD TRANSACTION BUTTON */}
+      <Button onClick={() => setOpenTransactionModal(true)}>Add</Button>
       <Table
         aria-label="Example table with custom cells, pagination and sorting"
         isHeaderSticky

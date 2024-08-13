@@ -32,6 +32,8 @@ export const addTransaction = (data) => {
         transactionData.sendingAccount = transactionData.recievingAccount;
       if (transactionData.recievingAccount === '')
         transactionData.recievingAccount = transactionData.sendingAccount;
+      if (transactionData.category === '')
+        transactionData.category = transactionData.user;
 
       const { data, error } = await supabase
         .from('user_transactions')
