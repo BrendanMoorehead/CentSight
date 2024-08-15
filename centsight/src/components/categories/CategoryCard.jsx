@@ -1,14 +1,16 @@
-import { Card, CardBody, CardHeader } from '@nextui-org/react';
-import { Skeleton } from '@nextui-org/skeleton';
-import { IconButton } from '@chakra-ui/react';
-import { DeleteIcon } from '@chakra-ui/icons';
+import { Card, CardBody } from '@nextui-org/react';
 
-const selected =
-  'rounded-lg bg-neutral-800 p-6 flex justify-between align-center w-80';
+const selected = 'bg-neutral-600';
 
-const CategoryCard = ({ name, subcategoryCount }) => {
+const CategoryCard = ({ name, subcategoryCount, onPress, isSelected }) => {
   return (
-    <Card className="hover:bg-neutral-700 hover:cursor-pointer">
+    <Card
+      isPressable
+      onPress={onPress}
+      className={`hover:bg-neutral-700 hover:cursor-pointer ${
+        isSelected ? selected : ''
+      }`}
+    >
       <CardBody>
         <p className="font-bold">{name}</p>
         <p>{subcategoryCount + ' subcategories'}</p>

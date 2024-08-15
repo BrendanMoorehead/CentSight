@@ -15,6 +15,13 @@ export const accountSlice = createSlice({
     addAccount(state, action) {
       state.accounts.push(action.payload);
     },
+    overwriteAccount(state, action) {
+      const { id, ...newData } = action.payload;
+      const index = state.accounts.findIndex((account) => account.id === id);
+      if (index !== -1) {
+        state.accounts[index] = { id, ...newData };
+      }
+    },
     deleteAccount(state, action) {},
   },
 });

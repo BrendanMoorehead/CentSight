@@ -9,6 +9,7 @@ import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import SubcategoriesTable from '../components/categories/SubcategoriesTable';
 import CategoryDetails from '../components/categories/CategoryDetails';
+import { useState } from 'react';
 const responsive = {
   superLargeDesktop: {
     // the naming can be any, depends on you.
@@ -48,20 +49,37 @@ const categoryCard = (category) => {
 };
 
 const CategoriesPage = () => {
+  const [activeCategory, setActiveCategory] = useState(null);
+
   const categories = useSelector((state) => state.category.categories);
+
+  const handleCategorySelect = (cat) => {
+    console.log(cat);
+    setActiveCategory(cat);
+  };
+
   return (
-    <div className="p-12">
+    <div className="p-12 flex-col">
       <p className="text-headline text-2xl font-normal pb-6">Categories</p>
       <div className="grid grid-cols-5 gap-4">
-        {categories.map((category) => (
-          <CategoryCard
-            key={category.id}
-            name={category.name}
-            subcategoryCount={category.subcategories.length}
-          />
-        ))}
+        {categories &&
+          categories.map((category) => (
+            <CategoryCard
+              onPress={() => handleCategorySelect(category)}
+              key={category.id}
+              name={category.name}
+              subcategoryCount={category?.subcategories?.length || 0}
+              isSelected={activeCategory === category.id}
+            />
+          ))}
       </div>
-      <CategoryDetails />
+      {activeCategory ? (
+        <CategoryDetails category={activeCategory} />
+      ) : (
+        <div className="py-24 text-headline text-xl font-normal flex justify-center">
+          Select a category to see details.
+        </div>
+      )}
     </div>
   );
 };

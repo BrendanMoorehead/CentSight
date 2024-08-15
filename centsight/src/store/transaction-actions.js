@@ -1,6 +1,8 @@
 import { transactionActions } from './transaction-slice';
 import supabase from './../../utils/supabase';
 import { addSubcategory } from './category-actions';
+import { accountActions } from './account-slice';
+import { updateBalance } from './account-actions';
 export const fetchTransactionsData = () => {
   return async (dispatch) => {
     const fetchData = async () => {
@@ -32,8 +34,6 @@ export const addTransaction = (data) => {
         transactionData.sendingAccount = transactionData.recievingAccount;
       if (transactionData.recievingAccount === '')
         transactionData.recievingAccount = transactionData.sendingAccount;
-      if (transactionData.category === '')
-        transactionData.category = transactionData.user;
 
       const { data, error } = await supabase
         .from('user_transactions')
@@ -56,6 +56,29 @@ export const addTransaction = (data) => {
     try {
       const transactionData = await addData(data);
       dispatch(transactionActions.addTransaction(transactionData));
+
+      if (
+        transactionData.type === 'income' ||
+        transactionData.type === 'transfer'
+      ) {
+        dispatch(
+          updateBalance(
+            transactionData.account_to_id,
+            Number(transactionData.amount)
+          )
+        );
+      }
+      if (
+        transactionData.type === 'expense' ||
+        transactionData.type === 'transfer'
+      ) {
+        dispatch(
+          updateBalance(
+            transactionData.account_from_id,
+            Number(transactionData.amount) * -1
+          )
+        );
+      }
     } catch (error) {
       console.log(error.message);
     }

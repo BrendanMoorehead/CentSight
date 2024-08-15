@@ -12,11 +12,13 @@ const MainLayout = () => {
   const navigate = useNavigate();
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  useEffect(() => {
-    if (!auth.user) navigate('/auth');
-  }, [navigate, auth]);
 
   useEffect(() => {
+    if (!auth.user) navigate('/auth');
+  }, [navigate, auth.user]);
+
+  useEffect(() => {
+    console.log('fetching');
     dispatch(getUser());
     dispatch(fetchCategoryData());
     dispatch(fetchTransactionsData());
@@ -26,7 +28,6 @@ const MainLayout = () => {
   return (
     <div className="h-screen flex flex-col">
       <Header />
-
       <div className="2xl:px-80">
         <Outlet />
       </div>

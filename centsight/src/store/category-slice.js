@@ -47,6 +47,12 @@ export const categorySlice = createSlice({
         (sub) => sub.id !== action.payload.id
       );
     },
+    updateCategoryName(state, action) {
+      // const category = state.categories.find(
+      //   ({ id }) => id === action.payload.id
+      // );
+      // category.name = action.payload.name;
+    },
   },
 });
 
