@@ -27,7 +27,7 @@ const DashboardPage = () => {
         data={chartData}
         index="date"
         categories={['expenses', 'income']}
-        colors={['customBlue', 'customOrange']}
+        colors={['lime', 'red']}
         valueFormatter={dataFormatter}
         yAxisWidth={60}
         onValueChange={(v) => console.log(v)}
