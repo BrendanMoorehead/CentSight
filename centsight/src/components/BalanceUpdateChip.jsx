@@ -11,6 +11,9 @@ const BalanceUpdateChip = (props) => {
     case 'expense':
       style = { prefix: '-$', color: 'danger' };
       break;
+    case 'zero':
+      style = { prefix: '$', color: 'default' };
+      break;
   }
   return (
     <Chip color={style.color} variant="flat">

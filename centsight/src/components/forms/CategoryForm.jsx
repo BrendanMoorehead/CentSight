@@ -1,17 +1,14 @@
 import { useFormik } from 'formik';
-
 import { useSelector } from 'react-redux';
-import { Tabs, Tab } from '@nextui-org/tabs';
-
-import { Button, Input } from '@nextui-org/react';
-import { Select, SelectSection, SelectItem } from '@nextui-org/react';
 import {
-  startOfWeek,
-  startOfMonth,
-  getLocalTimeZone,
-  today,
-} from '@internationalized/date';
-
+  Select,
+  SelectItem,
+  Button,
+  Input,
+  Tabs,
+  Tab,
+} from '@nextui-org/react';
+import { useEffect } from 'react';
 const validate = (values) => {
   const errors = {};
   if (values.name === '') {
@@ -23,47 +20,54 @@ const validate = (values) => {
   return errors;
 };
 
-const CategoryForm = ({ handleSubmit }) => {
+const CategoryForm = ({ handleSubmit, categoryId = null }) => {
   const categories = useSelector((state) => state.category.categories);
   const formik = useFormik({
     initialValues: {
       name: '',
-      category_type: 'Category',
-      category_id: null,
-      user_category_id: null,
+      category_type: categoryId ? 'subcategory' : 'category',
+      category_id: categoryId,
+      user_category_id: categoryId,
     },
     validate,
     onSubmit: (values) => {
-      console.log(values);
       handleSubmit(values);
     },
   });
 
+  useEffect(() => {
+    if (categoryId) {
+      formik.setFieldValue('category_id', categoryId);
+    }
+  }, [categoryId]);
+  console.log(categoryId);
+
   return (
     <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
-      <Tabs
-        fullWidth
-        aria-label="Options"
-        className="flex"
-        selectedKey={formik.values.category_type}
-        onSelectionChange={(value) =>
-          formik.setFieldValue('category_type', value)
-        }
-      >
-        <Tab key="category" title="Category"></Tab>
-        <Tab key="subcategory" title="Subcategory"></Tab>
-      </Tabs>
-
-      {formik.values.category_type === 'subcategory' && (
+      {!categoryId && (
+        <Tabs
+          fullWidth
+          aria-label="Options"
+          className="flex"
+          selectedKey={formik.values.category_type}
+          onSelectionChange={(value) =>
+            formik.setFieldValue('category_type', value)
+          }
+        >
+          <Tab key="category" title="Category"></Tab>
+          <Tab key="subcategory" title="Subcategory"></Tab>
+        </Tabs>
+      )}
+      {formik.values.category_type === 'subcategory' && !categoryId && (
         <Select
           label="Category"
+          isDisabled={categoryId !== null}
           onSelectionChange={(value) => {
-            console.log(value);
             formik.setFieldValue('category_id', value.anchorKey);
             formik.setFieldValue('user_category_id', value.anchorKey);
             formik.setFieldValue('subcategory', '');
           }}
-          value={formik.values.category}
+          value={formik.values.category_id || ''}
         >
           {categories.map((cat) => (
             <SelectItem className="text-text" key={cat.id}>

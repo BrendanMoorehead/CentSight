@@ -24,6 +24,7 @@ const FloatButtonGroup = () => {
         isOpen={openCategoryModal}
         userId={auth.user.user.id}
         closeModal={() => setOpenCategoryModal(false)}
+        title="Add Category"
       />
       <TransactionModal
         isOpen={openTransactionModal}

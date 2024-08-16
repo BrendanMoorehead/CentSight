@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { addSubcategory } from './category-actions';
 
 const categoryState = { categories: {} };
 
@@ -33,25 +32,22 @@ export const categorySlice = createSlice({
       );
     },
     deleteSubcategory(state, action) {
-      console.log('Delete', action.payload);
       const parent = state.categories.find(
         ({ id }) => id === action.payload.category_id
       );
       const index = parent.subcategories.findIndex(
         (sub) => sub.id === action.payload.id
       );
-      if (index === -1) return; // Early return if the subcategory is not found
-
-      // Remove the subcategory immutably
+      if (index === -1) return;
       parent.subcategories = parent.subcategories.filter(
         (sub) => sub.id !== action.payload.id
       );
     },
     updateCategoryName(state, action) {
-      // const category = state.categories.find(
-      //   ({ id }) => id === action.payload.id
-      // );
-      // category.name = action.payload.name;
+      const category = state.categories.find(
+        ({ id }) => id === action.payload.id
+      );
+      category.name = action.payload.name;
     },
   },
 });

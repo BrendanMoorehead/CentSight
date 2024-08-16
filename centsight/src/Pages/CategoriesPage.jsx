@@ -10,6 +10,8 @@ import 'react-multi-carousel/lib/styles.css';
 import SubcategoriesTable from '../components/categories/SubcategoriesTable';
 import CategoryDetails from '../components/categories/CategoryDetails';
 import { useState } from 'react';
+import { Button } from '@nextui-org/react';
+import CategoryModal from '../components/modals/CategoryModal';
 const responsive = {
   superLargeDesktop: {
     // the naming can be any, depends on you.
@@ -49,18 +51,29 @@ const categoryCard = (category) => {
 };
 
 const CategoriesPage = () => {
-  const [activeCategory, setActiveCategory] = useState(null);
-
+  const [activeCategoryId, setActiveCategoryId] = useState(null);
+  const auth = useSelector((state) => state.auth);
+  const [openCategoryModal, setOpenCategoryModal] = useState(false);
   const categories = useSelector((state) => state.category.categories);
 
   const handleCategorySelect = (cat) => {
-    console.log(cat);
-    setActiveCategory(cat);
+    setActiveCategoryId(cat.id);
   };
+
+  const activeCategory = categories?.find((cat) => cat.id === activeCategoryId);
 
   return (
     <div className="p-12 flex-col">
-      <p className="text-headline text-2xl font-normal pb-6">Categories</p>
+      <CategoryModal
+        isOpen={openCategoryModal}
+        userId={auth.user.user.id}
+        closeModal={() => setOpenCategoryModal(false)}
+        title="Add Category"
+      />
+      <div className="flex justify-between">
+        <p className="text-headline text-2xl font-normal pb-6">Categories</p>
+        <Button onClick={() => setOpenCategoryModal(true)}>Add</Button>
+      </div>
       <div className="grid grid-cols-5 gap-4">
         {categories &&
           categories.map((category) => (

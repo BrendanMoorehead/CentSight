@@ -9,13 +9,16 @@ import {
   DropdownSection,
   DropdownItem,
 } from '@nextui-org/dropdown';
+import CategoryModal from '../modals/CategoryModal';
 import { useState } from 'react';
 import CategoryNameModal from '../modals/CategoryNameModal';
 import { useSelector, useDispatch } from 'react-redux';
 import { deleteCategory } from '../../store/category-actions';
 const CategoryDetails = ({ category }) => {
   const [openModal, setOpenModal] = useState(false);
+  const [openSubcatModal, setOpenSubcatModal] = useState(false);
   const transactions = useSelector((state) => state.transaction.transactions);
+  const auth = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
   console.log(transactions);
@@ -42,6 +45,13 @@ const CategoryDetails = ({ category }) => {
         closeModal={() => setOpenModal(false)}
         data={category}
       />
+      <CategoryModal
+        isOpen={openSubcatModal}
+        userId={auth.user.user.id}
+        closeModal={() => setOpenSubcatModal(false)}
+        categoryId={category.id}
+        title="Add subcategory"
+      />
       <div className="flex justify-between py-4">
         <p className="text-headline text-4xl font-semibold">{category.name}</p>
         <div className="flex justify-between">
@@ -49,28 +59,36 @@ const CategoryDetails = ({ category }) => {
             <DropdownTrigger>
               <Button variant="bordered">Edit Category</Button>
             </DropdownTrigger>
-            <DropdownMenu
-              aria-label="Static Actions"
-              disabledKeys={category.is_base ? ['edit_name', 'delete'] : []}
-            >
+            <DropdownMenu aria-label="Static Actions">
+              {category.is_base === false && (
+                <DropdownItem
+                  className="text-white"
+                  key="edit_name"
+                  onClick={() => setOpenModal(true)}
+                >
+                  Edit name
+                </DropdownItem>
+              )}
               <DropdownItem
                 className="text-white"
-                key="edit_name"
-                onClick={() => setOpenModal(true)}
+                key="add_subcategory"
+                onClick={() => {
+                  setOpenSubcatModal(true);
+                  console.log('Clicked');
+                }}
               >
-                Edit name
-              </DropdownItem>
-              <DropdownItem className="text-white" key="add_subcategory">
                 Add subcategory
               </DropdownItem>
-              <DropdownItem
-                key="delete"
-                className="text-danger"
-                color="danger"
-                onClick={() => handleDelete()}
-              >
-                Delete category
-              </DropdownItem>
+              {category.is_base === false && (
+                <DropdownItem
+                  key="delete"
+                  className="text-danger"
+                  color="danger"
+                  onClick={() => handleDelete()}
+                >
+                  Delete category
+                </DropdownItem>
+              )}
             </DropdownMenu>
           </Dropdown>
         </div>

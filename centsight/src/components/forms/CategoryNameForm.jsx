@@ -31,7 +31,7 @@ const CategoryNameForm = ({ data, handleSubmit }) => {
         name="name"
       />
       <Button color="primary" className="my-2" type="submit">
-        Add
+        Update
       </Button>
     </form>
   );

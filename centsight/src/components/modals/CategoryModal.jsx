@@ -3,7 +3,7 @@ import { addCategory, addSubcategory } from '../../store/category-actions';
 import ModalWrapper from '../ModalWrapper';
 import CategoryForm from '../forms/CategoryForm';
 
-const CategoryModal = ({ isOpen, closeModal, userId }) => {
+const CategoryModal = ({ isOpen, closeModal, userId, categoryId, title }) => {
   const dispatch = useDispatch();
 
   const handleOk = (data) => {
@@ -20,8 +20,8 @@ const CategoryModal = ({ isOpen, closeModal, userId }) => {
   if (!userId) return <p>Loading...</p>;
 
   return (
-    <ModalWrapper isOpen={isOpen} onClose={closeModal} title="New Category">
-      <CategoryForm handleSubmit={handleOk} />
+    <ModalWrapper isOpen={isOpen} onClose={closeModal} title={title}>
+      <CategoryForm handleSubmit={handleOk} categoryId={categoryId} />
     </ModalWrapper>
   );
 };
