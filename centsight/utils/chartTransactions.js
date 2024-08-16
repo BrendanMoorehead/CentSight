@@ -1,5 +1,5 @@
 import { addDays, startOfMonth, endOfMonth, format } from 'date-fns';
-export const chartTransactions = (month, year, transactions) => {
+export const chartTransactions = (month, year, transactions, type) => {
   if (!Array.isArray(transactions)) {
     console.error('Transactions should be an array');
     return [];
@@ -14,25 +14,35 @@ export const chartTransactions = (month, year, transactions) => {
   while (currentDate <= end) {
     const formattedDate = format(currentDate, 'yyyy-MM-dd');
 
-    const transactionsForDay = transactions?.filter((transaction) => {
+    const expenseTransactionsForDay = transactions?.filter((transaction) => {
       const transactionDate = format(new Date(transaction.date), 'yyyy-MM-dd');
       return (
         transactionDate === formattedDate && transaction.type === 'expense'
       );
     });
-    const totalForDay = transactionsForDay.reduce(
+    const incomeTransactionsForDay = transactions?.filter((transaction) => {
+      const transactionDate = format(new Date(transaction.date), 'yyyy-MM-dd');
+      return transactionDate === formattedDate && transaction.type === 'income';
+    });
+    const totalExpensesForDay = expenseTransactionsForDay.reduce(
+      (sum, transaction) => sum + transaction.amount,
+      0
+    );
+    const totalIncomeForDay = incomeTransactionsForDay.reduce(
       (sum, transaction) => sum + transaction.amount,
       0
     );
     daysArray.push({
       date: formattedDate,
-      total: totalForDay,
+      expenses: totalExpensesForDay,
+      income: totalIncomeForDay,
     });
     currentDate = addDays(currentDate, 1);
   }
 
   for (let i = 0; i < daysArray.length; i++) {
-    daysArray[i].total += daysArray[i].total;
+    if (i > 0) daysArray[i].expenses += daysArray[i - 1].expenses;
+    if (i > 0) daysArray[i].income += daysArray[i - 1].income;
   }
 
   return daysArray;
