@@ -5,6 +5,7 @@ import AccountCard from '../components/accounts/AccountCard';
 import SlimAccountCard from '../components/SlimAccountCard';
 import { Button } from '@nextui-org/react';
 import { useState } from 'react';
+import AccountsDetails from '../components/AccountsDetails';
 const AccountsPage = () => {
   const accounts = useSelector((state) => state.account.accounts);
   const [typeSelected, setTypeSelected] = useState([
@@ -12,11 +13,11 @@ const AccountsPage = () => {
     'cash',
     'credit',
   ]);
-  const [activeAccount, setActiveAccount] = useState(null);
-
+  const [activeAccountId, setActiveAccountId] = useState(null);
+  const activeAccount = accounts?.find((acc) => acc.id === activeAccountId);
   const handleAccountClick = (account) => {
     console.log('click');
-    setActiveAccount(account);
+    setActiveAccountId(account.id);
   };
 
   const filteredAccounts = accounts.filter((account) =>
@@ -24,7 +25,7 @@ const AccountsPage = () => {
   );
 
   return (
-    <div className="p-12 h-[1040px] grid grid-cols-4 gap-8">
+    <div className="p-12 h-[1040px] grid grid-cols-4 gap-24">
       <div className="col-span-1">
         <div className="flex justify-between">
           <p className="text-headline text-2xl font-normal pb-6">Accounts</p>
@@ -47,7 +48,7 @@ const AccountsPage = () => {
         <ScrollShadow hideScrollBar className="h-5/6">
           {filteredAccounts.map((account) => (
             <SlimAccountCard
-              onClick={handleAccountClick}
+              onPress={() => handleAccountClick(account)}
               key={account.id}
               name={account.name}
               type={account.type}
@@ -56,7 +57,15 @@ const AccountsPage = () => {
           ))}
         </ScrollShadow>
       </div>
-      <div className="col-span-3 border-1"></div>
+      <div className="col-span-3 ">
+        {activeAccount ? (
+          <AccountsDetails account={activeAccount} />
+        ) : (
+          <div className="py-24 text-headline text-xl font-normal flex justify-center">
+            Select an account to see details.
+          </div>
+        )}
+      </div>
     </div>
   );
 };
