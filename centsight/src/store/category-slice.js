@@ -1,19 +1,33 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const categoryState = { categories: {} };
+const categoryState = { categories: {}, loading: false, error: null };
 
 export const categorySlice = createSlice({
   name: 'categories',
   initialState: categoryState,
   reducers: {
+    setLoading(state) {
+      state.loading = true;
+    },
+    setError(state, action) {
+      state.error = action.payload;
+      state.loading = false;
+    },
     replaceCategories(state, action) {
       state.categories = action.payload;
+      state.loading = false;
+      state.error = null;
     },
+
     clearCategories(state) {
       state.categories = null;
+      state.loading = false;
+      state.error = null;
     },
     addCategory(state, action) {
       state.categories.push(action.payload);
+      state.loading = false;
+      state.error = null;
     },
     addSubcategory(state, action) {
       let parent;
@@ -25,6 +39,8 @@ export const categorySlice = createSlice({
       );
 
       parent.subcategories.push(action.payload);
+      state.loading = false;
+      state.error = null;
     },
     deleteCategory(state, action) {
       state.categories = state.categories.filter(

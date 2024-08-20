@@ -5,6 +5,7 @@ import { accountActions } from './account-slice';
 import { updateBalance } from './account-actions';
 export const fetchTransactionsData = () => {
   return async (dispatch) => {
+    dispatch(transactionActions.setLoading());
     const fetchData = async () => {
       const { data, error } = await supabase.auth.getUser();
       if (error) throw new Error(error.message);

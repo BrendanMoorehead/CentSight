@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export const fetchAccountData = () => {
   return async (dispatch) => {
+    dispatch(accountActions.setLoading());
     const fetchData = async () => {
       const { data, error } = await supabase.auth.getUser();
       if (error) throw new Error(error.message);

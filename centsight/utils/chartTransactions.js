@@ -6,7 +6,7 @@ export const chartTransactions = (month, year, transactions, type) => {
   }
   console.log('CHART CALLED');
   console.log(month, transactions);
-  const start = startOfMonth(new Date(year, month - 1));
+  const start = startOfMonth(new Date(year, month));
   const end = endOfMonth(start);
 
   const daysArray = [];

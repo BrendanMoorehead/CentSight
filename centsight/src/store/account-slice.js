@@ -1,19 +1,32 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const accountState = { accounts: [] };
+const accountState = { accounts: [], loading: false, error: null };
 
 export const accountSlice = createSlice({
   name: 'accounts',
   initialState: accountState,
   reducers: {
+    setLoading(state) {
+      state.loading = true;
+    },
+    setError(state, action) {
+      state.error = action.payload;
+      state.loading = false;
+    },
     replaceAccounts(state, action) {
       state.accounts = action.payload;
+      state.loading = false;
+      state.error = null;
     },
     clearAccounts(state) {
       state.accounts = null;
+      state.loading = false;
+      state.error = null;
     },
     addAccount(state, action) {
       state.accounts.push(action.payload);
+      state.loading = false;
+      state.error = null;
     },
     overwriteAccount(state, action) {
       const { id, ...newData } = action.payload;

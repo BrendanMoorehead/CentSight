@@ -10,6 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
  */
 export const fetchCategoryData = () => {
   return async (dispatch) => {
+    dispatch(categoryActions.setLoading());
     const fetchData = async () => {
       //Get the active user
       const { data, error } = await supabase.auth.getUser();

@@ -18,54 +18,11 @@ import {
 import { SearchIcon } from '@chakra-ui/icons';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import TransactionModal from '../components/modals/TransactionModal';
-import { ChevronDownIcon } from '@chakra-ui/icons';
-// import { SearchIcon } from './SearchIcon';
-import { useAsyncList } from '@react-stately/data';
 import { useSelector } from 'react-redux';
 import { useState, useMemo, useCallback } from 'react';
 import BalanceUpdateChip from '../components/BalanceUpdateChip';
 import TransactionSortDropdown from '../components/TransactionSortDropdown';
-
-const columns = [
-  {
-    name: 'DATE',
-    uid: 'date',
-    sortable: 'true',
-  },
-  {
-    name: 'AMOUNT',
-    uid: 'amount',
-    sortable: 'true',
-  },
-  {
-    name: 'TYPE',
-    uid: 'type',
-  },
-  {
-    name: 'SENDING',
-    uid: 'account_from_id',
-  },
-  {
-    name: 'RECEIVING',
-    uid: 'account_to_id',
-  },
-  {
-    name: 'CATEGORY',
-    uid: 'category',
-  },
-  {
-    name: 'SUBCATEGORY',
-    uid: 'subcategory',
-  },
-  {
-    name: 'NOTE',
-    uid: 'note',
-  },
-  {
-    name: 'ACTIONS',
-    uid: 'actions',
-  },
-];
+import { transactionTableColumns } from '../../utils/data';
 
 const TransactionsPage = () => {
   const [filterValue, setFilterValue] = useState('');
@@ -277,7 +234,7 @@ const TransactionsPage = () => {
         sortDescriptor={sortDescriptor}
         onSortChange={setSortDescriptor}
       >
-        <TableHeader columns={columns}>
+        <TableHeader columns={transactionTableColumns}>
           {(column) => (
             <TableColumn
               key={column.uid}
