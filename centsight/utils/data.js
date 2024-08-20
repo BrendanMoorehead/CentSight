@@ -65,3 +65,26 @@ export const dashboardTransactionTableColumns = [
     uid: 'note',
   },
 ];
+
+export const accountsTransactionTableColumns = [
+  {
+    name: 'DATE',
+    uid: 'date',
+  },
+  {
+    name: 'AMOUNT',
+    uid: 'amount',
+  },
+  {
+    name: 'CATEGORY',
+    uid: 'category',
+  },
+  {
+    name: 'SUBCATEGORY',
+    uid: 'subcategory',
+  },
+  {
+    name: 'NOTE',
+    uid: 'note',
+  },
+];

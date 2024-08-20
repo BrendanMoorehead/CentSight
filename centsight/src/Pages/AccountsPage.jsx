@@ -8,6 +8,7 @@ import { useState } from 'react';
 import AccountsDetails from '../components/AccountsDetails';
 const AccountsPage = () => {
   const accounts = useSelector((state) => state.account.accounts);
+  const transactions = useSelector((state) => state.transaction.transactions);
   const [typeSelected, setTypeSelected] = useState([
     'chequing',
     'cash',
@@ -59,7 +60,10 @@ const AccountsPage = () => {
       </div>
       <div className="col-span-3 ">
         {activeAccount ? (
-          <AccountsDetails account={activeAccount} />
+          <AccountsDetails
+            account={activeAccount}
+            transactions={transactions}
+          />
         ) : (
           <div className="py-24 text-headline text-xl font-normal flex justify-center">
             Select an account to see details.

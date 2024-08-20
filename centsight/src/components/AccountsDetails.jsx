@@ -1,7 +1,8 @@
 import { Card, CardBody } from '@nextui-org/react';
-import React from 'react';
+import { useState, useMemo } from 'react';
 import { Tabs, Tab } from '@nextui-org/tabs';
 import TransactionsTable from './TransactionsTable';
+import AccountTransactionsTable from './AccountTransactionTable';
 let tabs = [
   {
     id: 'past7days',
@@ -20,17 +21,92 @@ let tabs = [
     label: 'All Time',
   },
 ];
-const AccountsDetails = ({ account }) => {
-  const formattedBalance =
-    account.balance < 0
-      ? `-$${Math.abs(account.balance).toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}`
-      : `$${account.balance.toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}`;
+const AccountsDetails = ({ account, transactions }) => {
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState('past7days');
+
+  const filteredTransactions = transactions.filter(
+    (transaction) =>
+      transaction.account_from_id === account.id ||
+      transaction.account_to_id === account.id
+  );
+
+  console.log(transactions);
+
+  const handleTimePeriodChange = (id) => {
+    console.log(id);
+    setSelectedTimePeriod(id);
+  };
+  const currentDate = new Date();
+  const filteredArray = useMemo(() => {
+    return filteredTransactions.filter((item) => {
+      const itemDate = new Date(item.date);
+      if (isNaN(itemDate.getTime())) return false;
+      if (selectedTimePeriod === 'past7days') {
+        const past7Days = new Date();
+        past7Days.setDate(currentDate.getDate() - 7);
+        return itemDate >= past7Days && itemDate <= currentDate;
+      }
+
+      if (selectedTimePeriod === 'thismonth') {
+        const startOfMonth = new Date(
+          currentDate.getFullYear(),
+          currentDate.getMonth(),
+          1
+        );
+        return itemDate >= startOfMonth && itemDate <= currentDate;
+      }
+
+      if (selectedTimePeriod === 'thisyear') {
+        const startOfYear = new Date(currentDate.getFullYear(), 0, 1);
+        return itemDate >= startOfYear && itemDate <= currentDate;
+      }
+
+      return true; // Default case - show all items
+    });
+  }, [filteredTransactions, selectedTimePeriod, currentDate]);
+
+  let spendingSum = 0;
+  spendingSum =
+    filteredArray.reduce((acc, transaction) => {
+      // Ensure transaction.amount is a valid number
+      if (transaction.type === 'expense' && !isNaN(transaction.amount)) {
+        return acc - parseFloat(transaction.amount); // Use parseFloat to ensure correct conversion
+      }
+      return acc;
+    }, 0) || 0;
+
+  let incomeSum = 0;
+  incomeSum =
+    filteredArray.reduce((acc, transaction) => {
+      // Ensure transaction.amount is a valid number
+      if (transaction.type === 'income' && !isNaN(transaction.amount)) {
+        return acc + parseFloat(transaction.amount); // Use parseFloat to ensure correct conversion
+      }
+      return acc;
+    }, 0) || 0;
+
+  const numTransactions = filteredArray.length;
+
+  const formattedBalance = account?.balance.toLocaleString(undefined, {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
+  const formattedIncome = incomeSum?.toLocaleString(undefined, {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
+  const formattedSpending = spendingSum?.toLocaleString(undefined, {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
   return (
     <div className="flex flex-col gap-8">
       {/* ACCOUNT HEADER */}
@@ -53,13 +129,20 @@ const AccountsDetails = ({ account }) => {
           </CardBody>
         </Card>
         <div className="col-span-3 flex-grow flex flex-col gap-4">
-          <Tabs fullWidth aria-label="Dynamic tabs" items={tabs}>
+          <Tabs
+            fullWidth
+            aria-label="Dynamic tabs"
+            items={tabs}
+            onSelectionChange={handleTimePeriodChange}
+          >
             {(item) => <Tab key={item.id} title={item.label}></Tab>}
           </Tabs>
           <div className="grid grid-cols-3 gap-4">
             <Card className="flex-grow">
               <CardBody className="p-6">
-                <p className="text-gray-300 text-2xl font-headline">2</p>
+                <p className="text-gray-300 text-2xl font-headline">
+                  {numTransactions}
+                </p>
                 <p className="text-gray-400 text-lg font-headline font-extralight">
                   Transactions
                 </p>
@@ -68,7 +151,7 @@ const AccountsDetails = ({ account }) => {
             <Card className="flex-grow">
               <CardBody className="p-6">
                 <p className="text-gray-300 text-2xl font-headline ">
-                  {formattedBalance}
+                  {formattedSpending}
                 </p>
                 <p className="text-gray-400 text-lg font-headline font-extralight">
                   Spending
@@ -78,7 +161,7 @@ const AccountsDetails = ({ account }) => {
             <Card className="flex-grow">
               <CardBody className="p-6">
                 <p className="text-gray-300 text-2xl font-headline ">
-                  {formattedBalance}
+                  {formattedIncome}
                 </p>
                 <p className="text-gray-400 text-lg font-headline font-extralight">
                   Income
@@ -88,7 +171,10 @@ const AccountsDetails = ({ account }) => {
           </div>
         </div>
       </div>
-      <TransactionsTable />
+      <AccountTransactionsTable
+        transactions={filteredArray}
+        filter={selectedTimePeriod}
+      />
     </div>
   );
 };
