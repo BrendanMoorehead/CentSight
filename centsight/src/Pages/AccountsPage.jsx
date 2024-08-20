@@ -32,7 +32,7 @@ const AccountsPage = () => {
             Add
           </Button>
         </div>
-        <div>
+        <div className="pb-4">
           <CheckboxGroup
             label="Type"
             defaultValue={['chequing', 'credit', 'cash']}
