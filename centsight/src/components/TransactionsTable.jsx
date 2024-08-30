@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { dashboardTransactionTableColumns } from '../../utils/data';
 import {
   Table,
@@ -7,20 +7,20 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Pagination,
-  getKeyValue,
-  Input,
+  Spinner,
   Dropdown,
   DropdownTrigger,
   Button,
   DropdownMenu,
   DropdownItem,
-  Spinner,
 } from '@nextui-org/react';
-import BalanceUpdateChip from '../components/BalanceUpdateChip';
-import { BsThreeDotsVertical } from 'react-icons/bs';
+import { getTransactionCellContent } from '../../utils/tables';
 import { useCallback } from 'react';
+import { BsThreeDotsVertical } from 'react-icons/bs';
+import { parseISO, format } from 'date-fns';
+import { deleteTransaction } from '../store/transaction-actions';
 const TransactionsTable = () => {
+  const dispatch = useDispatch();
   const { transactions = [], loading: transactionsLoading } = useSelector(
     (state) => state.transaction
   );
@@ -34,40 +34,17 @@ const TransactionsTable = () => {
   const allLoading =
     transactionsLoading || accountsLoading || categoriesLoading;
 
-  const renderCell = useCallback((user, columnKey) => {
-    const cellValue = user[columnKey];
-
-    switch (columnKey) {
-      case 'amount':
-        return (
-          <BalanceUpdateChip
-            textAlign="right"
-            case={user.type}
-            amount={user.amount}
-          />
-        );
-      case 'type':
-        return (
-          <p>
-            {user.type[0].toUpperCase() + user.type.slice(1, user.type.length)}
-          </p>
-        );
-      case 'date':
-        return <p>{user.date}</p>;
-      case 'account_to_id':
-        return <p>{user.receivingAccountName}</p>;
-      case 'account_from_id':
-        return <p>{user.sendingAccountName}</p>;
-      default:
-        return cellValue;
-    }
+  const renderCell = useCallback((transaction, columnKey) => {
+    return getTransactionCellContent(transaction, columnKey);
   }, []);
 
+  // Filter and sort transactions
   const filteredTransactions = Array.isArray(transactions)
     ? [...transactions]
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
         .slice(0, 5)
     : [];
+
   let transactionsList = [];
 
   if (!allLoading) {
@@ -92,46 +69,50 @@ const TransactionsTable = () => {
         matchingCategory = categories.find(
           (cat) => cat.id === transaction.category_id
         );
-        console.log('Cat Match', matchingCategory);
-        matchingSubcategory = matchingCategory.subcategories.find(
-          (cat) => cat.id === transaction.subcategory_id
-        );
+        if (matchingCategory) {
+          matchingSubcategory = matchingCategory.subcategories.find(
+            (cat) => cat.id === transaction.subcategory_id
+          );
+        }
       } else if (transaction.user_category_id) {
         matchingCategory = categories.find(
           (cat) => cat.id === transaction.user_category_id
         );
-        matchingSubcategory = matchingCategory.subcategories.find(
-          (cat) => cat.id === transaction.user_subcategory_id
-        );
+        if (matchingCategory) {
+          matchingSubcategory = matchingCategory.subcategories.find(
+            (cat) => cat.id === transaction.user_subcategory_id
+          );
+        }
       }
 
-      const date = new Date(transaction.date);
-      const localeDate = date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      });
+      const transactionDate = parseISO(transaction.date);
+      const formattedDate = format(transactionDate, 'MMMM d, yyyy');
 
       return {
         ...transaction,
-        sendingAccountName: matchingSendingAccount?.name,
-        receivingAccountName: matchingReceivingAccount?.name,
-        category: matchingCategory?.name,
-        subcategory: matchingSubcategory?.name,
-        date: localeDate,
+        sendingAccountName: matchingSendingAccount?.name || 'N/A',
+        receivingAccountName: matchingReceivingAccount?.name || 'N/A',
+        category: matchingCategory?.name || 'N/A',
+        subcategory: matchingSubcategory?.name || 'N/A',
+        date: formattedDate,
       };
     });
   }
+  const handleDelete = (transaction) => {
+    dispatch(deleteTransaction(transaction.id));
+  };
+
   return (
     <Table
-      aria-label="Example table with custom cells, pagination and sorting"
+      aria-label="Transaction Table with custom cells, pagination, and sorting"
       isHeaderSticky
     >
       <TableHeader columns={dashboardTransactionTableColumns}>
         {(column) => (
           <TableColumn
             key={column.uid}
-            align={column.uid === 'amount' ? 'end' : 'start'}
+            align={column.align}
+            maxWidth={column.width}
           >
             {column.name}
           </TableColumn>
@@ -146,9 +127,13 @@ const TransactionsTable = () => {
         {(item) => (
           <TableRow key={item.id}>
             {(columnKey) => (
-              <TableCell>{renderCell(item, columnKey)}</TableCell>
+              <TableCell
+                className={'whitespace-nowrap overflow-hidden text-ellipsis'}
+              >
+                {renderCell(item, columnKey)}
+              </TableCell>
             )}
-          </TableRow>
+          cd</TableRow>
         )}
       </TableBody>
     </Table>

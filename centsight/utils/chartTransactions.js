@@ -1,4 +1,4 @@
-import { addDays, startOfMonth, endOfMonth, format } from 'date-fns';
+import { addDays, startOfMonth, endOfMonth, format, parseISO } from 'date-fns';
 export const chartTransactions = (month, year, transactions, type) => {
   if (!Array.isArray(transactions)) {
     console.error('Transactions should be an array');
@@ -15,13 +15,13 @@ export const chartTransactions = (month, year, transactions, type) => {
     const formattedDate = format(currentDate, 'yyyy-MM-dd');
 
     const expenseTransactionsForDay = transactions?.filter((transaction) => {
-      const transactionDate = format(new Date(transaction.date), 'yyyy-MM-dd');
+      const transactionDate = format(parseISO(transaction.date), 'yyyy-MM-dd');
       return (
         transactionDate === formattedDate && transaction.type === 'expense'
       );
     });
     const incomeTransactionsForDay = transactions?.filter((transaction) => {
-      const transactionDate = format(new Date(transaction.date), 'yyyy-MM-dd');
+      const transactionDate = format(parseISO(transaction.date), 'yyyy-MM-dd');
       return transactionDate === formattedDate && transaction.type === 'income';
     });
     const totalExpensesForDay = expenseTransactionsForDay.reduce(
@@ -33,7 +33,7 @@ export const chartTransactions = (month, year, transactions, type) => {
       0
     );
     daysArray.push({
-      date: formattedDate,
+      date: format(new Date(currentDate), 'MMMM d'),
       expenses: totalExpensesForDay,
       income: totalIncomeForDay,
     });

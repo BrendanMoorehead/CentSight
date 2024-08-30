@@ -8,6 +8,8 @@ import MonthSpendingChart from '../components/MonthSpendingChart';
 import AccountCard from '../components/accounts/AccountCard';
 import TransactionsTable from '../components/TransactionsTable';
 import SlimAccountCard from '../components/SlimAccountCard';
+import NetworthCard from '../components/NetworthCard';
+import AverageSpendingCard from '../components/AverageSpendingCard';
 const monthNames = [
   'January',
   'February',
@@ -23,13 +25,16 @@ const monthNames = [
   'December',
 ];
 
-const yearNames = [...Array(5).keys()].map((i) => new Date().getFullYear() - i);
+const yearNames = [...Array(5).keys()].map((i) =>
+  (new Date().getFullYear() - i).toString()
+);
 
 const DashboardPage = () => {
   const today = new Date();
   const [selectedMonth, setSelectedMonth] = useState(today.getMonth());
-  const [selectedYear, setSelectedYear] = useState(today.getFullYear());
+  const [selectedYear, setSelectedYear] = useState(0);
   const accounts = useSelector((state) => state.account.accounts);
+  const transactions = useSelector((state) => state.transaction.transactions);
   const handleYearChange = (value) => {
     console.log(value);
     setSelectedYear(Number(value));
@@ -43,7 +48,7 @@ const DashboardPage = () => {
   return (
     <>
       <FloatButtonGroup />
-      <div className="flex-col flex gap-6 p-12">
+      <div className="flex-col flex gap-6 px-12 py-6">
         <p className="text-headline text-2xl font-semibold">Dashboard</p>
         <div className="flex justify-between justify-center ">
           <p className="text-headline text-xl font-normal content-center">
@@ -53,7 +58,6 @@ const DashboardPage = () => {
             <Select
               label="Month"
               onSelectionChange={(value) => handleMonthChange(value.anchorKey)}
-              value={String(selectedMonth)}
               defaultSelectedKeys={[String(selectedMonth)]}
             >
               {monthNames.map((month, index) => (
@@ -71,11 +75,11 @@ const DashboardPage = () => {
               onSelectionChange={(value) => handleYearChange(value.anchorKey)}
               defaultSelectedKeys={[String(selectedYear)]}
             >
-              {yearNames.map((year) => (
+              {yearNames.map((year, index) => (
                 <SelectItem
                   className="text-text"
-                  key={year}
-                  value={String(year)}
+                  key={index}
+                  value={String(index)}
                 >
                   {year}
                 </SelectItem>
@@ -83,27 +87,46 @@ const DashboardPage = () => {
             </Select>
           </div>
         </div>
-        <Card className="p-8">
-          <MonthSpendingChart month={selectedMonth} year={selectedYear} />
-        </Card>
+        <div className="grid grid-cols-5 gap-6">
+          <Card className="p-8 col-span-4">
+            <MonthSpendingChart
+              month={selectedMonth}
+              year={Number(yearNames[selectedYear])}
+            />
+          </Card>
+          <div className="flex flex-col gap-4">
+            <NetworthCard accounts={accounts} />
+            <AverageSpendingCard
+              transactions={transactions}
+              title="Average Spending"
+              type="expense"
+            />
+            <AverageSpendingCard
+              transactions={transactions}
+              title="Average Income"
+              type="income"
+            />
+          </div>
+        </div>
         <div className="grid grid-cols-4 gap-12 pt-12">
           <div>
             <p className="text-headline text-xl font-normal content-center pb-4 ">
               Accounts
             </p>
-            <ScrollShadow hideScrollBar className="h-5/6">
+            <ScrollShadow hideScrollBar className="h-[300px]" size={100}>
               {accounts.map((account) => (
                 <SlimAccountCard
                   key={account.id}
                   name={account.name}
                   type={account.type}
                   balance={account.balance}
+                  clickable={false}
                 />
               ))}
             </ScrollShadow>
           </div>
           <div className="col-span-3">
-            <p className="text-headline text-xl font-normal content-center pb-4">
+            <p className="text-headline text-xl font-normal content-center pb-6">
               Recently Added Transactions
             </p>
 

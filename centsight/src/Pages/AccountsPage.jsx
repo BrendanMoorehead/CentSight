@@ -58,7 +58,7 @@ const AccountsPage = () => {
           ))}
         </ScrollShadow>
       </div>
-      <div className="col-span-3 ">
+      <div className="col-span-3">
         {activeAccount ? (
           <AccountsDetails
             account={activeAccount}

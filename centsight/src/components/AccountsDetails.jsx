@@ -1,8 +1,9 @@
-import { Card, CardBody } from '@nextui-org/react';
+import { Button, Card, CardBody } from '@nextui-org/react';
 import { useState, useMemo } from 'react';
 import { Tabs, Tab } from '@nextui-org/tabs';
 import TransactionsTable from './TransactionsTable';
 import AccountTransactionsTable from './AccountTransactionTable';
+import AccountEditDropdown from './AccountEditDropdown';
 let tabs = [
   {
     id: 'past7days',
@@ -23,7 +24,6 @@ let tabs = [
 ];
 const AccountsDetails = ({ account, transactions }) => {
   const [selectedTimePeriod, setSelectedTimePeriod] = useState('past7days');
-
   const filteredTransactions = transactions.filter(
     (transaction) =>
       transaction.account_from_id === account.id ||
@@ -108,19 +108,22 @@ const AccountsDetails = ({ account, transactions }) => {
     maximumFractionDigits: 2,
   });
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 flex-grow h-full">
       {/* ACCOUNT HEADER */}
-      <div className="flex flex-col">
-        <p className="text-headline text-2xl font-normal">{account.name}</p>
-        <p className="text-gray-300 text-lg font-headline font-extralight">
-          {account.type.charAt(0).toUpperCase() + account.type.slice(1)}
-        </p>
+      <div className="flex justify-between">
+        <div className="flex flex-col">
+          <p className="text-headline text-2xl font-normal">{account.name}</p>
+          <p className="text-gray-300 text-lg font-headline font-extralight">
+            {account.type.charAt(0).toUpperCase() + account.type.slice(1)}
+          </p>
+        </div>
+        <AccountEditDropdown />
       </div>
       {/* MAIN ACCOUNT DETAILS */}
       <div className="grid grid-cols-5 gap-4">
-        <Card className="col-span-2">
-          <CardBody className="p-6">
-            <p className="text-gray-300 text-4xl font-headline pb-2">
+        <Card className="col-span-2 flex">
+          <CardBody className="p-6 flex justify-end">
+            <p className="text-gray-300 text-6xl pb-2 font-headline font-light">
               {formattedBalance}
             </p>
             <p className="text-gray-400 text-lg font-headline font-extralight">
@@ -171,10 +174,12 @@ const AccountsDetails = ({ account, transactions }) => {
           </div>
         </div>
       </div>
-      <AccountTransactionsTable
-        transactions={filteredArray}
-        filter={selectedTimePeriod}
-      />
+      <div className="flex h-full">
+        <AccountTransactionsTable
+          transactions={filteredArray}
+          filter={selectedTimePeriod}
+        />
+      </div>
     </div>
   );
 };

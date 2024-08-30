@@ -10,6 +10,10 @@ export const transactionTableColumns = [
     sortable: 'true',
   },
   {
+    name: 'NOTE',
+    uid: 'note',
+  },
+  {
     name: 'SENDING',
     uid: 'account_from_id',
   },
@@ -25,10 +29,7 @@ export const transactionTableColumns = [
     name: 'SUBCATEGORY',
     uid: 'subcategory',
   },
-  {
-    name: 'NOTE',
-    uid: 'note',
-  },
+
   {
     name: 'ACTIONS',
     uid: 'actions',
@@ -39,14 +40,23 @@ export const dashboardTransactionTableColumns = [
   {
     name: 'DATE',
     uid: 'date',
+    width: '14%',
   },
   {
     name: 'AMOUNT',
     uid: 'amount',
+    width: '12%',
+    align: 'end',
+  },
+  {
+    name: 'NOTE',
+    uid: 'note',
+    width: '24%',
   },
   {
     name: 'SENDING',
     uid: 'account_from_id',
+    width: '10%',
   },
   {
     name: 'RECEIVING',
@@ -55,14 +65,12 @@ export const dashboardTransactionTableColumns = [
   {
     name: 'CATEGORY',
     uid: 'category',
+    align: 'center',
   },
   {
     name: 'SUBCATEGORY',
     uid: 'subcategory',
-  },
-  {
-    name: 'NOTE',
-    uid: 'note',
+    align: 'center',
   },
 ];
 
@@ -76,15 +84,15 @@ export const accountsTransactionTableColumns = [
     uid: 'amount',
   },
   {
+    name: 'NOTE',
+    uid: 'note',
+  },
+  {
     name: 'CATEGORY',
     uid: 'category',
   },
   {
     name: 'SUBCATEGORY',
     uid: 'subcategory',
-  },
-  {
-    name: 'NOTE',
-    uid: 'note',
   },
 ];

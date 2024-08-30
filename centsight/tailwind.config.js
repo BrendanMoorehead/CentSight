@@ -33,19 +33,19 @@ export default {
           background: {
             muted: colors.gray[50],
             subtle: colors.gray[100],
-            DEFAULT: colors.white,
+            DEFAULT: '#0b0a0a',
             emphasis: colors.gray[700],
           },
           border: {
-            DEFAULT: colors.gray[200],
+            DEFAULT: colors.gray[300],
           },
           ring: {
             DEFAULT: colors.gray[200],
           },
           content: {
             subtle: colors.gray[400],
-            DEFAULT: colors.gray[500],
-            emphasis: colors.gray[700],
+            DEFAULT: colors.gray[200],
+            emphasis: colors.gray[300],
             strong: colors.gray[900],
             inverted: colors.white,
           },
@@ -84,7 +84,7 @@ export default {
       },
       boxShadow: {
         // light
-        'tremor-input': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+
         'tremor-card':
           '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
         'tremor-dropdown':
@@ -146,7 +146,7 @@ export default {
         dark: {
           layout: {},
           colors: {
-            primary: '#2d523d',
+            primary: '#D3664B',
             yellow: '#f2e291',
             yellowOrange: '#f2b84b',
             orange: '#f28749',

@@ -8,33 +8,15 @@ import {
   TableRow,
   TableCell,
   Pagination,
-  getKeyValue,
-  Input,
-  Dropdown,
-  DropdownTrigger,
-  Button,
-  DropdownMenu,
-  DropdownItem,
   Spinner,
 } from '@nextui-org/react';
 import BalanceUpdateChip from '../components/BalanceUpdateChip';
-import { BsThreeDotsVertical } from 'react-icons/bs';
 import { useCallback, useState, useMemo } from 'react';
+import { accountsGetEmptyTransactionTableString } from '../../utils/stringCreators';
+import { getTransactionCellContent } from '../../utils/tables';
 
-const getEmptyString = (filter) => {
-  switch (filter) {
-    case 'past7days':
-      return 'No transactions in the past 7 days';
-    case 'thismonth':
-      return 'No transactions this month';
-    case 'thisyear':
-      return 'No transactions this year';
-    default:
-      return 'No transactions found';
-  }
-};
-
-const AccountTransactionsTable = ({ transactions, filter }) => {
+//
+const AccountTransactionsTable = ({ transactions, filter, pagination }) => {
   const { accounts = [], loading: accountsLoading } = useSelector(
     (state) => state.account
   );
@@ -44,41 +26,12 @@ const AccountTransactionsTable = ({ transactions, filter }) => {
 
   const allLoading = accountsLoading || categoriesLoading;
 
-  const tableString = getEmptyString(filter);
-
-  const [page, setPage] = useState(1);
-  const rowsPerPage = 6;
-
-  const pages = Math.ceil(transactions.length / rowsPerPage);
+  const tableString = accountsGetEmptyTransactionTableString(filter);
 
   const renderCell = useCallback((user, columnKey) => {
-    const cellValue = user[columnKey];
-
-    switch (columnKey) {
-      case 'amount':
-        return (
-          <BalanceUpdateChip
-            textAlign="right"
-            case={user.type}
-            amount={user.amount}
-          />
-        );
-      case 'type':
-        return (
-          <p>
-            {user.type[0].toUpperCase() + user.type.slice(1, user.type.length)}
-          </p>
-        );
-      case 'date':
-        return <p>{user.date}</p>;
-      case 'account_to_id':
-        return <p>{user.receivingAccountName}</p>;
-      case 'account_from_id':
-        return <p>{user.sendingAccountName}</p>;
-      default:
-        return cellValue;
-    }
+    return getTransactionCellContent(user, columnKey);
   }, []);
+
   let transactionsList = [];
   if (!allLoading) {
     transactionsList = transactions.map((transaction) => {
@@ -133,29 +86,38 @@ const AccountTransactionsTable = ({ transactions, filter }) => {
     });
   }
 
-  const items = useMemo(() => {
+  const [page, setPage] = useState(1);
+  const rowsPerPage = 11;
+
+  const pages = Math.ceil(transactionsList.length / rowsPerPage);
+
+  const transactionsRows = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
 
     return transactionsList.slice(start, end);
-  }, [page, transactions]);
+  }, [page, transactionsList]);
+
+  transactionsRows.sort((a, b) => new Date(b.date) - new Date(a.date));
+
   return (
     <Table
       aria-label="Example table with custom cells, pagination and sorting"
       isHeaderSticky
-      className="h-full"
       bottomContent={
-        <div className="flex w-full justify-center">
-          <Pagination
-            isCompact
-            showControls
-            showShadow
-            color="primary"
-            page={page}
-            total={pages}
-            onChange={(page) => setPage(page)}
-          />
-        </div>
+        pages > 0 ? (
+          <div className="flex w-full justify-center">
+            <Pagination
+              isCompact
+              showControls
+              showShadow
+              color="primary"
+              page={page}
+              total={pages}
+              onChange={(page) => setPage(page)}
+            />
+          </div>
+        ) : null
       }
     >
       <TableHeader columns={accountsTransactionTableColumns}>
@@ -170,7 +132,7 @@ const AccountTransactionsTable = ({ transactions, filter }) => {
       </TableHeader>
       <TableBody
         emptyContent={tableString}
-        items={items}
+        items={transactionsRows}
         isLoading={allLoading}
         loadingContent={<Spinner label="Loading..." />}
       >

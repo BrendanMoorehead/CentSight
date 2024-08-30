@@ -19,32 +19,77 @@ import { SearchIcon } from '@chakra-ui/icons';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import TransactionModal from '../components/modals/TransactionModal';
 import { useSelector } from 'react-redux';
-import { useState, useMemo, useCallback } from 'react';
-import BalanceUpdateChip from '../components/BalanceUpdateChip';
-import TransactionSortDropdown from '../components/TransactionSortDropdown';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { transactionTableColumns } from '../../utils/data';
+import { getTransactionCellContent } from '../../utils/tables';
+import { DateRangePicker } from '@nextui-org/react';
+import TransactionFilterDropdown from '../components/TransactionFilterDropdown';
 
 const TransactionsPage = () => {
-  const [filterValue, setFilterValue] = useState('');
-  const [page, setPage] = useState(1);
-  const [openTransactionModal, setOpenTransactionModal] = useState(false);
-
-  const [sortDescriptor, setSortDescriptor] = useState({
-    column: 'age',
-    direction: 'ascending',
-  });
-
   const transactions = useSelector((state) => state.transaction.transactions);
   const accounts = useSelector((state) => state.account.accounts);
   const categories = useSelector((state) => state.category.categories);
   const auth = useSelector((state) => state.auth);
 
-  const rowsPerPage = 10;
+  const [filterValue, setFilterValue] = useState('');
+  const [openTransactionModal, setOpenTransactionModal] = useState(false);
+  const [filteredType, setFilteredType] = useState([]);
+  const [filteredCategories, setFilteredCategories] = useState([]);
+  const [filteredSendingAccounts, setFilteredSendingAccounts] = useState([]);
+  const [filteredReceivingAccounts, setFilteredReceivingAccounts] = useState(
+    []
+  );
+  const [selectedRange, setSelectedRange] = useState({
+    startDate: null,
+    endDate: null,
+  });
+
+  useEffect(() => {
+    setFilteredType(['income', 'expense', 'transfer']); // Default to include all transaction types
+
+    if (categories.length) {
+      setFilteredCategories(categories.map((category) => category.id)); // Default all categories
+    }
+
+    if (accounts.length) {
+      setFilteredSendingAccounts(accounts.map((account) => account.id)); // Default all sending accounts
+      setFilteredReceivingAccounts(accounts.map((account) => account.id)); // Default all receiving accounts
+    }
+  }, [categories, accounts]);
+
+  useEffect(() => {
+    console.log('Updated filteredType:', filteredType);
+  }, [filteredType]);
+
+  useEffect(() => {
+    console.log('Updated filteredCategory:', filteredCategories);
+  }, [filteredCategories]);
+  useEffect(() => {
+    console.log('Updated filteredSending:', filteredSendingAccounts);
+  }, [filteredSendingAccounts]);
+  useEffect(() => {
+    console.log('Updated filteredReceiving:', filteredReceivingAccounts);
+  }, [filteredReceivingAccounts]);
+
+  const [sortDescriptor, setSortDescriptor] = useState({
+    column: 'date',
+    direction: 'descending',
+  });
+
   const hasSearchFilter = Boolean(filterValue);
 
-  const pages = Math.ceil(transactions.length / rowsPerPage);
+  const handleTypeFilter = (keys) => setFilteredType(keys);
 
-  console.log('Trans ACCOUNTS:', accounts);
+  const handleCategoryFilter = (keys) => setFilteredCategories(keys);
+
+  const handleSendingAccountSelect = (keys) => setFilteredSendingAccounts(keys);
+
+  const handleDateRangeChange = (value) => {
+    setSelectedRange({
+      startDate: value.start.toString(),
+      endDate: value.end.toString(),
+    });
+  };
 
   const transactionsList = transactions.map((transaction) => {
     let matchingSendingAccount = '';
@@ -67,7 +112,6 @@ const TransactionsPage = () => {
       matchingCategory = categories.find(
         (cat) => cat.id === transaction.category_id
       );
-      console.log('Cat Match', matchingCategory);
       matchingSubcategory = matchingCategory.subcategories.find(
         (cat) => cat.id === transaction.subcategory_id
       );
@@ -91,108 +135,84 @@ const TransactionsPage = () => {
       ...transaction,
       sendingAccountName: matchingSendingAccount.name,
       receivingAccountName: matchingReceivingAccount.name,
+      sendingAccountId: matchingSendingAccount.id,
+      receivingAccountId: matchingReceivingAccount.id,
       category: matchingCategory.name,
+      category_id: matchingCategory.id,
       subcategory: matchingSubcategory.name,
     };
   });
 
+  const filterTransactions = transactionsList.filter((transaction) => {
+    const typeMatches = Array.isArray(filteredType)
+      ? filteredType?.some((type) => type === transaction.type)
+      : false;
+    const categoryMatches = Array.isArray(filteredCategories)
+      ? filteredCategories?.some(
+          (category) => category === transaction.category_id
+        )
+      : false;
+    const sendingMatches = Array.isArray(filteredSendingAccounts)
+      ? filteredSendingAccounts?.some(
+          (account) =>
+            account === transaction.sendingAccountId ||
+            account === transaction.receivingAccountId
+        )
+      : false;
+
+    const dateMatches =
+      selectedRange.startDate && selectedRange.endDate
+        ? new Date(transaction.date) >= new Date(selectedRange.startDate) &&
+          new Date(transaction.date) <= new Date(selectedRange.endDate)
+        : true;
+    const searchMatches = filterValue
+      ? transaction.note.toLowerCase().includes(filterValue.toLowerCase())
+      : true;
+
+    return (
+      typeMatches &&
+      categoryMatches &&
+      sendingMatches &&
+      dateMatches &&
+      searchMatches
+    );
+  });
+
   const sortedItems = React.useMemo(() => {
-    return [...transactionsList].sort((a, b) => {
+    return [...filterTransactions].sort((a, b) => {
       const first = a[sortDescriptor.column];
       const second = b[sortDescriptor.column];
       const cmp = first < second ? -1 : first > second ? 1 : 0;
 
       return sortDescriptor.direction === 'descending' ? -cmp : cmp;
     });
-  }, [sortDescriptor, transactionsList]);
-
-  console.log('list', transactionsList);
-
-  const items = useMemo(() => {
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
-
-    return transactions.slice(start, end);
-  }, [page, transactions]);
+  }, [sortDescriptor, filterTransactions]);
 
   const onClear = useCallback(() => {
     setFilterValue('');
-    setPage(1);
   }, []);
   const onSearchChange = useCallback((value) => {
     if (value) {
       setFilterValue(value);
-      setPage(1);
     } else {
       setFilterValue('');
     }
   }, []);
 
   const renderCell = useCallback((user, columnKey) => {
-    const cellValue = user[columnKey];
-
-    switch (columnKey) {
-      case 'amount':
-        return (
-          <BalanceUpdateChip
-            textAlign="right"
-            case={user.type}
-            amount={user.amount}
-          />
-        );
-      case 'type':
-        return (
-          <p>
-            {user.type[0].toUpperCase() + user.type.slice(1, user.type.length)}
-          </p>
-        );
-      case 'date':
-        return <p>{user.date}</p>;
-      case 'account_to_id':
-        return <p>{user.receivingAccountName}</p>;
-      case 'account_from_id':
-        return <p>{user.sendingAccountName}</p>;
-      case 'actions':
-        return (
-          <div className="relative flex justify-end items-center gap-2">
-            <Dropdown>
-              <DropdownTrigger>
-                <Button isIconOnly size="sm" variant="light">
-                  <BsThreeDotsVertical className="text-default-300" />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu>
-                <DropdownItem>View</DropdownItem>
-                <DropdownItem>Edit</DropdownItem>
-                <DropdownItem>Delete</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </div>
-        );
-      default:
-        return cellValue;
-    }
+    return getTransactionCellContent(user, columnKey);
   }, []);
 
-  const filteredItems = useMemo(() => {
-    let filteredUsers = [...transactionsList];
+  const searchFilteredItems = useMemo(() => {
+    let filteredUsers = [...sortedItems];
 
     if (hasSearchFilter) {
       filteredUsers = filteredUsers.filter((user) =>
         user.note.toLowerCase().includes(filterValue.toLowerCase())
       );
     }
-    // if (
-    //   statusFilter !== 'all' &&
-    //   Array.from(statusFilter).length !== statusOptions.length
-    // ) {
-    //   filteredUsers = filteredUsers.filter((user) =>
-    //     Array.from(statusFilter).includes(user.status)
-    //   );
-    // }
-
     return filteredUsers;
-  }, [transactionsList, filterValue]);
+  }, [sortedItems, filterValue]);
 
   return (
     <div className="p-12">
@@ -223,9 +243,30 @@ const TransactionsPage = () => {
       </div>
       {/* Table Filters */}
       <div className="flex gap-2 py-4">
-        <TransactionSortDropdown title="Sending Account" data={accounts} />
-        <TransactionSortDropdown title="Recieving Account" data={accounts} />
-        <TransactionSortDropdown title="Category" data={categories} />
+        <TransactionFilterDropdown
+          title="Account"
+          options={accounts}
+          selectionChange={handleSendingAccountSelect}
+        />
+        <TransactionFilterDropdown
+          title="Category"
+          options={categories}
+          selectionChange={handleCategoryFilter}
+        />
+        <TransactionFilterDropdown
+          title="Type"
+          options={[
+            { name: 'Expense', id: 'expense' },
+            { name: 'Income', id: 'income' },
+            { name: 'Transfer', id: 'transfer' },
+          ]}
+          selectionChange={handleTypeFilter}
+        />
+        <DateRangePicker
+          label="Date range"
+          className="max-w-xs"
+          onChange={handleDateRangeChange}
+        />
       </div>
 
       <Table
@@ -245,7 +286,10 @@ const TransactionsPage = () => {
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody emptyContent={'No transactions found'} items={sortedItems}>
+        <TableBody
+          emptyContent={'No transactions found'}
+          items={searchFilteredItems}
+        >
           {(item) => (
             <TableRow key={item.id}>
               {(columnKey) => (

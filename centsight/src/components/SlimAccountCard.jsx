@@ -1,6 +1,12 @@
 import { Card, CardBody, CardHeader } from '@nextui-org/react';
 
-const SlimAccountCard = ({ name, type = '', balance, onPress }) => {
+const SlimAccountCard = ({
+  name,
+  type = '',
+  balance,
+  onPress,
+  clickable = true,
+}) => {
   const formattedBalance =
     balance < 0
       ? `-$${Math.abs(balance).toLocaleString(undefined, {
@@ -14,7 +20,7 @@ const SlimAccountCard = ({ name, type = '', balance, onPress }) => {
 
   return (
     <Card
-      isPressable
+      isPressable={clickable}
       className="hover:bg-neutral-700 hover:cursor-pointer my-2 w-full"
       onPress={onPress}
     >

@@ -85,3 +85,21 @@ export const addTransaction = (data) => {
     }
   };
 };
+
+export const deleteTransaction = (transactionId) => {
+  return async (dispatch) => {
+    const deleteTransaction = async (id) => {
+      const response = await supabase
+        .from('user_transactions')
+        .delete()
+        .eq('id', id);
+      return response;
+    };
+    try {
+      deleteTransaction(transactionId);
+      dispatch(transactionActions.deleteTransaction({ id: transactionId }));
+    } catch (error) {
+      //handle error
+    }
+  };
+};
