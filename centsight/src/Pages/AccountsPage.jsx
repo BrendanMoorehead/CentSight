@@ -6,6 +6,8 @@ import SlimAccountCard from '../components/SlimAccountCard';
 import { Button } from '@nextui-org/react';
 import { useState } from 'react';
 import AccountsDetails from '../components/AccountsDetails';
+import PageMargins from '../components/PageMargins';
+import PageHeaderText from '../components/PageHeaderText';
 const AccountsPage = () => {
   const accounts = useSelector((state) => state.account.accounts);
   const transactions = useSelector((state) => state.transaction.transactions);
@@ -26,10 +28,10 @@ const AccountsPage = () => {
   );
 
   return (
-    <div className="p-12 h-[1040px] grid grid-cols-4 gap-24">
+    <PageMargins>
+      <PageHeaderText text="Accounts" />
       <div className="col-span-1">
         <div className="flex justify-between">
-          <p className="text-headline text-2xl font-normal pb-6">Accounts</p>
           <Button color="primary" variant="ghost">
             Add
           </Button>
@@ -70,7 +72,7 @@ const AccountsPage = () => {
           </div>
         )}
       </div>
-    </div>
+    </PageMargins>
   );
 };
 

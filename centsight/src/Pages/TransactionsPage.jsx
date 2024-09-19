@@ -15,6 +15,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from '@nextui-org/react';
+import PageHeaderText from '../components/PageHeaderText';
 import { SearchIcon } from '@chakra-ui/icons';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import TransactionModal from '../components/modals/TransactionModal';
@@ -24,6 +25,7 @@ import { transactionTableColumns } from '../../utils/data';
 import { getTransactionCellContent } from '../../utils/tables';
 import { DateRangePicker } from '@nextui-org/react';
 import TransactionFilterDropdown from '../components/TransactionFilterDropdown';
+import PageMargins from '../components/PageMargins';
 
 const TransactionsPage = () => {
   const transactions = useSelector((state) => state.transaction.transactions);
@@ -215,13 +217,13 @@ const TransactionsPage = () => {
   }, [sortedItems, filterValue]);
 
   return (
-    <div className="p-12">
+    <PageMargins>
       <TransactionModal
         isOpen={openTransactionModal}
         userId={auth.user.user.id}
         closeModal={() => setOpenTransactionModal(false)}
       />
-      <p className="text-headline text-2xl font-normal pb-6">Transactions</p>
+      <PageHeaderText text="Transactions"/>
       {/* SEARCH BY NOTE */}
       <div className="flex justify-between">
         <Input
@@ -299,7 +301,7 @@ const TransactionsPage = () => {
           )}
         </TableBody>
       </Table>
-    </div>
+    </PageMargins>
   );
 };
 

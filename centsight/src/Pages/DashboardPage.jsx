@@ -10,6 +10,9 @@ import TransactionsTable from '../components/TransactionsTable';
 import SlimAccountCard from '../components/SlimAccountCard';
 import NetworthCard from '../components/NetworthCard';
 import AverageSpendingCard from '../components/AverageSpendingCard';
+import ComparisonCard from '../components/comparison card/ComparisonCard';
+import PageHeaderText from '../components/PageHeaderText';
+import PageMargins from '../components/PageMargins';
 const monthNames = [
   'January',
   'February',
@@ -48,8 +51,8 @@ const DashboardPage = () => {
   return (
     <>
       <FloatButtonGroup />
-      <div className="flex-col flex gap-6 px-12 py-6">
-        <p className="text-headline text-2xl font-semibold">Dashboard</p>
+      <PageMargins>
+        <PageHeaderText text="Dashboard"/>
         <div className="flex justify-between justify-center ">
           <p className="text-headline text-xl font-normal content-center">
             Spending
@@ -133,7 +136,8 @@ const DashboardPage = () => {
             <TransactionsTable />
           </div>
         </div>
-      </div>
+        <ComparisonCard />
+      </PageMargins>
     </>
   );
 };
