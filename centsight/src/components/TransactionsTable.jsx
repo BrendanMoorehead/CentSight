@@ -133,7 +133,7 @@ const TransactionsTable = () => {
                 {renderCell(item, columnKey)}
               </TableCell>
             )}
-          cd</TableRow>
+          </TableRow>
         )}
       </TableBody>
     </Table>
