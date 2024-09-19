@@ -12,6 +12,8 @@ import CategoryDetails from '../components/categories/CategoryDetails';
 import { useState } from 'react';
 import { Button } from '@nextui-org/react';
 import CategoryModal from '../components/modals/CategoryModal';
+import PageMargins from '../components/PageMargins';
+import PageHeaderText from '../components/PageHeaderText';
 const responsive = {
   superLargeDesktop: {
     // the naming can be any, depends on you.
@@ -63,7 +65,8 @@ const CategoriesPage = () => {
   const activeCategory = categories?.find((cat) => cat.id === activeCategoryId);
 
   return (
-    <div className="p-12 flex-col">
+    <PageMargins>
+      <PageHeaderText text="Categories" />
       <CategoryModal
         isOpen={openCategoryModal}
         userId={auth.user.user.id}
@@ -71,7 +74,7 @@ const CategoriesPage = () => {
         title="Add Category"
       />
       <div className="flex justify-between">
-        <p className="text-headline text-2xl font-normal pb-6">Categories</p>
+
         <Button onClick={() => setOpenCategoryModal(true)}>Add</Button>
       </div>
       <div className="grid grid-cols-5 gap-4">
@@ -93,7 +96,7 @@ const CategoriesPage = () => {
           Select a category to see details.
         </div>
       )}
-    </div>
+    </PageMargins>
   );
 };
 

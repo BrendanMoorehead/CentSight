@@ -28,7 +28,7 @@ const MainLayout = () => {
   return (
     <div className="h-screen flex flex-col">
       <Header />
-      <div className="2xl:px-80">
+      <div>
         <Outlet />
       </div>
     </div>

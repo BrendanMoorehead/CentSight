@@ -1,10 +1,12 @@
 import React from 'react';
+import PageHeaderText from '../components/PageHeaderText';
+import PageMargins from '../components/PageMargins';
 
 const BudgetPage = () => {
   return (
-    <div className="flex justify-center content-center">
-      Budget functionality is still in development.
-    </div>
+    <PageMargins>
+      <PageHeaderText text="Budget"/>
+    </PageMargins>
   );
 };
 
