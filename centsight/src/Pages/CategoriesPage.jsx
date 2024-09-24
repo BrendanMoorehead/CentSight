@@ -1,6 +1,4 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
-import SubcategoryChip from '../components/categories/SubcategoryChip';
 import { Container } from '@chakra-ui/react';
 import { Flex } from '@chakra-ui/react';
 import CategoryCard from '../components/categories/CategoryCard';
