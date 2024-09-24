@@ -1,6 +1,20 @@
-import { Card, CardBody, CardHeader } from '@nextui-org/react';
+/* eslint-disable react/prop-types */
+import { Card, CardBody } from '@nextui-org/react';
 
-const AccountCard = ({ name, type = '', balance, onClick }) => {
+/**
+ * AccountCard Component
+ *
+ * Slim card showing account name, type, and balance.
+ *
+ * Props:
+ *  - name (string): The name of the account.
+ *  - type (string): The type of the account.
+ *  - balance (string): The account balance.
+ *  - onPress (function): The function executed when the card is clicked.
+ */
+const AccountCard = ({ name = null, type = null, balance = null, onPress }) => {
+  //Return nothing if name, type, or balance do not exist.
+  if (!name || !type || !balance) return null;
   return (
     <Card
       className="hover:bg-neutral-700 hover:cursor-pointer my-4"

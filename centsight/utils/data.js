@@ -96,3 +96,26 @@ export const accountsTransactionTableColumns = [
     uid: 'subcategory',
   },
 ];
+
+export const subcategoryTableHeaders = [
+  {
+    name: 'SUBCATEGORY',
+    uid: 'name',
+  },
+  {
+    name: 'TRANSACTIONS',
+    uid: 'transactionCt',
+  },
+  {
+    name: 'SPENDING',
+    uid: 'spending',
+  },
+  {
+    name: 'INCOME',
+    uid: 'income',
+  },
+  {
+    name: 'EDIT',
+    uid: 'edit',
+  },
+];

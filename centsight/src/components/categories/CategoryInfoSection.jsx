@@ -1,12 +1,11 @@
+/* eslint-disable react/prop-types */
 import { Button } from '@nextui-org/react';
 import SubcategoriesTable from './SubcategoriesTable';
 import TransactionCountCard from './TransactionCountCard';
-import CategoryTabs from './CategoryTabs';
 import {
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
-  DropdownSection,
   DropdownItem,
 } from '@nextui-org/dropdown';
 import CategoryModal from '../modals/CategoryModal';
@@ -14,41 +13,64 @@ import { useState } from 'react';
 import CategoryNameModal from '../modals/CategoryNameModal';
 import { useSelector, useDispatch } from 'react-redux';
 import { deleteCategory } from '../../store/category-actions';
-const CategoryDetails = ({ category }) => {
-  const [openModal, setOpenModal] = useState(false);
-  const [openSubcatModal, setOpenSubcatModal] = useState(false);
-  const transactions = useSelector((state) => state.transaction.transactions);
-  const auth = useSelector((state) => state.auth);
+
+/**
+ * CategoryInfoSection Component
+ *
+ * Section for displaying details of a single selected category.
+ * Displays on the category page.
+ *
+ * Props:
+ *  - category (object): Object containing the selected category's information.
+ */
+const CategoryInfoSection = ({ category }) => {
+  // State to track whether the category name editing modal is open or closed.
+  const [openCategoryNameModal, setOpenCategoryNameModal] = useState(false);
+  // State to track whether the new subcategory modal is open or closed.
+  const [openNewSubcategoryModal, setOpenNewSubcategoryModal] = useState(false);
 
   const dispatch = useDispatch();
-  console.log(transactions);
+
+  // Select the user from Redux.
+  const auth = useSelector((state) => state.auth);
+  // Select all transactions from Redux.
+  // TODO: Transactions should be selected by a filter or passed as props. Currently, all transactions are selected which will potentially impact performace.
+  const transactions = useSelector((state) => state.transaction.transactions);
+
+  // Default text if no category is selected.
+  // TODO: Make into a component for styling an reusability purposes.
+  if (!category) return <p>Select a category to start.</p>;
+
+  // Filter transactions for transactions that match the selected category.
+  // TODO: Make changes based on what is decided on the above TODO.
   const filteredTransactions = transactions.filter(
     (transaction) =>
       transaction.category_id && transaction.category_id === category.id
   );
-  let sum = 0;
-  sum = filteredTransactions.reduce((acc, transaction) => {
+
+  // Calculate the net income for transactions under the selected category.
+  // TODO: Allow for filtering by time frame.
+  let netIncome = 0;
+  netIncome = filteredTransactions.reduce((acc, transaction) => {
     if (transaction.type === 'income') return acc + transaction.amount;
     else if (transaction.type === 'expense') return acc - transaction.amount;
   }, 0);
 
-  if (!category) return <p>Select a category to start.</p>;
+  const handleDelete = () => dispatch(deleteCategory(category));
 
-  const handleDelete = () => {
-    dispatch(deleteCategory(category));
-  };
-
+  // TODO: Add a time frame filter that applies to all subcomponents (week, month, year, alltime).
+  // TODO: Organize component structure.
   return (
     <div className="flex-col py-4 pt-16">
       <CategoryNameModal
-        isOpen={openModal}
-        closeModal={() => setOpenModal(false)}
+        isOpen={openCategoryNameModal}
+        closeModal={() => setOpenCategoryNameModal(false)}
         data={category}
       />
       <CategoryModal
-        isOpen={openSubcatModal}
+        isOpen={openNewSubcategoryModal}
         userId={auth.user.user.id}
-        closeModal={() => setOpenSubcatModal(false)}
+        closeModal={() => setOpenNewSubcategoryModal(false)}
         categoryId={category.id}
         title="Add subcategory"
       />
@@ -64,7 +86,7 @@ const CategoryDetails = ({ category }) => {
                 <DropdownItem
                   className="text-white"
                   key="edit_name"
-                  onClick={() => setOpenModal(true)}
+                  onClick={() => setOpenCategoryNameModal(true)}
                 >
                   Edit name
                 </DropdownItem>
@@ -73,7 +95,7 @@ const CategoryDetails = ({ category }) => {
                 className="text-white"
                 key="add_subcategory"
                 onClick={() => {
-                  setOpenSubcatModal(true);
+                  setOpenNewSubcategoryModal(true);
                   console.log('Clicked');
                 }}
               >
@@ -95,12 +117,14 @@ const CategoryDetails = ({ category }) => {
       </div>
       <div className="grid grid-cols-3 gap-12">
         <div className="flex flex-col flex-1 gap-4">
-          {/* <CategoryTabs /> */}
           <TransactionCountCard
             title="Transactions"
             number={filteredTransactions.length || 0}
           />
-          <TransactionCountCard title="Net Income" number={sum.toFixed(2)} />
+          <TransactionCountCard
+            title="Net Income"
+            number={netIncome.toFixed(2)}
+          />
         </div>
         <div className="flex-1 col-span-2">
           <SubcategoriesTable
@@ -113,4 +137,4 @@ const CategoryDetails = ({ category }) => {
   );
 };
 
-export default CategoryDetails;
+export default CategoryInfoSection;

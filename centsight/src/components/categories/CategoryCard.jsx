@@ -1,8 +1,24 @@
 import { Card, CardBody } from '@nextui-org/react';
-
 const selected = 'bg-neutral-600';
-
-const CategoryCard = ({ name, subcategoryCount, onPress, isSelected }) => {
+/**
+ * CategoryCard Component
+ *
+ * Card to display category details.
+ *
+ * Props:
+ *  - name (string): Name of the category.
+ *  - subcategoryCount (number): The number of subcategories.
+ *  - onPress (function): The function to run when the card is clicked.
+ *  - isSelected (boolean): Boolean representing if the card is actively selected.
+ */
+const CategoryCard = ({
+  name = null,
+  subcategoryCount = null,
+  onPress,
+  isSelected,
+}) => {
+  // Do not display a category if it doesn't have details.
+  if (!name || subcategoryCount === null) return null;
   return (
     <Card
       isPressable

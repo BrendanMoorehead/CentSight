@@ -2,13 +2,12 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import SubcategoryChip from '../components/categories/SubcategoryChip';
 import { Container } from '@chakra-ui/react';
-import CategorySection from '../components/categories/CategorySection';
 import { Flex } from '@chakra-ui/react';
 import CategoryCard from '../components/categories/CategoryCard';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import SubcategoriesTable from '../components/categories/SubcategoriesTable';
-import CategoryDetails from '../components/categories/CategoryDetails';
+import CategoryInfoSection from '../components/categories/CategoryInfoSection';
 import { useState } from 'react';
 import { Button } from '@nextui-org/react';
 import CategoryModal from '../components/modals/CategoryModal';
@@ -74,7 +73,6 @@ const CategoriesPage = () => {
         title="Add Category"
       />
       <div className="flex justify-between">
-
         <Button onClick={() => setOpenCategoryModal(true)}>Add</Button>
       </div>
       <div className="grid grid-cols-5 gap-4">
@@ -90,7 +88,7 @@ const CategoriesPage = () => {
           ))}
       </div>
       {activeCategory ? (
-        <CategoryDetails category={activeCategory} />
+        <CategoryInfoSection category={activeCategory} />
       ) : (
         <div className="py-24 text-headline text-xl font-normal flex justify-center">
           Select a category to see details.

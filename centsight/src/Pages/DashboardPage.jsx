@@ -13,6 +13,7 @@ import AverageSpendingCard from '../components/AverageSpendingCard';
 import ComparisonCard from '../components/comparison card/ComparisonCard';
 import PageHeaderText from '../components/PageHeaderText';
 import PageMargins from '../components/PageMargins';
+import SpendingSection from '../components/dashboard/SpendingSection';
 const monthNames = [
   'January',
   'February',
@@ -52,7 +53,8 @@ const DashboardPage = () => {
     <>
       <FloatButtonGroup />
       <PageMargins>
-        <PageHeaderText text="Dashboard"/>
+        <PageHeaderText text="Dashboard" />
+        <SpendingSection />
         <div className="flex justify-between justify-center ">
           <p className="text-headline text-xl font-normal content-center">
             Spending
