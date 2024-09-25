@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Card } from '@nextui-org/card';
+import { formatAsCurrency } from '../../../utils/currencyUtils';
 /**
  * ValueCard Component
  *
@@ -11,13 +12,6 @@ import { Card } from '@nextui-org/card';
  *  - format (string): How to format the value.
  */
 const ValueCard = ({ value, text, format }) => {
-  //Formats the value to a currency.
-  const formatAsCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
-  };
   //TODO: Make sizing responsive.
   return (
     <Card className="p-6 flex gap-2">

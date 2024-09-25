@@ -1,15 +1,11 @@
+/* eslint-disable react/prop-types */
 import { useFormik } from 'formik';
 import { Tabs, Tab } from '@nextui-org/tabs';
 import { DatePicker } from '@nextui-org/react';
 import { useSelector } from 'react-redux';
 import { Button, Input } from '@nextui-org/react';
-import { Select, SelectSection, SelectItem } from '@nextui-org/react';
-import {
-  startOfWeek,
-  startOfMonth,
-  getLocalTimeZone,
-  today,
-} from '@internationalized/date';
+import { Select, SelectItem } from '@nextui-org/react';
+import { getLocalTimeZone, today } from '@internationalized/date';
 const validate = (values) => {
   const errors = {};
   if (values.amount === null) {

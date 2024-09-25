@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useFormik } from 'formik';
 import { useSelector } from 'react-redux';
 import {
@@ -36,11 +37,8 @@ const CategoryForm = ({ handleSubmit, categoryId = null }) => {
   });
 
   useEffect(() => {
-    if (categoryId) {
-      formik.setFieldValue('category_id', categoryId);
-    }
-  }, [categoryId]);
-  console.log(categoryId);
+    categoryId && formik.setFieldValue('category_id', categoryId);
+  }, [categoryId, formik]);
 
   return (
     <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">

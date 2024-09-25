@@ -18,7 +18,7 @@ const AccountCard = ({ name = null, type = null, balance = null, onPress }) => {
   return (
     <Card
       className="hover:bg-neutral-700 hover:cursor-pointer my-4"
-      onClick={onClick}
+      onClick={onPress}
     >
       <CardBody>
         <p className="text-gray-300 text-lg font-headline">{name}</p>

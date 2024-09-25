@@ -10,7 +10,7 @@ import TransactionsTable from '../components/TransactionsTable';
 import SlimAccountCard from '../components/SlimAccountCard';
 import NetworthCard from '../components/NetworthCard';
 import AverageSpendingCard from '../components/AverageSpendingCard';
-import ComparisonCard from '../components/comparison card/ComparisonCard';
+import ComparisonCard from '../components/reusable/ComparisonCard';
 import PageHeaderText from '../components/PageHeaderText';
 import PageMargins from '../components/PageMargins';
 import SpendingSection from '../components/dashboard/SpendingSection';
@@ -138,7 +138,7 @@ const DashboardPage = () => {
             <TransactionsTable />
           </div>
         </div>
-        <ComparisonCard />
+        <ComparisonCard text="spending" currentValue={1} period="this week" />
       </PageMargins>
     </>
   );

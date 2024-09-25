@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useFormik } from 'formik';
 import { Button, Input } from '@nextui-org/react';
 import AccountTypeTags from './AccountTypeTags';

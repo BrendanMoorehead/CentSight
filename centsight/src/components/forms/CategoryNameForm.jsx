@@ -1,4 +1,4 @@
-import React from 'react';
+/* eslint-disable react/prop-types */
 import { useFormik } from 'formik';
 import { Button, Input } from '@nextui-org/react';
 const validate = (values) => {
