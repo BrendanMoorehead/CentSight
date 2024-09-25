@@ -10,7 +10,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { deleteSubcategory } from '../../store/category-actions';
 import { getSubcategoryFinancialDetails } from '../../../utils/subcategoryUtils';
-import { useRenderSubcategoryCell } from '../../../utils/tableCellUtils';
+import { useRenderSubcategoryCell } from '../../../utils/tableCellUtils.jsx';
 import { subcategoryTableHeaders } from '../../../utils/data';
 
 /**

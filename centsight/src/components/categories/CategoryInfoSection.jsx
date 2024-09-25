@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { Button } from '@nextui-org/react';
 import SubcategoriesTable from './SubcategoriesTable';
-import TransactionCountCard from './TransactionCountCard';
+import ValueCard from '../reusable/ValueCard';
 import {
   Dropdown,
   DropdownTrigger,
@@ -117,13 +117,14 @@ const CategoryInfoSection = ({ category }) => {
       </div>
       <div className="grid grid-cols-3 gap-12">
         <div className="flex flex-col flex-1 gap-4">
-          <TransactionCountCard
-            title="Transactions"
-            number={filteredTransactions.length || 0}
+          <ValueCard
+            text="Transactions"
+            value={filteredTransactions.length || 0}
           />
-          <TransactionCountCard
-            title="Net Income"
-            number={netIncome.toFixed(2)}
+          <ValueCard
+            text="Net Income"
+            value={netIncome.toFixed(2)}
+            format="currency"
           />
         </div>
         <div className="flex-1 col-span-2">

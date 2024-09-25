@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Card, CardBody } from '@nextui-org/react';
 const selected = 'bg-neutral-600';
 /**
