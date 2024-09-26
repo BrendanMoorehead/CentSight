@@ -32,7 +32,12 @@ export const accountSlice = createSlice({
       const { id, ...newData } = action.payload;
       const index = state.accounts.findIndex((account) => account.id === id);
       if (index !== -1) {
-        state.accounts[index] = { id, ...newData };
+        // Create a new accounts array to trigger re-renders
+        state.accounts = [
+          ...state.accounts.slice(0, index), // accounts before the index
+          { id, ...newData }, // updated account
+          ...state.accounts.slice(index + 1), // accounts after the index
+        ];
       }
     },
     deleteAccount(state, action) {},

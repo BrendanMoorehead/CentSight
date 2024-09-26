@@ -19,9 +19,7 @@ export const fetchAccountData = () => {
     try {
       const data = await fetchData();
       dispatch(accountActions.replaceAccounts(data));
-      toast.success('Accounts loaded');
     } catch (error) {
-      toast.error('Failed to load accounts');
     }
   };
 };
@@ -79,7 +77,12 @@ export const updateBalance = (accountId, amount) => {
     try {
       const accountData = await updateData(accountId, amount);
       //TODO: Dispatch update
-      dispatch(accountActions.overwriteAccount(accountData));
+      console.log('Updated Account Data:', accountData);
+      dispatch(accountActions.overwriteAccount({
+        id: accountId,
+        ...accountData[0], // Assuming accountData is an array with the updated account data
+      }));
+      
     } catch (error) {
       console.error('failed to update account balance');
     }

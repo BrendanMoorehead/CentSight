@@ -9,6 +9,7 @@ const MonthSpendingChart = ({ month, year }) => {
   const transactions = useSelector((state) => state.transaction.transactions);
   const [chartData, setChartData] = useState([]);
   useEffect(() => {
+    console.log("Rendering with month:", month, "year:", year); // Debugging
     const data = chartTransactions(month, year, transactions);
     setChartData(data);
   }, [month, year, transactions]);

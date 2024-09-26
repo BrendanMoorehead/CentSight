@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
-import { store } from './store/index.js';
+import { persistor, store } from './store/index.js';
+import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
 import { ChakraProvider } from '@chakra-ui/react';
 import { ConfigProvider } from 'antd';
@@ -25,10 +26,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <ChakraProvider>
         <NextUIProvider>
           <Provider store={store}>
+          <PersistGate loading={null} persistor={persistor}>
             <main className="dark text-foreground bg-background">
               <App />
               <ToastContainer />
             </main>
+            </PersistGate>
           </Provider>
         </NextUIProvider>
       </ChakraProvider>

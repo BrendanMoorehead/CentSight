@@ -55,22 +55,22 @@ const TransactionsTable = () => {
       let matchingSubcategory = '';
 
       if (transaction.type === 'expense' || transaction.type === 'transfer') {
-        matchingSendingAccount = accounts.find(
+        matchingSendingAccount = accounts?.find(
           (account) => account.id === transaction.account_from_id
         );
       }
       if (transaction.type === 'income' || transaction.type === 'transfer') {
-        matchingReceivingAccount = accounts.find(
+        matchingReceivingAccount = accounts?.find(
           (account) => account.id === transaction.account_to_id
         );
       }
 
       if (transaction.category_id) {
-        matchingCategory = categories.find(
+        matchingCategory = categories?.find(
           (cat) => cat.id === transaction.category_id
         );
         if (matchingCategory) {
-          matchingSubcategory = matchingCategory.subcategories.find(
+          matchingSubcategory = matchingCategory.subcategories?.find(
             (cat) => cat.id === transaction.subcategory_id
           );
         }
@@ -79,7 +79,7 @@ const TransactionsTable = () => {
           (cat) => cat.id === transaction.user_category_id
         );
         if (matchingCategory) {
-          matchingSubcategory = matchingCategory.subcategories.find(
+          matchingSubcategory = matchingCategory.subcategories?.find(
             (cat) => cat.id === transaction.user_subcategory_id
           );
         }
