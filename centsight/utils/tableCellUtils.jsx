@@ -7,7 +7,7 @@ import {
 } from '@nextui-org/react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { useCallback } from 'react';
-import BalanceUpdateChip from '../BalanceUpdateChip';
+import BalanceUpdateChip from '../src/components/BalanceUpdateChip';
 
 export const useRenderSubcategoryCell = (handleDeleteSubcategory) =>
   useCallback(

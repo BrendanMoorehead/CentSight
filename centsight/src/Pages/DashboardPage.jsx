@@ -1,52 +1,38 @@
 import FloatButtonGroup from '../components/floatbutton/FloatButtonGroup';
-import { AreaChart } from '@tremor/react';
 import { useSelector } from 'react-redux';
-import { chartTransactions } from '../../utils/chartTransactions';
 import { useEffect, useState } from 'react';
 import { Card, Select, SelectItem, ScrollShadow } from '@nextui-org/react';
 import MonthSpendingChart from '../components/MonthSpendingChart';
-import AccountCard from '../components/accounts/AccountCard';
-import TransactionsTable from '../components/TransactionsTable';
 import SlimAccountCard from '../components/SlimAccountCard';
+import TransactionsTable from '../components/TransactionsTable';
 import NetworthCard from '../components/NetworthCard';
 import AverageSpendingCard from '../components/AverageSpendingCard';
 import ComparisonCard from '../components/comparison card/ComparisonCard';
 import PageHeaderText from '../components/PageHeaderText';
 import PageMargins from '../components/PageMargins';
 import SpendingSection from '../components/dashboard/SpendingSection';
+
 const monthNames = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
 ];
 
-const yearNames = [...Array(5).keys()].map((i) =>
-  (new Date().getFullYear() - i).toString()
-);
+const yearNames = [...Array(5).keys()].map(i => (new Date().getFullYear() - i).toString());
 
 const DashboardPage = () => {
   const today = new Date();
   const [selectedMonth, setSelectedMonth] = useState(today.getMonth());
   const [selectedYear, setSelectedYear] = useState(0);
-  const accounts = useSelector((state) => state.account.accounts);
-  const transactions = useSelector((state) => state.transaction.transactions);
-  const handleYearChange = (value) => {
-    console.log(value);
-    setSelectedYear(Number(value));
+  const accounts = useSelector(state => state.account.accounts);
+  const transactions = useSelector(state => state.transaction.transactions);
+
+  const handleYearChange = value => {
+    setSelectedYear(Number(value.anchorKey));
   };
 
-  const handleMonthChange = (value) => {
-    console.log(value);
-    setSelectedMonth(Number(value));
+  const handleMonthChange = value => {
+    console.log(value.anchorKey);
+    setSelectedMonth(Number(value.anchorKey));
   };
 
   return (
@@ -62,7 +48,7 @@ const DashboardPage = () => {
           <div className="flex gap-2 w-80">
             <Select
               label="Month"
-              onSelectionChange={(value) => handleMonthChange(value.anchorKey)}
+              onSelectionChange={handleMonthChange}
               defaultSelectedKeys={[String(selectedMonth)]}
             >
               {monthNames.map((month, index) => (
@@ -77,14 +63,14 @@ const DashboardPage = () => {
             </Select>
             <Select
               label="Year"
-              onSelectionChange={(value) => handleYearChange(value.anchorKey)}
+              onSelectionChange={handleYearChange}
               defaultSelectedKeys={[String(selectedYear)]}
             >
               {yearNames.map((year, index) => (
                 <SelectItem
                   className="text-text"
                   key={index}
-                  value={String(index)}
+                  value={year} // Use actual year here
                 >
                   {year}
                 </SelectItem>
@@ -115,27 +101,34 @@ const DashboardPage = () => {
         </div>
         <div className="grid grid-cols-4 gap-12 pt-12">
           <div>
-            <p className="text-headline text-xl font-normal content-center pb-4 ">
+            <p className="text-headline text-xl font-normal content-center pb-4">
               Accounts
             </p>
             <ScrollShadow hideScrollBar className="h-[300px]" size={100}>
-              {accounts.map((account) => (
-                <SlimAccountCard
-                  key={account.id}
-                  name={account.name}
-                  type={account.type}
-                  balance={account.balance}
-                  clickable={false}
-                />
-              ))}
+              {accounts && accounts.length > 0 ? (
+                accounts.map(account => (
+                  <SlimAccountCard
+                    key={account.id}
+                    name={account.name}
+                    type={account.type}
+                    balance={account.balance}
+                    clickable={false}
+                  />
+                ))
+              ) : (
+                <p>No accounts available</p>
+              )}
             </ScrollShadow>
           </div>
           <div className="col-span-3">
             <p className="text-headline text-xl font-normal content-center pb-6">
               Recently Added Transactions
             </p>
-
-            <TransactionsTable />
+            {transactions && transactions.length > 0 ? (
+              <TransactionsTable />
+            ) : (
+              <p>No transactions available</p>
+            )}
           </div>
         </div>
         <ComparisonCard />

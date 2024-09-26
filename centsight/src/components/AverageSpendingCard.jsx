@@ -7,7 +7,7 @@ const AverageSpendingCard = ({ transactions, type, title }) => {
 
   const calculateMonthlySpend = (transactions) => {
     // Group transactions by month and sum the spend for each month
-    transactions.forEach((transaction) => {
+    transactions && transactions.forEach((transaction) => {
       const transactionDate = parseISO(transaction.date);
       const monthKey = format(transactionDate, 'yyyy-MM'); // Group by Year-Month
 
