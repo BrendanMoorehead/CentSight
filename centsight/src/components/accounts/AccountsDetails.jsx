@@ -1,9 +1,9 @@
-import { Button, Card, CardBody } from '@nextui-org/react';
+/* eslint-disable react/prop-types */
+import { Card, CardBody } from '@nextui-org/react';
 import { useState, useMemo } from 'react';
 import { Tabs, Tab } from '@nextui-org/tabs';
-import TransactionsTable from './TransactionsTable';
-import AccountTransactionsTable from './AccountTransactionTable';
-import AccountEditDropdown from './AccountEditDropdown';
+import AccountTransactionsTable from '../AccountTransactionTable';
+import EditAccountDropdown from '../EditAccountDropdown';
 let tabs = [
   {
     id: 'past7days',
@@ -30,10 +30,8 @@ const AccountsDetails = ({ account, transactions }) => {
       transaction.account_to_id === account.id
   );
 
-  console.log(transactions);
-
+  //TODO: Pull time period filter capabilites to outside function to be used by a filter component.
   const handleTimePeriodChange = (id) => {
-    console.log(id);
     setSelectedTimePeriod(id);
   };
   const currentDate = new Date();
@@ -117,7 +115,7 @@ const AccountsDetails = ({ account, transactions }) => {
             {account.type.charAt(0).toUpperCase() + account.type.slice(1)}
           </p>
         </div>
-        <AccountEditDropdown />
+        <EditAccountDropdown />
       </div>
       {/* MAIN ACCOUNT DETAILS */}
       <div className="grid grid-cols-5 gap-4">

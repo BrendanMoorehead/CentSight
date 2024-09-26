@@ -1,13 +1,13 @@
-import React from 'react';
 import {
   Dropdown,
   DropdownTrigger,
   Button,
   DropdownMenu,
   DropdownItem,
-  Input,
 } from '@nextui-org/react';
-const AccountEditDropdown = () => {
+
+//TODO: Add functionality to the account editing dropdown.
+const EditAccountDropdown = () => {
   return (
     <Dropdown closeOnSelect={false}>
       <DropdownTrigger>
@@ -23,4 +23,4 @@ const AccountEditDropdown = () => {
   );
 };
 
-export default AccountEditDropdown;
+export default EditAccountDropdown;

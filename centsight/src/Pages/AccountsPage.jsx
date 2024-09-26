@@ -5,7 +5,7 @@ import AccountCard from '../components/accounts/AccountCard';
 import SlimAccountCard from '../components/SlimAccountCard';
 import { Button } from '@nextui-org/react';
 import { useState } from 'react';
-import AccountsDetails from '../components/AccountsDetails';
+import AccountsDetails from '../components/accounts/AccountsDetails';
 import PageMargins from '../components/PageMargins';
 import PageHeaderText from '../components/PageHeaderText';
 const AccountsPage = () => {
