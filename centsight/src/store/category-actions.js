@@ -53,7 +53,6 @@ export const fetchCategoryData = () => {
     try {
       const data = await fetchData();
       dispatch(categoryActions.replaceCategories(data));
-      toast.success('Categories loaded');
     } catch (error) {
       toast.error(error.message);
     }
