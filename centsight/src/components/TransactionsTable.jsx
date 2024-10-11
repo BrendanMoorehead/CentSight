@@ -66,22 +66,26 @@ const TransactionsTable = () => {
       }
 
       if (transaction.category_id) {
-        matchingCategory = categories?.find(
-          (cat) => cat.id === transaction.category_id
-        );
-        if (matchingCategory) {
-          matchingSubcategory = matchingCategory.subcategories?.find(
-            (cat) => cat.id === transaction.subcategory_id
+        if (Array.isArray(categories)) {
+          matchingCategory = categories?.find(
+            (cat) => cat.id === transaction.category_id
           );
+          if (matchingCategory) {
+            matchingSubcategory = matchingCategory.subcategories?.find(
+              (cat) => cat.id === transaction.subcategory_id
+            );
+          }
         }
       } else if (transaction.user_category_id) {
-        matchingCategory = categories.find(
-          (cat) => cat.id === transaction.user_category_id
-        );
-        if (matchingCategory) {
-          matchingSubcategory = matchingCategory.subcategories?.find(
-            (cat) => cat.id === transaction.user_subcategory_id
+        if (Array.isArray(categories)) {
+          matchingCategory = categories.find(
+            (cat) => cat.id === transaction.user_category_id
           );
+          if (matchingCategory) {
+            matchingSubcategory = matchingCategory.subcategories?.find(
+              (cat) => cat.id === transaction.user_subcategory_id
+            );
+          }
         }
       }
 
