@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const accountState = { accounts: [], loading: false, error: null };
+const accountState = { accounts: [], loading: false, error: null, lastFetched: null };
 
 export const accountSlice = createSlice({
   name: 'accounts',
@@ -17,6 +17,7 @@ export const accountSlice = createSlice({
       state.accounts = action.payload;
       state.loading = false;
       state.error = null;
+      state.lastFetched = Date.now();
     },
     clearAccounts(state) {
       state.accounts = null;
@@ -41,6 +42,9 @@ export const accountSlice = createSlice({
       }
     },
     deleteAccount(state, action) {},
+    invalidateCache(state) {
+      state.lastFetched = null;
+    }
   },
 });
 

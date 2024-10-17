@@ -3,10 +3,21 @@ import { accountActions } from './account-slice';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+const cache = {
+  accounts: null,
+  lastFetched: null
+};
+
+const CACHE_EXPIRATION = 5 * 60 * 1000; // 5 minutes
+
 export const fetchAccountData = () => {
   return async (dispatch) => {
     dispatch(accountActions.setLoading());
     const fetchData = async () => {
+
+      if (cache.accounts && (Date.now() - cache.lastFetched ) < CACHE_EXPIRATION){
+        return cache.accounts;
+      }
       const { data, error } = await supabase.auth.getUser();
       if (error) throw new Error(error.message);
       const { data: accounts, error: accountsError } = await supabase
@@ -14,6 +25,11 @@ export const fetchAccountData = () => {
         .select()
         .eq('user_id', data.user.id);
       if (accountsError) throw new Error(accountsError.message);
+      
+      //Set the cache with new data
+      cache.accounts = accounts;
+      cache.lastFetched = Date.now();
+
       return accounts;
     };
     try {
@@ -38,7 +54,6 @@ export const addAccount = (data) => {
         })
         .select('*');
       if (error) throw new Error(error.message);
-      console.log('DATA[0]', data[0]);
       const sanitizedData = {
         ...data[0],
       };
@@ -48,6 +63,9 @@ export const addAccount = (data) => {
     try {
       const accountData = await addData(data);
       dispatch(accountActions.addAccount(accountData));
+      if (cache.accounts) {
+        cache.accounts.push(accountData);
+      }
       toast.success('Account added');
     } catch (error) {
       toast.error('Failed to add account');
@@ -76,12 +94,14 @@ export const updateBalance = (accountId, amount) => {
     };
     try {
       const accountData = await updateData(accountId, amount);
-      //TODO: Dispatch update
-      console.log('Updated Account Data:', accountData);
       dispatch(accountActions.overwriteAccount({
         id: accountId,
         ...accountData[0], // Assuming accountData is an array with the updated account data
       }));
+      if (cache.accounts) {
+        const index = cache.accounts.findIndex(account => account.id === accountId);
+        if (index !== -1) cache.accounts[index] = {...cache.accounts[index], ...accountData[0]};
+      }
       
     } catch (error) {
       console.error('failed to update account balance');
