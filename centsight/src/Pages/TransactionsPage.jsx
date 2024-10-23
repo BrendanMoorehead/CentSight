@@ -13,7 +13,9 @@ import {
   DropdownTrigger,
   Button,
   DropdownMenu,
+  Spinner,
   DropdownItem,
+  Skeleton,
 } from '@nextui-org/react';
 import PageHeaderText from '../components/PageHeaderText';
 import { SearchIcon } from '@chakra-ui/icons';
@@ -21,17 +23,29 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import TransactionModal from '../components/modals/TransactionModal';
 import { useSelector } from 'react-redux';
 import { useState, useMemo, useCallback, useEffect } from 'react';
-import { transactionTableColumns } from '../../utils/data';
+
 import { getTransactionCellContent } from '../../utils/tables';
 import { DateRangePicker } from '@nextui-org/react';
 import TransactionFilterDropdown from '../components/TransactionFilterDropdown';
 import PageMargins from '../components/PageMargins';
-
+import { getProcessedTransactions } from '../../utils/selectors';
+import FullTransactionTable from '../components/transactions/FullTransactionTable';
+import { filter } from '@chakra-ui/react';
 const TransactionsPage = () => {
-  const transactions = useSelector((state) => state.transaction.transactions);
-  const accounts = useSelector((state) => state.account.accounts);
-  const categories = useSelector((state) => state.category.categories);
+  // const { transactions = [], loading: transactionsLoading } = useSelector(
+  //   (state) => state.transaction
+  // );
+  const { accounts = [], loading: accountsLoading } = useSelector(
+    (state) => state.account
+  );
+  const { categories = [], loading: categoriesLoading } = useSelector(
+    (state) => state.category
+  );
+  const transactions = useSelector(getProcessedTransactions);
   const auth = useSelector((state) => state.auth);
+
+  const [isListProcessed, setIsListProcessed] = useState(false);
+  const isLoading = accountsLoading || categoriesLoading || !isListProcessed;
 
   const [filterValue, setFilterValue] = useState('');
   const [openTransactionModal, setOpenTransactionModal] = useState(false);
@@ -73,11 +87,6 @@ const TransactionsPage = () => {
     console.log('Updated filteredReceiving:', filteredReceivingAccounts);
   }, [filteredReceivingAccounts]);
 
-  const [sortDescriptor, setSortDescriptor] = useState({
-    column: 'date',
-    direction: 'descending',
-  });
-
   const hasSearchFilter = Boolean(filterValue);
 
   const handleTypeFilter = (keys) => setFilteredType(keys);
@@ -92,103 +101,106 @@ const TransactionsPage = () => {
       endDate: value.end.toString(),
     });
   };
+  const transactionList = useMemo(() => {
+    const transactionsList = transactions.map((transaction) => {
+      let matchingSendingAccount = '';
+      let matchingReceivingAccount = '';
+      let matchingCategory = '';
+      let matchingSubcategory = '';
 
-  const transactionsList = transactions.map((transaction) => {
-    let matchingSendingAccount = '';
-    let matchingReceivingAccount = '';
-    let matchingCategory = '';
-    let matchingSubcategory = '';
+      if (transaction.type === 'expense' || transaction.type === 'transfer') {
+        matchingSendingAccount = accounts.find(
+          (account) => account.id === transaction.account_from_id
+        );
+      }
+      if (transaction.type === 'income' || transaction.type === 'transfer') {
+        matchingReceivingAccount = accounts.find(
+          (account) => account.id === transaction.account_to_id
+        );
+      }
 
-    if (transaction.type === 'expense' || transaction.type === 'transfer') {
-      matchingSendingAccount = accounts.find(
-        (account) => account.id === transaction.account_from_id
-      );
-    }
-    if (transaction.type === 'income' || transaction.type === 'transfer') {
-      matchingReceivingAccount = accounts.find(
-        (account) => account.id === transaction.account_to_id
-      );
-    }
+      if (transaction.category_id && Array.isArray(categories)) {
+        matchingCategory = categories.find(
+          (cat) => cat.id === transaction.category_id
+        );
+        matchingSubcategory = matchingCategory.subcategories.find(
+          (cat) => cat.id === transaction.subcategory_id
+        );
+      } else if (transaction.user_category_id && Array.isArray(categories)) {
+        matchingCategory = categories.find(
+          (cat) => cat.id === transaction.user_category_id
+        );
+        matchingSubcategory = matchingCategory.subcategories.find(
+          (cat) => cat.id === transaction.user_subcategory_id
+        );
+      }
 
-    if (transaction.category_id) {
-      matchingCategory = categories.find(
-        (cat) => cat.id === transaction.category_id
-      );
-      matchingSubcategory = matchingCategory.subcategories.find(
-        (cat) => cat.id === transaction.subcategory_id
-      );
-    } else if (transaction.user_category_id) {
-      matchingCategory = categories.find(
-        (cat) => cat.id === transaction.user_category_id
-      );
-      matchingSubcategory = matchingCategory.subcategories.find(
-        (cat) => cat.id === transaction.user_subcategory_id
-      );
-    }
+      const date = new Date(transaction.date);
+      const localeDate = date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
 
-    const date = new Date(transaction.date);
-    const localeDate = date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+      return {
+        ...transaction,
+        sendingAccountName: matchingSendingAccount.name,
+        receivingAccountName: matchingReceivingAccount.name,
+        sendingAccountId: matchingSendingAccount.id,
+        receivingAccountId: matchingReceivingAccount.id,
+        category: matchingCategory.name,
+        category_id: matchingCategory.id,
+        subcategory: matchingSubcategory.name,
+      };
     });
+    return transactionsList;
+  }, [transactions, accounts, categories]);
 
-    return {
-      ...transaction,
-      sendingAccountName: matchingSendingAccount.name,
-      receivingAccountName: matchingReceivingAccount.name,
-      sendingAccountId: matchingSendingAccount.id,
-      receivingAccountId: matchingReceivingAccount.id,
-      category: matchingCategory.name,
-      category_id: matchingCategory.id,
-      subcategory: matchingSubcategory.name,
-    };
-  });
+  const filterTransactions = useMemo(() => {
+    transactionList.filter((transaction) => {
+      const typeMatches = Array.isArray(filteredType)
+        ? filteredType?.some((type) => type === transaction.type)
+        : false;
+      const categoryMatches = Array.isArray(filteredCategories)
+        ? filteredCategories?.some(
+            (category) => category === transaction.category_id
+          )
+        : false;
+      const sendingMatches = Array.isArray(filteredSendingAccounts)
+        ? filteredSendingAccounts?.some(
+            (account) =>
+              account === transaction.sendingAccountId ||
+              account === transaction.receivingAccountId
+          )
+        : false;
 
-  const filterTransactions = transactionsList.filter((transaction) => {
-    const typeMatches = Array.isArray(filteredType)
-      ? filteredType?.some((type) => type === transaction.type)
-      : false;
-    const categoryMatches = Array.isArray(filteredCategories)
-      ? filteredCategories?.some(
-          (category) => category === transaction.category_id
-        )
-      : false;
-    const sendingMatches = Array.isArray(filteredSendingAccounts)
-      ? filteredSendingAccounts?.some(
-          (account) =>
-            account === transaction.sendingAccountId ||
-            account === transaction.receivingAccountId
-        )
-      : false;
-
-    const dateMatches =
-      selectedRange.startDate && selectedRange.endDate
-        ? new Date(transaction.date) >= new Date(selectedRange.startDate) &&
-          new Date(transaction.date) <= new Date(selectedRange.endDate)
+      const dateMatches =
+        selectedRange.startDate && selectedRange.endDate
+          ? new Date(transaction.date) >= new Date(selectedRange.startDate) &&
+            new Date(transaction.date) <= new Date(selectedRange.endDate)
+          : true;
+      const searchMatches = filterValue
+        ? transaction.note.toLowerCase().includes(filterValue.toLowerCase())
         : true;
-    const searchMatches = filterValue
-      ? transaction.note.toLowerCase().includes(filterValue.toLowerCase())
-      : true;
 
-    return (
-      typeMatches &&
-      categoryMatches &&
-      sendingMatches &&
-      dateMatches &&
-      searchMatches
-    );
-  });
-
-  const sortedItems = React.useMemo(() => {
-    return [...filterTransactions].sort((a, b) => {
-      const first = a[sortDescriptor.column];
-      const second = b[sortDescriptor.column];
-      const cmp = first < second ? -1 : first > second ? 1 : 0;
-
-      return sortDescriptor.direction === 'descending' ? -cmp : cmp;
+      return (
+        typeMatches &&
+        categoryMatches &&
+        sendingMatches &&
+        dateMatches &&
+        searchMatches
+      );
     });
-  }, [sortDescriptor, filterTransactions]);
+    setIsListProcessed(true);
+    return transactionList;
+  }, [
+    transactionList,
+    filteredType,
+    filteredCategories,
+    filteredSendingAccounts,
+    selectedRange,
+    filterValue,
+  ]);
 
   const onClear = useCallback(() => {
     setFilterValue('');
@@ -201,12 +213,8 @@ const TransactionsPage = () => {
     }
   }, []);
 
-  const renderCell = useCallback((user, columnKey) => {
-    return getTransactionCellContent(user, columnKey);
-  }, []);
-
   const searchFilteredItems = useMemo(() => {
-    let filteredUsers = [...sortedItems];
+    let filteredUsers = [...filterTransactions];
 
     if (hasSearchFilter) {
       filteredUsers = filteredUsers.filter((user) =>
@@ -214,7 +222,7 @@ const TransactionsPage = () => {
       );
     }
     return filteredUsers;
-  }, [sortedItems, filterValue]);
+  }, [filterTransactions, filterValue]);
 
   return (
     <PageMargins>
@@ -223,7 +231,7 @@ const TransactionsPage = () => {
         userId={auth.user.user.id}
         closeModal={() => setOpenTransactionModal(false)}
       />
-      <PageHeaderText text="Transactions"/>
+      <PageHeaderText text="Transactions" />
       {/* SEARCH BY NOTE */}
       <div className="flex justify-between">
         <Input
@@ -271,36 +279,7 @@ const TransactionsPage = () => {
         />
       </div>
 
-      <Table
-        aria-label="Example table with custom cells, pagination and sorting"
-        isHeaderSticky
-        sortDescriptor={sortDescriptor}
-        onSortChange={setSortDescriptor}
-      >
-        <TableHeader columns={transactionTableColumns}>
-          {(column) => (
-            <TableColumn
-              key={column.uid}
-              align={column.uid === 'amount' ? 'end' : 'start'}
-              allowsSorting={column.sortable}
-            >
-              {column.name}
-            </TableColumn>
-          )}
-        </TableHeader>
-        <TableBody
-          emptyContent={'No transactions found'}
-          items={searchFilteredItems}
-        >
-          {(item) => (
-            <TableRow key={item.id}>
-              {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
-              )}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+      <FullTransactionTable items={filterTransactions} isLoading={isLoading} />
     </PageMargins>
   );
 };

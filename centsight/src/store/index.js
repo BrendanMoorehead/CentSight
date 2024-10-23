@@ -27,7 +27,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
       },
-    }),
+    })
 });
 
 export const persistor = persistStore(store);
