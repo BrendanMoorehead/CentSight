@@ -50,9 +50,6 @@ const TransactionsPage = () => {
   const [filteredType, setFilteredType] = useState([]);
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [filteredSendingAccounts, setFilteredSendingAccounts] = useState([]);
-  const [filteredReceivingAccounts, setFilteredReceivingAccounts] = useState(
-    []
-  );
   const [selectedRange, setSelectedRange] = useState({
     startDate: null,
     endDate: null,
@@ -67,11 +64,8 @@ const TransactionsPage = () => {
 
     if (accounts.length) {
       setFilteredSendingAccounts(accounts.map((account) => account.id)); // Default all sending accounts
-      setFilteredReceivingAccounts(accounts.map((account) => account.id)); // Default all receiving accounts
     }
   }, [categories, accounts]);
-
-  const hasSearchFilter = Boolean(filterValue);
 
   const handleTypeFilter = (keys) => setFilteredType(keys);
 
@@ -147,7 +141,7 @@ const TransactionsPage = () => {
       />
       <PageHeaderText text="Transactions" />
       {/* SEARCH BY NOTE */}
-      <div className="flex justify-between">
+      <div className="flex justify-between pt-8">
         <Input
           isClearable
           className="w-full sm:max-w-[44%]"
@@ -166,7 +160,13 @@ const TransactionsPage = () => {
         </Button>
       </div>
       {/* Table Filters */}
-      <div className="flex gap-2 py-4">
+      <div className="flex items-end gap-2 pb-4 pt-2">
+        <DateRangePicker
+          label="Date range"
+          className="max-w-xs"
+          labelPlacement="outside"
+          onChange={handleDateRangeChange}
+        />
         <TransactionFilterDropdown
           title="Account"
           options={accounts}
@@ -186,17 +186,9 @@ const TransactionsPage = () => {
           ]}
           selectionChange={handleTypeFilter}
         />
-        <DateRangePicker
-          label="Date range"
-          className="max-w-xs"
-          onChange={handleDateRangeChange}
-        />
       </div>
 
-      <FullTransactionTable
-        items={filteredTransactions}
-        isLoading={isLoading}
-      />
+      <FullTransactionTable items={filteredTransactions} isLoading={false} />
     </PageMargins>
   );
 };
