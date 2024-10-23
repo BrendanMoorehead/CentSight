@@ -6,8 +6,8 @@ export const transactionSlice = createSlice({
   name: 'transactions',
   initialState: transactionState,
   reducers: {
-    setLoading(state) {
-      state.loading = true;
+    setLoading(state, action) {
+      state.loading = action.payload;
     },
     setError(state, action) {
       state.error = action.payload;

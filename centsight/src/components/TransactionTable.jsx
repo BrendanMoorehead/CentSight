@@ -48,7 +48,7 @@ const TransactionTable = ({
       <TableBody
         emptyContent={'No transactions found'}
         items={transactionRows}
-        isLoading={isLoading}
+        isLoading={false}
         loadingContent={<Spinner label="Loading..." />}
       >
         {(item) => (

@@ -32,20 +32,18 @@ import { getProcessedTransactions } from '../../utils/selectors';
 import FullTransactionTable from '../components/transactions/FullTransactionTable';
 import { filter } from '@chakra-ui/react';
 const TransactionsPage = () => {
-  // const { transactions = [], loading: transactionsLoading } = useSelector(
-  //   (state) => state.transaction
-  // );
+  const { transactions = [], loading: transactionsLoading } = useSelector(
+    (state) => state.transaction
+  );
   const { accounts = [], loading: accountsLoading } = useSelector(
     (state) => state.account
   );
   const { categories = [], loading: categoriesLoading } = useSelector(
     (state) => state.category
   );
-  const transactions = useSelector(getProcessedTransactions);
   const auth = useSelector((state) => state.auth);
 
-  const [isListProcessed, setIsListProcessed] = useState(false);
-  const isLoading = accountsLoading || categoriesLoading || !isListProcessed;
+  const isLoading = transactionsLoading;
 
   const [filterValue, setFilterValue] = useState('');
   const [openTransactionModal, setOpenTransactionModal] = useState(false);
@@ -73,20 +71,6 @@ const TransactionsPage = () => {
     }
   }, [categories, accounts]);
 
-  useEffect(() => {
-    console.log('Updated filteredType:', filteredType);
-  }, [filteredType]);
-
-  useEffect(() => {
-    console.log('Updated filteredCategory:', filteredCategories);
-  }, [filteredCategories]);
-  useEffect(() => {
-    console.log('Updated filteredSending:', filteredSendingAccounts);
-  }, [filteredSendingAccounts]);
-  useEffect(() => {
-    console.log('Updated filteredReceiving:', filteredReceivingAccounts);
-  }, [filteredReceivingAccounts]);
-
   const hasSearchFilter = Boolean(filterValue);
 
   const handleTypeFilter = (keys) => setFilteredType(keys);
@@ -101,100 +85,41 @@ const TransactionsPage = () => {
       endDate: value.end.toString(),
     });
   };
-  const transactionList = useMemo(() => {
-    const transactionsList = transactions.map((transaction) => {
-      let matchingSendingAccount = '';
-      let matchingReceivingAccount = '';
-      let matchingCategory = '';
-      let matchingSubcategory = '';
 
-      if (transaction.type === 'expense' || transaction.type === 'transfer') {
-        matchingSendingAccount = accounts.find(
-          (account) => account.id === transaction.account_from_id
-        );
-      }
-      if (transaction.type === 'income' || transaction.type === 'transfer') {
-        matchingReceivingAccount = accounts.find(
-          (account) => account.id === transaction.account_to_id
-        );
-      }
+  const filteredTransactions = useMemo(() => {
+    return transactions.filter((transaction) => {
+      const typeMatches =
+        filteredType.length === 0 || filteredType.includes(transaction.type);
 
-      if (transaction.category_id && Array.isArray(categories)) {
-        matchingCategory = categories.find(
-          (cat) => cat.id === transaction.category_id
-        );
-        matchingSubcategory = matchingCategory.subcategories.find(
-          (cat) => cat.id === transaction.subcategory_id
-        );
-      } else if (transaction.user_category_id && Array.isArray(categories)) {
-        matchingCategory = categories.find(
-          (cat) => cat.id === transaction.user_category_id
-        );
-        matchingSubcategory = matchingCategory.subcategories.find(
-          (cat) => cat.id === transaction.user_subcategory_id
-        );
-      }
+      const categoryMatches =
+        filteredCategories.length === 0 ||
+        filteredCategories.includes(transaction.category_id);
 
-      const date = new Date(transaction.date);
-      const localeDate = date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      });
-
-      return {
-        ...transaction,
-        sendingAccountName: matchingSendingAccount.name,
-        receivingAccountName: matchingReceivingAccount.name,
-        sendingAccountId: matchingSendingAccount.id,
-        receivingAccountId: matchingReceivingAccount.id,
-        category: matchingCategory.name,
-        category_id: matchingCategory.id,
-        subcategory: matchingSubcategory.name,
-      };
-    });
-    return transactionsList;
-  }, [transactions, accounts, categories]);
-
-  const filterTransactions = useMemo(() => {
-    transactionList.filter((transaction) => {
-      const typeMatches = Array.isArray(filteredType)
-        ? filteredType?.some((type) => type === transaction.type)
-        : false;
-      const categoryMatches = Array.isArray(filteredCategories)
-        ? filteredCategories?.some(
-            (category) => category === transaction.category_id
-          )
-        : false;
-      const sendingMatches = Array.isArray(filteredSendingAccounts)
-        ? filteredSendingAccounts?.some(
-            (account) =>
-              account === transaction.sendingAccountId ||
-              account === transaction.receivingAccountId
-          )
-        : false;
+      const accountMatches =
+        filteredSendingAccounts.length === 0 ||
+        filteredSendingAccounts.includes(transaction.account_from_id) ||
+        filteredSendingAccounts.includes(transaction.account_to_id);
 
       const dateMatches =
-        selectedRange.startDate && selectedRange.endDate
-          ? new Date(transaction.date) >= new Date(selectedRange.startDate) &&
-            new Date(transaction.date) <= new Date(selectedRange.endDate)
-          : true;
-      const searchMatches = filterValue
-        ? transaction.note.toLowerCase().includes(filterValue.toLowerCase())
-        : true;
+        !selectedRange.startDate ||
+        !selectedRange.endDate ||
+        (new Date(transaction.date) >= new Date(selectedRange.startDate) &&
+          new Date(transaction.date) <= new Date(selectedRange.endDate));
+
+      const searchMatches =
+        !filterValue ||
+        transaction.note.toLowerCase().includes(filterValue.toLowerCase());
 
       return (
         typeMatches &&
         categoryMatches &&
-        sendingMatches &&
+        accountMatches &&
         dateMatches &&
         searchMatches
       );
     });
-    setIsListProcessed(true);
-    return transactionList;
   }, [
-    transactionList,
+    transactions,
     filteredType,
     filteredCategories,
     filteredSendingAccounts,
@@ -212,17 +137,6 @@ const TransactionsPage = () => {
       setFilterValue('');
     }
   }, []);
-
-  const searchFilteredItems = useMemo(() => {
-    let filteredUsers = [...filterTransactions];
-
-    if (hasSearchFilter) {
-      filteredUsers = filteredUsers.filter((user) =>
-        user.note.toLowerCase().includes(filterValue.toLowerCase())
-      );
-    }
-    return filteredUsers;
-  }, [filterTransactions, filterValue]);
 
   return (
     <PageMargins>
@@ -279,7 +193,10 @@ const TransactionsPage = () => {
         />
       </div>
 
-      <FullTransactionTable items={filterTransactions} isLoading={isLoading} />
+      <FullTransactionTable
+        items={filteredTransactions}
+        isLoading={isLoading}
+      />
     </PageMargins>
   );
 };
