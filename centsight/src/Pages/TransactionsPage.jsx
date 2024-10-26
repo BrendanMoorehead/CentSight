@@ -1,36 +1,14 @@
-import React from 'react';
-import {
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-  Pagination,
-  getKeyValue,
-  Input,
-  Dropdown,
-  DropdownTrigger,
-  Button,
-  DropdownMenu,
-  Spinner,
-  DropdownItem,
-  Skeleton,
-} from '@nextui-org/react';
+import { Input, Button } from '@nextui-org/react';
 import PageHeaderText from '../components/PageHeaderText';
 import { SearchIcon } from '@chakra-ui/icons';
-import { BsThreeDotsVertical } from 'react-icons/bs';
 import TransactionModal from '../components/modals/TransactionModal';
 import { useSelector } from 'react-redux';
 import { useState, useMemo, useCallback, useEffect } from 'react';
-
-import { getTransactionCellContent } from '../../utils/tables';
 import { DateRangePicker } from '@nextui-org/react';
 import TransactionFilterDropdown from '../components/TransactionFilterDropdown';
 import PageMargins from '../components/PageMargins';
-import { getProcessedTransactions } from '../../utils/selectors';
 import FullTransactionTable from '../components/transactions/FullTransactionTable';
-import { filter } from '@chakra-ui/react';
+
 const TransactionsPage = () => {
   const { transactions = [], loading: transactionsLoading } = useSelector(
     (state) => state.transaction
@@ -50,16 +28,27 @@ const TransactionsPage = () => {
   const [filteredType, setFilteredType] = useState([]);
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [filteredSendingAccounts, setFilteredSendingAccounts] = useState([]);
+  const [tablePage, setTablePage] = useState(1);
   const [selectedRange, setSelectedRange] = useState({
     startDate: null,
     endDate: null,
   });
 
   useEffect(() => {
-    setFilteredType(['income', 'expense', 'transfer']); // Default to include all transaction types
+    setTablePage(1);
+  }, [
+    filteredType,
+    filteredCategories,
+    filteredSendingAccounts,
+    selectedRange,
+    filterValue,
+  ]);
+
+  useEffect(() => {
+    setFilteredType(['income', 'expense', 'transfer']);
 
     if (categories.length) {
-      setFilteredCategories(categories.map((category) => category.id)); // Default all categories
+      setFilteredCategories(categories.map((category) => category.id));
     }
 
     if (accounts.length) {
@@ -67,11 +56,17 @@ const TransactionsPage = () => {
     }
   }, [categories, accounts]);
 
-  const handleTypeFilter = (keys) => setFilteredType(keys);
+  const handleTypeFilter = (keys) => {
+    setFilteredType(keys);
+  };
 
-  const handleCategoryFilter = (keys) => setFilteredCategories(keys);
+  const handleCategoryFilter = (keys) => {
+    setFilteredCategories(keys);
+  };
 
-  const handleSendingAccountSelect = (keys) => setFilteredSendingAccounts(keys);
+  const handleSendingAccountSelect = (keys) => {
+    setFilteredSendingAccounts(keys);
+  };
 
   const handleDateRangeChange = (value) => {
     setSelectedRange({
@@ -187,8 +182,13 @@ const TransactionsPage = () => {
           selectionChange={handleTypeFilter}
         />
       </div>
-
-      <FullTransactionTable items={filteredTransactions} isLoading={false} />
+      {/* TODO: Reset page on state change */}
+      <FullTransactionTable
+        items={filteredTransactions}
+        isLoading={false}
+        tablePage={tablePage}
+        setTablePage={setTablePage}
+      />
     </PageMargins>
   );
 };

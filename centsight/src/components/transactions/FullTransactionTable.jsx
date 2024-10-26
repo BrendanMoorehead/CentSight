@@ -11,14 +11,23 @@ import {
 import { transactionTableColumns } from '../../../utils/data';
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import { getTransactionCellContent } from '../../../utils/tables';
-const FullTransactionTable = ({ items, isLoading }) => {
+const FullTransactionTable = ({
+  items,
+  isLoading,
+  tablePage,
+  setTablePage,
+}) => {
   const [sortDescriptor, setSortDescriptor] = useState({
     column: 'date',
     direction: 'descending',
   });
 
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(tablePage);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  useEffect(() => {
+    setPage(tablePage);
+  }, [tablePage]);
 
   useEffect(() => {
     const calculateRowsPerPage = () => {
@@ -57,9 +66,13 @@ const FullTransactionTable = ({ items, isLoading }) => {
     return sortedItems.slice(start, end);
   }, [sortedItems, page, rowsPerPage]);
 
-  const onPageChange = useCallback((newPage) => {
-    setPage(newPage);
-  }, []);
+  const onPageChange = useCallback(
+    (newPage) => {
+      setPage(newPage);
+      setTablePage(newPage);
+    },
+    [setTablePage]
+  );
 
   return (
     <>
@@ -75,7 +88,7 @@ const FullTransactionTable = ({ items, isLoading }) => {
               color="secondary"
               page={page}
               total={Math.ceil(tableItems.length / rowsPerPage)}
-              onChange={(page) => setPage(page)}
+              onChange={onPageChange}
             />
           </div>
         }
