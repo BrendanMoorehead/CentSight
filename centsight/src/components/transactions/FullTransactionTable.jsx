@@ -85,7 +85,7 @@ const FullTransactionTable = ({
               isCompact
               showControls
               showShadow
-              color="secondary"
+              color="primary"
               page={page}
               total={Math.ceil(tableItems.length / rowsPerPage)}
               onChange={onPageChange}

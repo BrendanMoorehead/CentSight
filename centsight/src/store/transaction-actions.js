@@ -119,6 +119,7 @@ export const addTransaction = (data) => {
       const { data, error } = await supabase
         .from('user_transactions')
         .insert({
+          // TODO: ADD category and account names to transaction data from form
           amount: transactionData.amount,
           category_id: transactionData.category,
           subcategory_id: transactionData.subcategory,

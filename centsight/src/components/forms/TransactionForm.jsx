@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
 import { useFormik } from 'formik';
 import { Tabs, Tab } from '@nextui-org/tabs';
-import { DatePicker } from '@nextui-org/react';
+import { DatePicker, select } from '@nextui-org/react';
 import { useSelector } from 'react-redux';
 import { Button, Input } from '@nextui-org/react';
 import { Select, SelectItem } from '@nextui-org/react';
 import { getLocalTimeZone, today } from '@internationalized/date';
+import { useState } from 'react';
 const validate = (values) => {
   const errors = {};
   if (values.amount === null) {
@@ -40,17 +41,21 @@ const TransactionForm = ({ handleSubmit }) => {
   const accounts = useSelector((state) => state.account.accounts);
   const categories = useSelector((state) => state.category.categories);
   let defaultDate = today(getLocalTimeZone());
-
+  const [selectedCategory, setSelectedCategory] = useState(null);
   console.log('Transaction Categories: ', categories);
 
   const formik = useFormik({
     initialValues: {
       type: 'expense',
       category: '',
+      category_id: '',
       subcategory: '',
+      subcategory_id: '',
       note: '',
       sendingAccount: '',
+      sendingAccount_id: '',
       recievingAccount: '',
+      recievingAccount_id: '',
       amount: null,
       date: defaultDate,
     },
@@ -69,10 +74,6 @@ const TransactionForm = ({ handleSubmit }) => {
       handleSubmit(values);
     },
   });
-
-  const selectedCategory = categories.find(
-    (cat) => cat.id === formik.values.category
-  );
   return (
     <form className="flex flex-col gap-4" onSubmit={formik.handleSubmit}>
       <Input
@@ -113,12 +114,15 @@ const TransactionForm = ({ handleSubmit }) => {
       <div className="flex gap-4">
         <Select
           label="Category"
-          onSelectionChange={(value) => {
-            console.log(value);
-            formik.setFieldValue('category', value.anchorKey);
+          onSelectionChange={(key) => {
+            const category = categories.find((cat) => cat.id === key.anchorKey);
+            formik.setFieldValue('category', category.name);
+            formik.setFieldValue('category_id', category.id);
             formik.setFieldValue('subcategory', '');
+            formik.setFieldValue('subcategory_id', '');
+            setSelectedCategory(category);
           }}
-          value={formik.values.category}
+          value={formik.values.category_id}
         >
           {categories.map((cat) => (
             <SelectItem className="text-text" key={cat.id}>
@@ -128,10 +132,14 @@ const TransactionForm = ({ handleSubmit }) => {
         </Select>
         <Select
           label="Subcategory"
-          onSelectionChange={(value) =>
-            formik.setFieldValue('subcategory', value.anchorKey)
-          }
-          value={formik.values.subcategory}
+          onSelectionChange={(key) => {
+            const subcategory = selectedCategory.subcategories.find(
+              (subcat) => (subcat.id = key.anchorKey)
+            );
+            formik.setFieldValue('subcategory', subcategory.name);
+            formik.setFieldValue('subcategory_id', subcategory.id);
+          }}
+          value={formik.values.subcategory_id}
           disabled={!selectedCategory}
         >
           {selectedCategory &&
