@@ -54,8 +54,8 @@ const TransactionForm = ({ handleSubmit }) => {
       note: '',
       sendingAccount: '',
       sendingAccount_id: '',
-      recievingAccount: '',
-      recievingAccount_id: '',
+      receivingAccount: '',
+      receivingAccount_id: '',
       amount: null,
       date: defaultDate,
     },
@@ -134,7 +134,7 @@ const TransactionForm = ({ handleSubmit }) => {
           label="Subcategory"
           onSelectionChange={(key) => {
             const subcategory = selectedCategory.subcategories.find(
-              (subcat) => (subcat.id = key.anchorKey)
+              (subcat) => (subcat.id === key.anchorKey)
             );
             formik.setFieldValue('subcategory', subcategory.name);
             formik.setFieldValue('subcategory_id', subcategory.id);
@@ -159,9 +159,11 @@ const TransactionForm = ({ handleSubmit }) => {
         formik.values.type === 'transfer') && (
         <Select
           label="Sending account"
-          onSelectionChange={(value) =>
-            formik.setFieldValue('sendingAccount', value.anchorKey)
-          }
+          onSelectionChange={(value) =>{
+            const sendingAccount = accounts.find((acct) => value.anchorKey === acct.id);
+            formik.setFieldValue('sendingAccount', sendingAccount.name);
+            formik.setFieldValue('sendingAccount_id', sendingAccount.id);
+          }}
         >
           {accounts.map((cat) => (
             <SelectItem className="text-text" key={cat.id} value={cat.id}>
@@ -173,10 +175,12 @@ const TransactionForm = ({ handleSubmit }) => {
       {(formik.values.type === 'income' ||
         formik.values.type === 'transfer') && (
         <Select
-          label="Recieving account"
-          onSelectionChange={(value) =>
-            formik.setFieldValue('recievingAccount', value.anchorKey)
-          }
+          label="Receiving account"
+          onSelectionChange={(value) =>{
+            const receivingAccount = accounts.find((acct) => value.anchorKey === acct.id);
+            formik.setFieldValue('receivingAccount', receivingAccount.name);
+            formik.setFieldValue('receivingAccount_id', receivingAccount.id);
+          }}
         >
           {accounts.map((cat) => (
             <SelectItem className="text-text" key={cat.id} value={cat.id}>

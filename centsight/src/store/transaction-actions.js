@@ -111,21 +111,20 @@ export const fetchTransactionsData = () => {
 export const addTransaction = (data) => {
   return async (dispatch) => {
     const addData = async (transactionData) => {
-      if (transactionData.sendingAccount === '')
-        transactionData.sendingAccount = transactionData.recievingAccount;
-      if (transactionData.recievingAccount === '')
-        transactionData.recievingAccount = transactionData.sendingAccount;
+      if (transactionData.sendingAccount_id === '')
+        transactionData.sendingAccount_id = transactionData.receivingAccount_id;
+      if (transactionData.receivingAccount_id === '')
+        transactionData.receivingAccount_id = transactionData.sendingAccount_id;
 
       const { data, error } = await supabase
         .from('user_transactions')
         .insert({
-          // TODO: ADD category and account names to transaction data from form
           amount: transactionData.amount,
-          category_id: transactionData.category,
-          subcategory_id: transactionData.subcategory,
+          category_id: transactionData.category_id,
+          subcategory_id: transactionData.subcategory_id,
           user_id: transactionData.user_id,
-          account_to_id: transactionData.sendingAccount,
-          account_from_id: transactionData.recievingAccount,
+          account_to_id: transactionData.sendingAccount_id,
+          account_from_id: transactionData.receivingAccount_id,
           date: transactionData.date,
           note: transactionData.note,
           type: transactionData.type,
@@ -133,7 +132,8 @@ export const addTransaction = (data) => {
         .select('*');
       if (error) throw new Error(error.message);
       console.log('Transaction add:', data);
-      return data[0];
+      const updatedData = {...data[0], receivingAccount: transactionData.receivingAccount,sendingAccount: transactionData.sendingAccount}
+      return updatedData;
     };
     try {
       const transactionData = await addData(data);
