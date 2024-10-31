@@ -16,11 +16,11 @@ const headerLinks = [
     label: 'Dashboard',
     path: '/dashboard',
   },
-  {
-    key: 'budget',
-    label: 'Budget',
-    path: '/budget',
-  },
+  // {
+  //   key: 'budget',
+  //   label: 'Budget',
+  //   path: '/budget',
+  // },
   {
     key: 'transactions',
     label: 'Transactions',
