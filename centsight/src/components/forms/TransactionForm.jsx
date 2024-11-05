@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { Button, Input } from '@nextui-org/react';
 import { Select, SelectItem } from '@nextui-org/react';
 import { getLocalTimeZone, today } from '@internationalized/date';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 const validate = (values) => {
   const errors = {};
   if (values.amount === null) {
@@ -37,28 +37,61 @@ const validate = (values) => {
   return errors;
 };
 
-const TransactionForm = ({ handleSubmit }) => {
+const TransactionForm = ({
+  handleSubmit,
+  transactionData = null,
+  buttonText,
+}) => {
   const accounts = useSelector((state) => state.account.accounts);
   const categories = useSelector((state) => state.category.categories);
   let defaultDate = today(getLocalTimeZone());
   const [selectedCategory, setSelectedCategory] = useState(null);
   console.log('Transaction Categories: ', categories);
 
+  let initialValues = {
+    type: 'expense',
+    category: '',
+    category_id: '',
+    subcategory: '',
+    subcategory_id: '',
+    note: '',
+    sendingAccount: '',
+    sendingAccount_id: '',
+    receivingAccount: '',
+    receivingAccount_id: '',
+    amount: 0.0,
+    date: defaultDate,
+  };
+
+  if (transactionData) {
+    const formattedDate = new Date(transactionData.date);
+    initialValues = {
+      type: transactionData.type,
+      category: transactionData.category,
+      category_id: transactionData.category_id,
+      subcategory: transactionData.subcategory,
+      subcategory_id: transactionData.subcategory_id,
+      note: transactionData.note,
+      sendingAccount: transactionData.sendingAccount,
+      sendingAccount_id: transactionData.account_from_id,
+      receivingAccount: transactionData.receivingAccount,
+      receivingAccount_id: transactionData.account_to_id,
+      amount: transactionData.amount,
+      date: formattedDate,
+    };
+  }
+
+  useEffect(() => {
+    if (transactionData) {
+      const category = categories.find(
+        (cat) => cat.id === transactionData.category_id
+      );
+      setSelectedCategory(category);
+    }
+  }, [transactionData, categories]);
+
   const formik = useFormik({
-    initialValues: {
-      type: 'expense',
-      category: '',
-      category_id: '',
-      subcategory: '',
-      subcategory_id: '',
-      note: '',
-      sendingAccount: '',
-      sendingAccount_id: '',
-      receivingAccount: '',
-      receivingAccount_id: '',
-      amount: null,
-      date: defaultDate,
-    },
+    initialValues: initialValues,
     validate,
     onSubmit: (values) => {
       console.log(values);
@@ -109,11 +142,12 @@ const TransactionForm = ({ handleSubmit }) => {
       <DatePicker
         label="Transaction date"
         onChange={(value) => formik.setFieldValue('date', value)}
-        value={formik.values.date}
+        // value={formik.values.date}
       />
       <div className="flex gap-4">
         <Select
           label="Category"
+          defaultSelectedKeys={[formik.values.category_id]}
           onSelectionChange={(key) => {
             const category = categories.find((cat) => cat.id === key.anchorKey);
             formik.setFieldValue('category', category.name);
@@ -132,9 +166,10 @@ const TransactionForm = ({ handleSubmit }) => {
         </Select>
         <Select
           label="Subcategory"
+          defaultSelectedKeys={[formik.values.subcategory_id]}
           onSelectionChange={(key) => {
             const subcategory = selectedCategory.subcategories.find(
-              (subcat) => (subcat.id === key.anchorKey)
+              (subcat) => subcat.id === key.anchorKey
             );
             formik.setFieldValue('subcategory', subcategory.name);
             formik.setFieldValue('subcategory_id', subcategory.id);
@@ -158,9 +193,12 @@ const TransactionForm = ({ handleSubmit }) => {
       {(formik.values.type === 'expense' ||
         formik.values.type === 'transfer') && (
         <Select
+          defaultSelectedKeys={[formik.values.sendingAccount_id]}
           label="Sending account"
-          onSelectionChange={(value) =>{
-            const sendingAccount = accounts.find((acct) => value.anchorKey === acct.id);
+          onSelectionChange={(value) => {
+            const sendingAccount = accounts.find(
+              (acct) => value.anchorKey === acct.id
+            );
             formik.setFieldValue('sendingAccount', sendingAccount.name);
             formik.setFieldValue('sendingAccount_id', sendingAccount.id);
           }}
@@ -175,9 +213,12 @@ const TransactionForm = ({ handleSubmit }) => {
       {(formik.values.type === 'income' ||
         formik.values.type === 'transfer') && (
         <Select
+          defaultSelectedKeys={[formik.values.receivingAccount_id]}
           label="Receiving account"
-          onSelectionChange={(value) =>{
-            const receivingAccount = accounts.find((acct) => value.anchorKey === acct.id);
+          onSelectionChange={(value) => {
+            const receivingAccount = accounts.find(
+              (acct) => value.anchorKey === acct.id
+            );
             formik.setFieldValue('receivingAccount', receivingAccount.name);
             formik.setFieldValue('receivingAccount_id', receivingAccount.id);
           }}
@@ -197,7 +238,7 @@ const TransactionForm = ({ handleSubmit }) => {
         name="note"
       />
       <Button color="primary" className="my-2" type="submit">
-        Add
+        {buttonText}
       </Button>
     </form>
   );

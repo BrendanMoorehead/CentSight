@@ -14,7 +14,14 @@ import { addTransaction } from '../../store/transaction-actions';
  *  - closeModal (function): Function to close the modal.
  *  - userId (string): ID of the active user.
  */
-const TransactionModal = ({ isOpen, closeModal, userId }) => {
+const TransactionModal = ({
+  isOpen,
+  closeModal,
+  userId,
+  title = 'New Transaction',
+  buttonText = 'Add',
+  transactionData = null,
+}) => {
   const dispatch = useDispatch();
 
   const handleOk = (data) => {
@@ -23,8 +30,12 @@ const TransactionModal = ({ isOpen, closeModal, userId }) => {
   };
 
   return (
-    <ModalWrapper isOpen={isOpen} onClose={closeModal} title="New Transaction">
-      <TransactionForm handleSubmit={handleOk} />
+    <ModalWrapper isOpen={isOpen} onClose={closeModal} title={title}>
+      <TransactionForm
+        handleSubmit={handleOk}
+        transactionData={transactionData}
+        buttonText={buttonText}
+      />
     </ModalWrapper>
   );
 };

@@ -12,6 +12,7 @@ import { transactionTableColumns } from '../../../utils/data';
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { getTransactionCellContent } from '../../../utils/tables';
+import TransactionModal from '../modals/TransactionModal';
 
 const FullTransactionTable = ({
   items,
@@ -26,7 +27,8 @@ const FullTransactionTable = ({
 
   const [page, setPage] = useState(tablePage);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-
+  const [openTransactionModal, setOpenTransactionModal] = useState(false);
+  const [transactionData, setTransactionData] = useState(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -52,11 +54,20 @@ const FullTransactionTable = ({
 
   const renderCell = useCallback(
     (user, columnKey, dispatch) => {
-      return getTransactionCellContent(user, columnKey, dispatch);
+      return getTransactionCellContent(
+        user,
+        columnKey,
+        dispatch,
+        setOpenTransactionModal,
+        setTransactionData
+      );
     },
     [dispatch]
   );
 
+  const handleSubmit = (data) => {
+    console.log(data);
+  };
   const tableItems = Array.isArray(items) ? items : [];
   const sortedItems = useMemo(() => {
     return [...tableItems].sort((a, b) => {
@@ -130,6 +141,14 @@ const FullTransactionTable = ({
           )}
         </TableBody>
       </Table>
+      <TransactionModal
+        isOpen={openTransactionModal}
+        closeModal={() => setOpenTransactionModal(false)}
+        title="Edit Transaction"
+        buttonText="Update"
+        transactionData={transactionData} // Pass the transaction data to the modal
+        onSubmit={handleSubmit} // Pass the submit handler
+      />
     </>
   );
 };

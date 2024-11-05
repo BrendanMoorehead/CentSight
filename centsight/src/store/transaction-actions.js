@@ -136,6 +136,8 @@ export const addTransaction = (data) => {
         ...data[0],
         receivingAccount: transactionData.receivingAccount,
         sendingAccount: transactionData.sendingAccount,
+        category: transactionData.category,
+        subcategory: transactionData.subcategory,
       };
       return updatedData;
     };

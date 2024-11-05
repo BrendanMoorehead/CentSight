@@ -15,10 +15,23 @@ import { deleteTransaction } from '../src/store/transaction-actions';
  * @param {*} columnKey The column key identifying the column.
  * @returns JSX representation of how the cell should look based on the column.
  */
-export const getTransactionCellContent = (transaction, columnKey, dispatch) => {
+export const getTransactionCellContent = (
+  transaction,
+  columnKey,
+  dispatch,
+  setOpenTransactionModal,
+  setTransactionData
+) => {
   const handleDelete = () => {
     dispatch(deleteTransaction(transaction.id));
   };
+
+  const handleEdit = () => {
+    console.log(transaction);
+    setTransactionData(transaction);
+    setOpenTransactionModal(true);
+  };
+
   const cellValue = transaction[columnKey];
   switch (columnKey) {
     case 'amount': {
@@ -59,7 +72,7 @@ export const getTransactionCellContent = (transaction, columnKey, dispatch) => {
               </Button>
             </DropdownTrigger>
             <DropdownMenu className="text-text">
-              <DropdownItem>Edit</DropdownItem>
+              <DropdownItem onClick={handleEdit}>Edit</DropdownItem>
               <DropdownItem className="text-danger" onClick={handleDelete}>
                 Delete
               </DropdownItem>
