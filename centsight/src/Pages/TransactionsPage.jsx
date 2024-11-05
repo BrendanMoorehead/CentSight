@@ -158,6 +158,7 @@ const TransactionsPage = () => {
           onValueChange={onSearchChange}
         />
         <DateRangePicker
+          aria-label="Date range picker"
           className="max-w-xs"
           labelPlacement="outside"
           onChange={handleDateRangeChange}

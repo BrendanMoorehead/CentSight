@@ -84,6 +84,7 @@ const FullTransactionTable = ({
   return (
     <>
       <Table
+        aria-label="Transaction Table"
         sortDescriptor={sortDescriptor}
         onSortChange={setSortDescriptor}
         bottomContent={
@@ -96,6 +97,7 @@ const FullTransactionTable = ({
               page={page}
               total={Math.ceil(tableItems.length / rowsPerPage)}
               onChange={onPageChange}
+              aria-label="Pagination for transaction table"
             />
           </div>
         }
