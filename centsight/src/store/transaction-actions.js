@@ -1,8 +1,8 @@
 import { transactionActions } from './transaction-slice';
 import supabase from './../../utils/supabase';
-import { addSubcategory } from './category-actions';
-import { accountActions } from './account-slice';
 import { updateBalance } from './account-actions';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const fetchTransactionsData = () => {
   return async (dispatch) => {
@@ -183,8 +183,9 @@ export const deleteTransaction = (transactionId) => {
     try {
       deleteTransaction(transactionId);
       dispatch(transactionActions.deleteTransaction({ id: transactionId }));
+      toast.success(`Transaction deleted`);
     } catch (error) {
-      console.log('Error deleting transaction:', error.message);
+      toast.success(`Failed to delete transaction`);
     }
   };
 };
