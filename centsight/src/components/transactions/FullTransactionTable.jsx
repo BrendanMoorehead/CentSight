@@ -10,7 +10,9 @@ import {
 } from '@nextui-org/react';
 import { transactionTableColumns } from '../../../utils/data';
 import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 import { getTransactionCellContent } from '../../../utils/tables';
+
 const FullTransactionTable = ({
   items,
   isLoading,
@@ -24,6 +26,8 @@ const FullTransactionTable = ({
 
   const [page, setPage] = useState(tablePage);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setPage(tablePage);
@@ -46,9 +50,12 @@ const FullTransactionTable = ({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const renderCell = useCallback((user, columnKey) => {
-    return getTransactionCellContent(user, columnKey);
-  }, []);
+  const renderCell = useCallback(
+    (user, columnKey, dispatch) => {
+      return getTransactionCellContent(user, columnKey, dispatch);
+    },
+    [dispatch]
+  );
 
   const tableItems = Array.isArray(items) ? items : [];
   const sortedItems = useMemo(() => {
@@ -113,7 +120,9 @@ const FullTransactionTable = ({
           {(transaction) => (
             <TableRow key={transaction.id}>
               {(columnKey) => (
-                <TableCell>{renderCell(transaction, columnKey)}</TableCell>
+                <TableCell>
+                  {renderCell(transaction, columnKey, dispatch)}
+                </TableCell>
               )}
             </TableRow>
           )}

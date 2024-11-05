@@ -132,7 +132,11 @@ export const addTransaction = (data) => {
         .select('*');
       if (error) throw new Error(error.message);
       console.log('Transaction add:', data);
-      const updatedData = {...data[0], receivingAccount: transactionData.receivingAccount,sendingAccount: transactionData.sendingAccount}
+      const updatedData = {
+        ...data[0],
+        receivingAccount: transactionData.receivingAccount,
+        sendingAccount: transactionData.sendingAccount,
+      };
       return updatedData;
     };
     try {
@@ -180,7 +184,7 @@ export const deleteTransaction = (transactionId) => {
       deleteTransaction(transactionId);
       dispatch(transactionActions.deleteTransaction({ id: transactionId }));
     } catch (error) {
-      //handle error
+      console.log('Error deleting transaction:', error.message);
     }
   };
 };
