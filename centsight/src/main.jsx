@@ -26,11 +26,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <ChakraProvider>
         <NextUIProvider>
           <Provider store={store}>
-          <PersistGate loading={null} persistor={persistor}>
-            <main className="dark text-foreground bg-background">
-              <App />
-              <ToastContainer />
-            </main>
+            <PersistGate loading={null} persistor={persistor}>
+              <main className="dark text-foreground bg-background">
+                <App />
+                <ToastContainer theme="dark" />
+              </main>
             </PersistGate>
           </Provider>
         </NextUIProvider>

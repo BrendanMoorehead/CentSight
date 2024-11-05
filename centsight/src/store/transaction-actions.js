@@ -183,9 +183,11 @@ export const deleteTransaction = (transactionId) => {
     try {
       deleteTransaction(transactionId);
       dispatch(transactionActions.deleteTransaction({ id: transactionId }));
-      toast.success(`Transaction deleted`);
+      toast.success(`Transaction deleted`, { position: 'bottom-right' });
     } catch (error) {
-      toast.success(`Failed to delete transaction`);
+      toast.success(`Failed to delete transaction`, {
+        position: 'bottom-right',
+      });
     }
   };
 };
