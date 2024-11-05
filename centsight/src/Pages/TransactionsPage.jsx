@@ -134,18 +134,10 @@ const TransactionsPage = () => {
         userId={auth.user.user.id}
         closeModal={() => setOpenTransactionModal(false)}
       />
-      <PageHeaderText text="Transactions" />
+
       {/* SEARCH BY NOTE */}
-      <div className="flex justify-between pt-8">
-        <Input
-          isClearable
-          className="w-full sm:max-w-[44%]"
-          placeholder="Search by note..."
-          startContent={<SearchIcon />}
-          value={filterValue}
-          onClear={() => onClear()}
-          onValueChange={onSearchChange}
-        />
+      <div className="flex justify-between">
+        <PageHeaderText text="Transactions" />
         <Button
           color="primary"
           variant="solid"
@@ -156,8 +148,16 @@ const TransactionsPage = () => {
       </div>
       {/* Table Filters */}
       <div className="flex items-end gap-2 pb-4 pt-2">
+        <Input
+          isClearable
+          className="w-full sm:max-w-[44%]"
+          placeholder="Search by note..."
+          startContent={<SearchIcon />}
+          value={filterValue}
+          onClear={() => onClear()}
+          onValueChange={onSearchChange}
+        />
         <DateRangePicker
-          label="Date range"
           className="max-w-xs"
           labelPlacement="outside"
           onChange={handleDateRangeChange}
