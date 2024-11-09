@@ -5,7 +5,12 @@ import { DatePicker, select } from '@nextui-org/react';
 import { useSelector } from 'react-redux';
 import { Button, Input } from '@nextui-org/react';
 import { Select, SelectItem } from '@nextui-org/react';
-import { getLocalTimeZone, today, parseDate } from '@internationalized/date';
+import {
+  getLocalTimeZone,
+  today,
+  parseDate,
+  CalendarDate,
+} from '@internationalized/date';
 import { useState, useEffect } from 'react';
 const validate = (values) => {
   const errors = {};
@@ -63,7 +68,18 @@ const TransactionForm = ({
     date: defaultDate,
   };
 
+  function convertDateStringToCalendarDateTime(dateString) {
+    const [year, month, day] = dateString.split(', ').map(Number);
+    return new CalendarDate(year, month, day);
+  }
+
   if (transactionData) {
+    const formattedDate = convertDateStringToCalendarDateTime(
+      transactionData.date
+    );
+    console.log('Formatted Date: ', formattedDate);
+    // console.log('Parse Date: ', parseDate(transactionData.date));
+    // console.log('Default Date: ', defaultDate);
     initialValues = {
       type: transactionData.type,
       category: transactionData.category,
@@ -76,7 +92,7 @@ const TransactionForm = ({
       receivingAccount: transactionData.receivingAccount,
       receivingAccount_id: transactionData.account_to_id,
       amount: transactionData.amount,
-      date: parseDate(transactionData.date),
+      date: formattedDate,
     };
   }
 

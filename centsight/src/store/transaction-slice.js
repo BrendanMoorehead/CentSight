@@ -33,10 +33,15 @@ export const transactionSlice = createSlice({
       );
     },
     updateTransaction(state, action) {
-      const updatedTransaction = state.transactions.find(
-        (trans) => trans.id === action.payload.id
+      const index = state.transactions.findIndex(
+        (transaction) => transaction.id === action.payload.id
       );
-      //TODO: Replace old transaction
+      if (index !== -1) {
+        state.transactions[index] = {
+          ...state.transactions[index],
+          ...action.payload,
+        };
+      }
     },
   },
 });
