@@ -32,6 +32,12 @@ export const transactionSlice = createSlice({
         (trans) => trans.id !== action.payload.id
       );
     },
+    updateTransaction(state, action) {
+      const updatedTransaction = state.transactions.find(
+        (trans) => trans.id === action.payload.id
+      );
+      //TODO: Replace old transaction
+    },
   },
 });
 

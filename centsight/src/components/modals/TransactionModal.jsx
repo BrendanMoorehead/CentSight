@@ -2,7 +2,10 @@
 import { useDispatch } from 'react-redux';
 import ModalWrapper from '../ModalWrapper';
 import TransactionForm from '../forms/TransactionForm';
-import { addTransaction } from '../../store/transaction-actions';
+import {
+  addTransaction,
+  updateTransaction,
+} from '../../store/transaction-actions';
 
 /**
  * TransactionModal Component
@@ -21,11 +24,18 @@ const TransactionModal = ({
   title = 'New Transaction',
   buttonText = 'Add',
   transactionData = null,
+  handleSubmit,
 }) => {
   const dispatch = useDispatch();
 
   const handleOk = (data) => {
-    dispatch(addTransaction({ ...data, user_id: userId }));
+    if (transactionData) {
+      dispatch(
+        updateTransaction({ ...data, user_id: userId, id: transactionData.id })
+      );
+    } else {
+      dispatch(addTransaction({ ...data, user_id: userId }));
+    }
     closeModal();
   };
 

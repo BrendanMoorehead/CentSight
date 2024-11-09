@@ -187,7 +187,40 @@ export const deleteTransaction = (transactionId) => {
       dispatch(transactionActions.deleteTransaction({ id: transactionId }));
       toast.success(`Transaction deleted`, { position: 'bottom-right' });
     } catch (error) {
-      toast.success(`Failed to delete transaction`, {
+      toast.failure(`Failed to delete transaction`, {
+        position: 'bottom-right',
+      });
+    }
+  };
+};
+
+export const updateTransaction = (data) => {
+  return async (dispatch) => {
+    const updateData = async (transactionData, id) => {
+      const { error } = await supabase
+        .from('user_transactions')
+        .update({
+          amount: transactionData.amount,
+          category_id: transactionData.category_id,
+          subcategory_id: transactionData.subcategory_id,
+          user_id: transactionData.user_id,
+          account_to_id: transactionData.sendingAccount_id,
+          account_from_id: transactionData.receivingAccount_id,
+          date: transactionData.date,
+          note: transactionData.note,
+          type: transactionData.type,
+        })
+        .eq('id', id);
+      if (error) throw new Error(error.message);
+      return transactionData;
+    };
+    try {
+      const transactionData = await updateData(data, data.id);
+      dispatch(transactionActions.updateTransaction(transactionData));
+      toast.success(`Transaction updated`, { position: 'bottom-right' });
+    } catch (error) {
+      console.log(error.message);
+      toast.failure(`Failed to update transaction`, {
         position: 'bottom-right',
       });
     }
