@@ -5,11 +5,7 @@ import { DatePicker, select } from '@nextui-org/react';
 import { useSelector } from 'react-redux';
 import { Button, Input } from '@nextui-org/react';
 import { Select, SelectItem } from '@nextui-org/react';
-import {
-  getLocalTimeZone,
-  today,
-  CalendarDateTime,
-} from '@internationalized/date';
+import { getLocalTimeZone, today, parseDate } from '@internationalized/date';
 import { useState, useEffect } from 'react';
 const validate = (values) => {
   const errors = {};
@@ -41,24 +37,6 @@ const validate = (values) => {
   return errors;
 };
 
-function convertDateStringToStructuredFormat(dateString) {
-  // Split the date string into components
-  const [year, month, day] = dateString.split('-').map(Number); // Convert to numbers
-
-  // Create the structured format
-  const structuredDate = {
-    calendar: {
-      identifier: 'gregory', // Assuming Gregorian calendar
-    },
-    era: 'AD', // Assuming AD era
-    year: year,
-    month: month,
-    day: day,
-  };
-
-  return structuredDate;
-}
-
 const TransactionForm = ({
   handleSubmit,
   transactionData = null,
@@ -69,7 +47,6 @@ const TransactionForm = ({
   let defaultDate = today(getLocalTimeZone());
   const [selectedCategory, setSelectedCategory] = useState(null);
   console.log('Date Format: ', defaultDate);
-  console.log('Date Format: ', transactionData.date);
 
   let initialValues = {
     type: 'expense',
@@ -87,9 +64,6 @@ const TransactionForm = ({
   };
 
   if (transactionData) {
-    const formattedDate = convertDateStringToStructuredFormat(
-      transactionData.date
-    );
     initialValues = {
       type: transactionData.type,
       category: transactionData.category,
@@ -102,7 +76,7 @@ const TransactionForm = ({
       receivingAccount: transactionData.receivingAccount,
       receivingAccount_id: transactionData.account_to_id,
       amount: transactionData.amount,
-      date: formattedDate,
+      date: parseDate(transactionData.date),
     };
   }
 
