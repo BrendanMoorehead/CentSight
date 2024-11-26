@@ -89,8 +89,14 @@ export const fetchTransactionsData = () => {
           null,
         subcategory_id:
           transaction.user_subcategory_id || transaction.subcategory_id || null,
-        sendingAccount: accounts[transaction.account_from_id]?.name || null,
-        receivingAccount: accounts[transaction.account_to_id]?.name || null,
+        sendingAccount:
+          transaction.type == 'expense' || transaction.type == 'transfer'
+            ? accounts[transaction.account_from_id]?.name
+            : null,
+        receivingAccount:
+          transaction.type == 'income' || transaction.type == 'transfer'
+            ? accounts[transaction.account_to_id]?.name
+            : null,
       }));
     };
 
@@ -197,6 +203,10 @@ export const deleteTransaction = (transactionId) => {
 export const updateTransaction = (data) => {
   return async (dispatch) => {
     const updateData = async (transactionData, id) => {
+      if (transactionData.sendingAccount_id === '')
+        transactionData.sendingAccount_id = transactionData.receivingAccount_id;
+      if (transactionData.receivingAccount_id === '')
+        transactionData.receivingAccount_id = transactionData.sendingAccount_id;
       const { error } = await supabase
         .from('user_transactions')
         .update({

@@ -13,24 +13,36 @@ import PageMargins from '../components/PageMargins';
 import SpendingSection from '../components/dashboard/SpendingSection';
 
 const monthNames = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 
-const yearNames = [...Array(5).keys()].map(i => (new Date().getFullYear() - i).toString());
+const yearNames = [...Array(5).keys()].map((i) =>
+  (new Date().getFullYear() - i).toString()
+);
 
 const DashboardPage = () => {
   const today = new Date();
   const [selectedMonth, setSelectedMonth] = useState(today.getMonth());
   const [selectedYear, setSelectedYear] = useState(0);
-  const accounts = useSelector(state => state.account.accounts);
-  const transactions = useSelector(state => state.transaction.transactions);
+  const accounts = useSelector((state) => state.account.accounts);
+  const transactions = useSelector((state) => state.transaction.transactions);
 
-  const handleYearChange = value => {
+  const handleYearChange = (value) => {
     setSelectedYear(Number(value.anchorKey));
   };
 
-  const handleMonthChange = value => {
+  const handleMonthChange = (value) => {
     console.log(value.anchorKey);
     setSelectedMonth(Number(value.anchorKey));
   };
@@ -41,7 +53,7 @@ const DashboardPage = () => {
       <PageMargins>
         <PageHeaderText text="Dashboard" />
         <SpendingSection />
-        <div className="flex justify-between justify-center ">
+        <div className="flex justify-between justify-center pb-4">
           <p className="text-headline text-xl font-normal content-center">
             Spending
           </p>
@@ -106,7 +118,7 @@ const DashboardPage = () => {
             </p>
             <ScrollShadow hideScrollBar className="h-[300px]" size={100}>
               {accounts && accounts.length > 0 ? (
-                accounts.map(account => (
+                accounts.map((account) => (
                   <SlimAccountCard
                     key={account.id}
                     name={account.name}
@@ -131,7 +143,7 @@ const DashboardPage = () => {
             )}
           </div>
         </div>
-        <ComparisonCard text="spending" currentValue={1} period="this week" />
+        {/* <ComparisonCard text="spending" currentValue={1} period="this week" /> */}
       </PageMargins>
     </>
   );

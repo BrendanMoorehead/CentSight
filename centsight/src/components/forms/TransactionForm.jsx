@@ -51,7 +51,6 @@ const TransactionForm = ({
   const categories = useSelector((state) => state.category.categories);
   let defaultDate = today(getLocalTimeZone());
   const [selectedCategory, setSelectedCategory] = useState(null);
-  console.log('Date Format: ', defaultDate);
 
   let initialValues = {
     type: 'expense',
@@ -69,7 +68,7 @@ const TransactionForm = ({
   };
 
   function convertDateStringToCalendarDateTime(dateString) {
-    const [year, month, day] = dateString.split(', ').map(Number);
+    const [year, month, day] = dateString.split('-').map(Number);
     return new CalendarDate(year, month, day);
   }
 
@@ -77,9 +76,6 @@ const TransactionForm = ({
     const formattedDate = convertDateStringToCalendarDateTime(
       transactionData.date
     );
-    console.log('Formatted Date: ', formattedDate);
-    // console.log('Parse Date: ', parseDate(transactionData.date));
-    // console.log('Default Date: ', defaultDate);
     initialValues = {
       type: transactionData.type,
       category: transactionData.category,
@@ -105,6 +101,13 @@ const TransactionForm = ({
     }
   }, [transactionData, categories]);
 
+  const handleTypeChange = (value) => {
+    formik.setFieldValue('type', value);
+    formik.setFieldValue('sendingAccount', '');
+    formik.setFieldValue('sendingAccount_id', '');
+    formik.setFieldValue('receivingAccount', '');
+    formik.setFieldValue('receivingAccount_id', '');
+  };
   const formik = useFormik({
     initialValues: initialValues,
     validate,
@@ -115,9 +118,9 @@ const TransactionForm = ({
         values.date.month - 1,
         values.date.day
       );
-      const formattedDate = `${date.getFullYear()}, ${
+      const formattedDate = `${date.getFullYear()}-${
         date.getMonth() + 1
-      }, ${date.getDate()}`;
+      }-${date.getDate()}`;
       values.date = formattedDate;
       handleSubmit(values);
     },
@@ -148,7 +151,7 @@ const TransactionForm = ({
         aria-label="Options"
         className="flex"
         selectedKey={formik.values.type}
-        onSelectionChange={(value) => formik.setFieldValue('type', value)}
+        onSelectionChange={handleTypeChange}
       >
         <Tab key="expense" title="Expense"></Tab>
         <Tab key="income" title="Income"></Tab>

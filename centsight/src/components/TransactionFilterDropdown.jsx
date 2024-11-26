@@ -10,8 +10,9 @@ import { ChevronDownIcon } from '@chakra-ui/icons';
 import { useState } from 'react';
 
 const TransactionFilterDropdown = ({ title, options, selectionChange }) => {
+  const verifiedOptions = Array.isArray(options) ? options : [];
   const [selectedKeys, setSelectedKeys] = useState(
-    new Set(options.map((opt) => opt.id))
+    new Set(verifiedOptions.map((opt) => opt.id))
   );
 
   const handleSelectionChange = (keys) => {
@@ -21,7 +22,7 @@ const TransactionFilterDropdown = ({ title, options, selectionChange }) => {
   };
 
   const handleSelectAll = () => {
-    const allKeys = new Set(options.map((option) => option.id));
+    const allKeys = new Set(verifiedOptions.map((option) => option.id));
     setSelectedKeys(allKeys);
     selectionChange(Array.from(allKeys));
   };
@@ -50,7 +51,7 @@ const TransactionFilterDropdown = ({ title, options, selectionChange }) => {
         selectedKeys={selectedKeys}
       >
         <DropdownSection aria-label="Help & Feedback" showDivider>
-          {options.map((option) => (
+          {verifiedOptions.map((option) => (
             <DropdownItem key={option.id} className="text-text">
               {option.name}
             </DropdownItem>

@@ -10,7 +10,7 @@ const SpendingSection = () => {
   //TODO: Pull section functionality from DashboardPage.
   return (
     <div>
-      <div>title and filters</div>
+      {/* <div>title and filters</div> */}
       <div>
         <div></div>
         <div></div>

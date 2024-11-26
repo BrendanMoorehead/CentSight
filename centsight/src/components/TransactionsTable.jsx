@@ -16,7 +16,6 @@ import {
 } from '@nextui-org/react';
 import { getTransactionCellContent } from '../../utils/tables';
 import { useCallback } from 'react';
-import { BsThreeDotsVertical } from 'react-icons/bs';
 import { parseISO, format } from 'date-fns';
 import { deleteTransaction } from '../store/transaction-actions';
 const TransactionsTable = () => {
