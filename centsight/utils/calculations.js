@@ -60,13 +60,14 @@ export const calculateTransfer = (accountFrom, accountTo, amount) => {
  * const result = calculateNewBalance('transfer', 100, 50);
  */
 export const calculateNewBalance = (type, currentBalance, amount) => {
-  if (type !== 'expense' || type !== 'income') {
+  if (type !== 'expense' && type !== 'income') {
     if (type === 'transfer')
       throw new Error(
         'Invalid type: transfer. calculateTransfer() should be used instead.'
       );
-    else
+    else {
       throw new Error('Invalid type: type must be either expense or income.');
+    }
   }
   if (typeof amount !== 'number' || isNaN(amount) || !isFinite(amount))
     throw new Error('Invalid amount type: Amount must be a number.');
