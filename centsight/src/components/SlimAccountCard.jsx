@@ -6,6 +6,7 @@ const SlimAccountCard = ({
   balance,
   onPress,
   clickable = true,
+  selected = false,
 }) => {
   const formattedBalance =
     balance < 0
@@ -21,7 +22,7 @@ const SlimAccountCard = ({
   return (
     <Card
       isPressable={clickable}
-      className="hover:bg-neutral-700 hover:cursor-pointer my-2 w-full"
+      className={`${!selected && 'hover:bg-neutral-700'} hover:cursor-pointer my-2 w-full ${selected && 'bg-primary'}`}
       onPress={onPress}
     >
       <CardBody>

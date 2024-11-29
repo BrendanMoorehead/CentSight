@@ -29,13 +29,16 @@ const AccountsPage = () => {
 
   return (
     <PageMargins>
-      <PageHeaderText text="Accounts" />
+      
       <div className="col-span-1">
         <div className="flex justify-between">
-          <Button color="primary" variant="ghost">
+        <PageHeaderText text="Accounts" />
+          <Button color="primary">
             Add
           </Button>
         </div>
+        <div className='grid grid-cols-4 gap-16'>
+          <div>
         <div className="pb-4">
           <CheckboxGroup
             label="Type"
@@ -48,7 +51,7 @@ const AccountsPage = () => {
             <Checkbox value="cash">Cash</Checkbox>
           </CheckboxGroup>
         </div>
-        <ScrollShadow hideScrollBar className="h-5/6">
+        <ScrollShadow hideScrollBar className="h-2/3">
           {filteredAccounts.map((account) => (
             <SlimAccountCard
               onPress={() => handleAccountClick(account)}
@@ -56,11 +59,13 @@ const AccountsPage = () => {
               name={account.name}
               type={account.type}
               balance={account.balance}
+              selected={activeAccountId === account.id}
             />
           ))}
         </ScrollShadow>
-      </div>
-      <div className="col-span-3">
+        </div>
+      
+      <div className="col-span-3 pt-16">
         {activeAccount ? (
           <AccountsDetails
             account={activeAccount}
@@ -71,6 +76,8 @@ const AccountsPage = () => {
             Select an account to see details.
           </div>
         )}
+      </div>
+      </div>
       </div>
     </PageMargins>
   );
