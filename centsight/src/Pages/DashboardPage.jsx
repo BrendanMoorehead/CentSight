@@ -11,7 +11,7 @@ import ComparisonCard from '../components/reusable/ComparisonCard';
 import PageHeaderText from '../components/PageHeaderText';
 import PageMargins from '../components/PageMargins';
 import SpendingSection from '../components/dashboard/SpendingSection';
-
+import { useNavigate } from 'react-router-dom';
 const monthNames = [
   'January',
   'February',
@@ -32,6 +32,7 @@ const yearNames = [...Array(5).keys()].map((i) =>
 );
 
 const DashboardPage = () => {
+  const navigate = useNavigate();
   const today = new Date();
   const [selectedMonth, setSelectedMonth] = useState(today.getMonth());
   const [selectedYear, setSelectedYear] = useState(0);
@@ -45,6 +46,12 @@ const DashboardPage = () => {
   const handleMonthChange = (value) => {
     console.log(value.anchorKey);
     setSelectedMonth(Number(value.anchorKey));
+  };
+  const handleAccountsClick = (accountId) => {
+    navigate('/accounts', {
+      state: 
+        {accountId},
+    });
   };
 
   return (
@@ -124,7 +131,8 @@ const DashboardPage = () => {
                     name={account.name}
                     type={account.type}
                     balance={account.balance}
-                    clickable={false}
+                    clickable={true}
+                    onPress={() => handleAccountsClick(account.id)}
                   />
                 ))
               ) : (

@@ -9,6 +9,8 @@ import AccountsDetails from '../components/accounts/AccountsDetails';
 import PageMargins from '../components/PageMargins';
 import PageHeaderText from '../components/PageHeaderText';
 import AccountModal from '../components/modals/AccountModal';
+import { useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 const AccountsPage = () => {
   const accounts = useSelector((state) => state.account.accounts);
   const transactions = useSelector((state) => state.transaction.transactions);
@@ -21,6 +23,15 @@ const AccountsPage = () => {
   const [activeAccountId, setActiveAccountId] = useState(null);
   const activeAccount = accounts?.find((acc) => acc.id === activeAccountId);
   const auth = useSelector((state) => state.auth);
+  const location = useLocation();
+  const accountId = location.state?.accountId;
+
+  useEffect(() => {
+    if (accountId) {
+      setActiveAccountId(accountId);
+    }
+  }, [accountId]);
+
   const handleAccountClick = (account) => {
     console.log('click');
     setActiveAccountId(account.id);
