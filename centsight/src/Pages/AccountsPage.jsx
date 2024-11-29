@@ -8,9 +8,11 @@ import { useState } from 'react';
 import AccountsDetails from '../components/accounts/AccountsDetails';
 import PageMargins from '../components/PageMargins';
 import PageHeaderText from '../components/PageHeaderText';
+import AccountModal from '../components/modals/AccountModal';
 const AccountsPage = () => {
   const accounts = useSelector((state) => state.account.accounts);
   const transactions = useSelector((state) => state.transaction.transactions);
+  const [openAccountModal, setOpenAccountModal] = useState(false);
   const [typeSelected, setTypeSelected] = useState([
     'chequing',
     'cash',
@@ -18,6 +20,7 @@ const AccountsPage = () => {
   ]);
   const [activeAccountId, setActiveAccountId] = useState(null);
   const activeAccount = accounts?.find((acc) => acc.id === activeAccountId);
+  const auth = useSelector((state) => state.auth);
   const handleAccountClick = (account) => {
     console.log('click');
     setActiveAccountId(account.id);
@@ -29,11 +32,15 @@ const AccountsPage = () => {
 
   return (
     <PageMargins>
-      
+      <AccountModal 
+        isOpen={openAccountModal}
+        closeModal={() => setOpenAccountModal(false)}
+        userId={auth.user.user.id}
+      />
       <div className="col-span-1">
         <div className="flex justify-between">
         <PageHeaderText text="Accounts" />
-          <Button color="primary">
+          <Button color="primary" onClick={() => setOpenAccountModal(true)}>
             Add
           </Button>
         </div>
