@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, Navigate } from 'react-router-dom';
 import Header from './Header';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -36,8 +36,19 @@ const MainLayout = () => {
         dispatch(fetchAccountData());
       }
     }
-  }, [navigate, auth.user, auth.isLoading, categories, transactions, accounts, dispatch]);
+  }, [
+    navigate,
+    auth.user,
+    auth.isLoading,
+    categories,
+    transactions,
+    accounts,
+    dispatch,
+  ]);
 
+  if (!auth.user) {
+    return <Navigate to="/auth" replace />;
+  }
   return (
     <div className="h-screen flex flex-col">
       <Header />
