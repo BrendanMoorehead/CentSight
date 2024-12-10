@@ -8,9 +8,13 @@ import { useState } from 'react';
 import AccountsDetails from '../components/accounts/AccountsDetails';
 import PageMargins from '../components/PageMargins';
 import PageHeaderText from '../components/PageHeaderText';
+import AccountModal from '../components/modals/AccountModal';
+import { useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 const AccountsPage = () => {
   const accounts = useSelector((state) => state.account.accounts);
   const transactions = useSelector((state) => state.transaction.transactions);
+  const [openAccountModal, setOpenAccountModal] = useState(false);
   const [typeSelected, setTypeSelected] = useState([
     'chequing',
     'cash',
@@ -18,6 +22,16 @@ const AccountsPage = () => {
   ]);
   const [activeAccountId, setActiveAccountId] = useState(null);
   const activeAccount = accounts?.find((acc) => acc.id === activeAccountId);
+  const auth = useSelector((state) => state.auth);
+  const location = useLocation();
+  const accountId = location.state?.accountId;
+
+  useEffect(() => {
+    if (accountId) {
+      setActiveAccountId(accountId);
+    }
+  }, [accountId]);
+
   const handleAccountClick = (account) => {
     console.log('click');
     setActiveAccountId(account.id);
@@ -29,13 +43,20 @@ const AccountsPage = () => {
 
   return (
     <PageMargins>
-      <PageHeaderText text="Accounts" />
+      <AccountModal 
+        isOpen={openAccountModal}
+        closeModal={() => setOpenAccountModal(false)}
+        userId={auth.user.user.id}
+      />
       <div className="col-span-1">
         <div className="flex justify-between">
-          <Button color="primary" variant="ghost">
+        <PageHeaderText text="Accounts" />
+          <Button color="primary" onClick={() => setOpenAccountModal(true)}>
             Add
           </Button>
         </div>
+        <div className='grid grid-cols-4 gap-16'>
+          <div>
         <div className="pb-4">
           <CheckboxGroup
             label="Type"
@@ -48,7 +69,7 @@ const AccountsPage = () => {
             <Checkbox value="cash">Cash</Checkbox>
           </CheckboxGroup>
         </div>
-        <ScrollShadow hideScrollBar className="h-5/6">
+        <ScrollShadow hideScrollBar className="h-2/3">
           {filteredAccounts.map((account) => (
             <SlimAccountCard
               onPress={() => handleAccountClick(account)}
@@ -56,11 +77,13 @@ const AccountsPage = () => {
               name={account.name}
               type={account.type}
               balance={account.balance}
+              selected={activeAccountId === account.id}
             />
           ))}
         </ScrollShadow>
-      </div>
-      <div className="col-span-3">
+        </div>
+      
+      <div className="col-span-3 pt-16">
         {activeAccount ? (
           <AccountsDetails
             account={activeAccount}
@@ -71,6 +94,8 @@ const AccountsPage = () => {
             Select an account to see details.
           </div>
         )}
+      </div>
+      </div>
       </div>
     </PageMargins>
   );

@@ -104,7 +104,7 @@ export const updateBalance = (accountId, amount) => {
       }
       
     } catch (error) {
-      console.error('failed to update account balance');
+      console.error('failed to update account balance:', error.message);
     }
   };
 };
