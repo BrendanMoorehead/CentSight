@@ -7,7 +7,7 @@ import {
   DropdownItem,
 } from '@nextui-org/react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import { deleteTransaction } from '../src/store/transaction-actions';
+import { batchDeleteTransactions } from '../src/store/transaction-actions';
 /**
  * Gets the jsx for each cell in a transaction table.
  *
@@ -23,7 +23,7 @@ export const getTransactionCellContent = (
   setTransactionData
 ) => {
   const handleDelete = () => {
-    dispatch(deleteTransaction(transaction.id));
+    dispatch(batchDeleteTransactions([transaction]));
   };
 
   const handleEdit = () => {

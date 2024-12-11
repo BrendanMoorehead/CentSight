@@ -115,7 +115,7 @@ const AccountsDetails = ({ account, transactions }) => {
             {account.type.charAt(0).toUpperCase() + account.type.slice(1)}
           </p>
         </div>
-        <EditAccountDropdown />
+        <EditAccountDropdown account={account} />
       </div>
       {/* MAIN ACCOUNT DETAILS */}
       <div className="grid grid-cols-5 gap-4">

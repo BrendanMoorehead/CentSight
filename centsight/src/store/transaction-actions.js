@@ -3,7 +3,8 @@ import supabase from './../../utils/supabase';
 import { updateBalance } from './account-actions';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { calculateAccountBalancesWithDeletedTransactions } from '../../utils/calculations';
+import { accountActions } from './account-slice';
 export const fetchTransactionsData = () => {
   return async (dispatch) => {
     dispatch(transactionActions.setLoading());
@@ -193,13 +194,52 @@ export const deleteTransaction = (transactionId) => {
       dispatch(transactionActions.deleteTransaction({ id: transactionId }));
       toast.success(`Transaction deleted`, { position: 'bottom-right' });
     } catch (error) {
-      toast.failure(`Failed to delete transaction`, {
+      toast.error(`Failed to delete transaction`, {
         position: 'bottom-right',
       });
     }
   };
 };
+export const batchDeleteTransactions = (transactions) => {
+  return async (dispatch, getState) => {
+    const transactionIds = transactions.map((transaction) => transaction.id);
 
+    try {
+      // Perform the deletion
+      const { data, error } = await supabase
+        .from('user_transactions')
+        .delete()
+        .in('id', transactionIds);
+
+      if (error) throw new Error(error.message);
+
+      // Dispatch the action to update the state
+      const transactionIdsToDelete = transactions.map((trans) => trans.id);
+      dispatch(
+        transactionActions.batchDeleteTransactions(transactionIdsToDelete)
+      );
+      console.log('DELETED TRANS: ', transactions);
+      // Get accounts from the state
+      const accounts = getState().account.accounts;
+      const newAccounts = calculateAccountBalancesWithDeletedTransactions(
+        accounts,
+        transactions
+      );
+      // Dispatch the updated accounts
+      dispatch(accountActions.replaceAccounts(newAccounts));
+      // Show success message
+      toast.success('Transactions deleted successfully!', {
+        position: 'bottom-right',
+      });
+    } catch (error) {
+      console.error('Error deleting transactions:', error);
+      // Use the correct method for showing error messages
+      toast.error(`Failed to batch delete transaction: ${error.message}`, {
+        position: 'bottom-right',
+      });
+    }
+  };
+};
 export const updateTransaction = (data) => {
   return async (dispatch) => {
     const updateData = async (transactionData, id) => {
@@ -230,7 +270,7 @@ export const updateTransaction = (data) => {
       toast.success(`Transaction updated`, { position: 'bottom-right' });
     } catch (error) {
       console.log(error.message);
-      toast.failure(`Failed to update transaction`, {
+      toast.error(`Failed to update transaction`, {
         position: 'bottom-right',
       });
     }

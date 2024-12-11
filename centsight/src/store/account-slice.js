@@ -1,6 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const accountState = { accounts: [], loading: false, error: null, lastFetched: null };
+const accountState = {
+  accounts: [],
+  loading: false,
+  error: null,
+  lastFetched: null,
+};
 
 export const accountSlice = createSlice({
   name: 'accounts',
@@ -41,10 +46,14 @@ export const accountSlice = createSlice({
         ];
       }
     },
-    deleteAccount(state, action) {},
+    deleteAccount(state, action) {
+      state.accounts = state.accounts.filter(
+        (account) => account.id !== action.payload.id
+      );
+    },
     invalidateCache(state) {
       state.lastFetched = null;
-    }
+    },
   },
 });
 

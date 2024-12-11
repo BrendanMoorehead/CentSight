@@ -32,6 +32,14 @@ export const transactionSlice = createSlice({
         (trans) => trans.id !== action.payload.id
       );
     },
+    batchDeleteTransactions(state, action) {
+      console.log('Deleting transactions with IDs:', action.payload);
+      console.log('Current transactions:', state.transactions);
+      state.transactions = state.transactions.filter(
+        (trans) => !action.payload.includes(trans.id)
+      );
+      console.log('Updated transactions:', state.transactions);
+    },
     updateTransaction(state, action) {
       const index = state.transactions.findIndex(
         (transaction) => transaction.id === action.payload.id

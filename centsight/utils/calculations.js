@@ -105,26 +105,39 @@ export const calculateAccountBalancesWithDeletedTransactions = (
     throw new Error('Invalid input: accounts must be an array.');
   else if (!Array.isArray(transactions))
     throw new Error('Invalid input: transactions must be an array.');
-  accounts.forEach((account) => {
+
+  // Create a new array of accounts to avoid mutation
+  const newAccounts = accounts.map((account) => {
+    // Start with a copy of the current account
+    let updatedAccount = { ...account };
+
+    // Find related transactions for the current account
     const relatedTransactions = transactions.filter(
       (transaction) =>
-        transaction.account_from_id === account.id ||
-        transaction.account_to_id === account.id
+        transaction.account_from_id === updatedAccount.id ||
+        transaction.account_to_id === updatedAccount.id
     );
+
+    // Update the balance based on related transactions
     relatedTransactions.forEach((transaction) => {
       if (transaction.type === 'income') {
-        account.balance = account.balance - transaction.amount;
+        updatedAccount.balance = updatedAccount.balance - transaction.amount;
       } else if (transaction.type === 'expense') {
-        account.balance = account.balance + transaction.amount;
+        updatedAccount.balance = updatedAccount.balance + transaction.amount;
       } else {
-        if (transaction.account_from_id === account.id) {
-          account.balance = account.balance + transaction.amount;
-        } else if (transaction.account_to_id === account.id) {
-          account.balance = account.balance - transaction.amount;
+        if (transaction.account_from_id === updatedAccount.id) {
+          updatedAccount.balance = updatedAccount.balance + transaction.amount;
+        } else if (transaction.account_to_id === updatedAccount.id) {
+          updatedAccount.balance = updatedAccount.balance - transaction.amount;
         }
       }
     });
-    account.balance = Math.round(account.balance * 100) / 100;
+
+    // Round the balance to 2 decimal places
+    updatedAccount.balance = Math.round(updatedAccount.balance * 100) / 100;
+
+    return updatedAccount; // Return the updated account
   });
-  return accounts;
+
+  return newAccounts; // Return the new array of accounts
 };
