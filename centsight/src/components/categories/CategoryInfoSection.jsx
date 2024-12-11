@@ -51,11 +51,12 @@ const CategoryInfoSection = ({ category }) => {
   // Calculate the net income for transactions under the selected category.
   // TODO: Allow for filtering by time frame.
   let netIncome = 0;
-  netIncome = filteredTransactions.reduce((acc, transaction) => {
-    if (transaction.type === 'income') return acc + transaction.amount;
-    else if (transaction.type === 'expense') return acc - transaction.amount;
-  }, 0);
-
+  if (filteredTransactions.length > 0) {
+    netIncome = filteredTransactions.reduce((acc, transaction) => {
+      if (transaction.type === 'income') return acc + transaction.amount;
+      else if (transaction.type === 'expense') return acc - transaction.amount;
+    });
+  }
   const handleDelete = () => dispatch(deleteCategory(category));
 
   // TODO: Add a time frame filter that applies to all subcomponents (week, month, year, alltime).
@@ -123,7 +124,7 @@ const CategoryInfoSection = ({ category }) => {
           />
           <ValueCard
             text="Net Income"
-            value={netIncome.toFixed(2)}
+            value={netIncome.isNan ? netIncome.toFixed(2) : 0.0}
             format="currency"
           />
         </div>
