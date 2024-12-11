@@ -1,5 +1,26 @@
 import { describe, it, expect } from 'vitest';
-import { calculateTransfer, calculateNewBalance } from '../calculations';
+import {
+  calculateTransfer,
+  calculateNewBalance,
+  calculateAccountBalancesWithDeletedTransactions,
+} from '../calculations';
+import {
+  incomeAccounts1,
+  incomeTransactions1,
+  expectedIncomeAccounts1,
+  expenseAccounts1,
+  expenseTransactions1,
+  expectedExpenseAccounts1,
+  transferAccounts1,
+  transferTransactions1,
+  expectedTransferAccounts1,
+  multiTypeAccounts1,
+  multiTypeTransactions1,
+  expectedMultiTypeAccounts1,
+  invalidAccounts1,
+  invalidTransactions1,
+} from './testData';
+
 describe('Transfer Calculations', () => {
   describe('calculateTransfer()', () => {
     it('should return updated balances with two positive balances', () => {
@@ -64,10 +85,60 @@ describe('Transfer Calculations', () => {
         'Invalid accountTo type: accountTo must be a number.'
       );
     });
-    describe('calculateNewBalance()', () => {
-      it('should return the new balance after a transaction', () => {
-        const result = calculateNewBalance('expense', 100, 50);
-        expect(result).toEqual(50);
+  });
+  describe('calculateNewBalance()', () => {
+    it('should return the new balance after a transaction', () => {
+      const result = calculateNewBalance('expense', 100, 50);
+      expect(result).toEqual(50);
+    });
+  });
+  describe('calculateAccountBalancesWithDeletedTransactions()', () => {
+    describe('Data Validation', () => {
+      it('should update the balance of an income transaction', () => {
+        const result = calculateAccountBalancesWithDeletedTransactions(
+          incomeAccounts1,
+          incomeTransactions1
+        );
+        expect(result).toEqual(expectedIncomeAccounts1);
+      });
+      it('should update the balance of an expense transaction', () => {
+        const result = calculateAccountBalancesWithDeletedTransactions(
+          expenseAccounts1,
+          expenseTransactions1
+        );
+        expect(result).toEqual(expectedExpenseAccounts1);
+      });
+      it('should update the balance of 2 accounts with a transfer transaction', () => {
+        const result = calculateAccountBalancesWithDeletedTransactions(
+          transferAccounts1,
+          transferTransactions1
+        );
+        expect(result).toEqual(expectedTransferAccounts1);
+      });
+      it('should update the balance of accounts with multiple types of transactions', () => {
+        const result = calculateAccountBalancesWithDeletedTransactions(
+          multiTypeAccounts1,
+          multiTypeTransactions1
+        );
+        expect(result).toEqual(expectedMultiTypeAccounts1);
+      });
+    });
+    describe('Error Handling', () => {
+      it('should throw an error if accounts is not an array', () => {
+        expect(() =>
+          calculateAccountBalancesWithDeletedTransactions(
+            invalidAccounts1,
+            multiTypeTransactions1
+          )
+        ).toThrow('Invalid input: accounts must be an array.');
+      });
+      it('should throw an error if transactions is not an array', () => {
+        expect(() =>
+          calculateAccountBalancesWithDeletedTransactions(
+            multiTypeAccounts1,
+            invalidTransactions1
+          )
+        ).toThrow('Invalid input: transactions must be an array.');
       });
     });
   });

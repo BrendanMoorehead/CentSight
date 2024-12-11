@@ -85,3 +85,46 @@ export const calculateNewBalance = (type, currentBalance, amount) => {
   if (type === 'expense') return currentBalance - amount;
   return currentBalance + amount;
 };
+
+/**
+ * Calculates the balances of accounts should the list of transactions be reversed.
+ *
+ * This function takes a list of accounts (expected to be all acocunts in the database) and a list of transactions that are to be reversed (most likely deletion). It then calculates the new balances of the accounts should the transactions be reversed and returns the account list with the new balances.
+ *
+ * @param {Array} accounts - The list of accounts to be updated.
+ * @param {Array} transactions - The list of transactions to be reversed.
+ * @returns {Array} - The list of accounts with the new balances.
+ *  * @throws {Error} Throws an error if:
+ *  Accounts or transactions are not arrays.
+ */
+export const calculateAccountBalancesWithDeletedTransactions = (
+  accounts,
+  transactions
+) => {
+  if (!Array.isArray(accounts))
+    throw new Error('Invalid input: accounts must be an array.');
+  else if (!Array.isArray(transactions))
+    throw new Error('Invalid input: transactions must be an array.');
+  accounts.forEach((account) => {
+    const relatedTransactions = transactions.filter(
+      (transaction) =>
+        transaction.account_from_id === account.id ||
+        transaction.account_to_id === account.id
+    );
+    relatedTransactions.forEach((transaction) => {
+      if (transaction.type === 'income') {
+        account.balance = account.balance - transaction.amount;
+      } else if (transaction.type === 'expense') {
+        account.balance = account.balance + transaction.amount;
+      } else {
+        if (transaction.account_from_id === account.id) {
+          account.balance = account.balance + transaction.amount;
+        } else if (transaction.account_to_id === account.id) {
+          account.balance = account.balance - transaction.amount;
+        }
+      }
+    });
+    account.balance = Math.round(account.balance * 100) / 100;
+  });
+  return accounts;
+};
