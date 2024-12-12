@@ -252,12 +252,17 @@ export const batchDeleteTransactions = (transactions) => {
   };
 };
 export const updateTransaction = (data) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     const updateData = async (transactionData, id) => {
       if (transactionData.sendingAccount_id === '')
         transactionData.sendingAccount_id = transactionData.receivingAccount_id;
       if (transactionData.receivingAccount_id === '')
         transactionData.receivingAccount_id = transactionData.sendingAccount_id;
+      const oldTransaction = await supabase
+        .from('user_transactions')
+        .select('*')
+        .eq('id', id)
+        .single();
       const { error } = await supabase
         .from('user_transactions')
         .update({
@@ -273,11 +278,55 @@ export const updateTransaction = (data) => {
         })
         .eq('id', id);
       if (error) throw new Error(error.message);
-      return transactionData;
+      return { transactionData, oldTransaction: oldTransaction.data };
     };
     try {
-      const transactionData = await updateData(data, data.id);
+      const { transactionData, oldTransaction } = await updateData(
+        data,
+        data.id
+      );
+      console.log('OLD TRANSACTION', oldTransaction);
+      console.log('NEW TRANSACTION', transactionData);
       dispatch(transactionActions.updateTransaction(transactionData));
+      const accounts = getState().account.accounts;
+      const newAccounts = calculateAccountBalancesWithDeletedTransactions(
+        accounts,
+        [oldTransaction]
+      );
+      // Dispatch the updated accounts
+      dispatch(accountActions.replaceAccounts(newAccounts));
+      if (transactionData.type === 'income') {
+        // Handle income
+        dispatch(
+          updateBalance(
+            transactionData.receivingAccount_id,
+            Number(transactionData.amount)
+          )
+        );
+      } else if (transactionData.type === 'expense') {
+        // Handle expense
+        dispatch(
+          updateBalance(
+            transactionData.sendingAccount_id,
+            Number(transactionData.amount) * -1
+          )
+        );
+      } else if (transactionData.type === 'transfer') {
+        // Handle transfer
+        dispatch(
+          updateBalance(
+            transactionData.sendingAccount_id,
+            Number(transactionData.amount) * -1
+          )
+        ); // Decrease from sending account
+        dispatch(
+          updateBalance(
+            transactionData.receivingAccount_id,
+            Number(transactionData.amount)
+          )
+        ); // Increase to receiving account
+      }
+
       toast.success(`Transaction updated`, { position: 'bottom-right' });
     } catch (error) {
       console.log(error.message);
