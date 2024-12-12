@@ -34,6 +34,7 @@ const TransactionModal = ({
         updateTransaction({ ...data, user_id: userId, id: transactionData.id })
       );
     } else {
+      console.log('ADD TRANSACTION', data);
       dispatch(addTransaction({ ...data, user_id: userId }));
     }
     closeModal();

@@ -118,11 +118,12 @@ export const fetchTransactionsData = () => {
 export const addTransaction = (data) => {
   return async (dispatch) => {
     const addData = async (transactionData) => {
+      console.log('ADD TRANSACTION fn', transactionData);
       if (transactionData.sendingAccount_id === '')
         transactionData.sendingAccount_id = transactionData.receivingAccount_id;
       if (transactionData.receivingAccount_id === '')
         transactionData.receivingAccount_id = transactionData.sendingAccount_id;
-
+      console.log('ADD TRANSACTION fn post reset', transactionData);
       const { data, error } = await supabase
         .from('user_transactions')
         .insert({
@@ -130,8 +131,8 @@ export const addTransaction = (data) => {
           category_id: transactionData.category_id,
           subcategory_id: transactionData.subcategory_id,
           user_id: transactionData.user_id,
-          account_to_id: transactionData.sendingAccount_id,
-          account_from_id: transactionData.receivingAccount_id,
+          account_to_id: transactionData.receivingAccount_id,
+          account_from_id: transactionData.sendingAccount_id,
           date: transactionData.date,
           note: transactionData.note,
           type: transactionData.type,
@@ -150,29 +151,39 @@ export const addTransaction = (data) => {
     };
     try {
       const transactionData = await addData(data);
+      console.log('ADD TRANSACTION fn post addData', transactionData);
       dispatch(transactionActions.addTransaction(transactionData));
 
-      if (
-        transactionData.type === 'income' ||
-        transactionData.type === 'transfer'
-      ) {
+      if (transactionData.type === 'income') {
+        // Handle income
         dispatch(
           updateBalance(
             transactionData.account_to_id,
             Number(transactionData.amount)
           )
         );
-      }
-      if (
-        transactionData.type === 'expense' ||
-        transactionData.type === 'transfer'
-      ) {
+      } else if (transactionData.type === 'expense') {
+        // Handle expense
         dispatch(
           updateBalance(
             transactionData.account_from_id,
             Number(transactionData.amount) * -1
           )
         );
+      } else if (transactionData.type === 'transfer') {
+        // Handle transfer
+        dispatch(
+          updateBalance(
+            transactionData.account_from_id,
+            Number(transactionData.amount) * -1
+          )
+        ); // Decrease from sending account
+        dispatch(
+          updateBalance(
+            transactionData.account_to_id,
+            Number(transactionData.amount)
+          )
+        ); // Increase to receiving account
       }
     } catch (error) {
       console.log(error.message);
