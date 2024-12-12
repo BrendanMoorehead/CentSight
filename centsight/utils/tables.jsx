@@ -39,7 +39,7 @@ export const getTransactionCellContent = (
         <BalanceUpdateChip
           textAlign="right"
           case={transaction.type}
-          amount={transaction.amount}
+          amount={Number(transaction.amount).toFixed(2)}
         />
       );
     }

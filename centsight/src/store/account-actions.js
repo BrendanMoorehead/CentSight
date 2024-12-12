@@ -83,7 +83,7 @@ export const updateBalance = (accountId, amount) => {
         .single();
       if (fetchError) throw new Error(fetchError.message);
       console.log('CURRENT BALANCE', accountId, currentData.balance, amount);
-      const newBalance = currentData.balance + amount;
+      const newBalance = Number(currentData.balance) + Number(amount);
       const { data, error } = await supabase
         .from('user_accounts')
         .update({ balance: newBalance })

@@ -24,7 +24,6 @@ const TransactionModal = ({
   title = 'New Transaction',
   buttonText = 'Add',
   transactionData = null,
-  handleSubmit,
 }) => {
   const dispatch = useDispatch();
 
