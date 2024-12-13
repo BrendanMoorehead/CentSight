@@ -56,6 +56,7 @@ export const getTransactionCellContent = (
         year: 'numeric',
         month: 'long',
         day: 'numeric',
+        timeZone: 'UTC',
       });
       return <p>{date}</p>;
     case 'account_to_id':
