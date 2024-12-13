@@ -293,9 +293,13 @@ export const updateTransaction = (data) => {
         accounts,
         [oldTransaction]
       );
+      console.log('NEW ACCOUNTS', newAccounts);
       // Dispatch the updated accounts
       dispatch(accountActions.replaceAccounts(newAccounts));
-      if (transactionData.type === 'income') {
+      if (
+        transactionData.type === 'income' &&
+        oldTransaction.type !== 'income'
+      ) {
         // Handle income
         dispatch(
           updateBalance(
@@ -303,7 +307,10 @@ export const updateTransaction = (data) => {
             Number(transactionData.amount)
           )
         );
-      } else if (transactionData.type === 'expense') {
+      } else if (
+        transactionData.type === 'expense' &&
+        oldTransaction.type !== 'expense'
+      ) {
         // Handle expense
         dispatch(
           updateBalance(
@@ -336,3 +343,33 @@ export const updateTransaction = (data) => {
     }
   };
 };
+
+// export const updateTransaction = (data) => {
+//   return async (dispatch, getState) => {
+//     const updateData = async (transactionData) => {
+//       //Delete the old transaction.
+//       const response = await supabase
+//         .from('user_transactions')
+//         .delete()
+//         .eq('id', transactionData.id);
+//       //Update the accounts post deletion.
+//       const accounts = getState().account.accounts;
+//       const newAccounts = calculateAccountBalancesWithDeletedTransactions(
+//         accounts,
+//         [transactionData]
+//       );
+//       // Dispatch the updated accounts
+//       dispatch(accountActions.replaceAccounts(newAccounts));
+//       addTransaction(transactionData);
+//     };
+//     try {
+//       const transactionData = await updateData(data);
+//       toast.success(`Transaction updated`, { position: 'bottom-right' });
+//     } catch (error) {
+//       console.log(error.message);
+//       toast.error(`Failed to update transaction`, {
+//         position: 'bottom-right',
+//       });
+//     }
+//   };
+// };
