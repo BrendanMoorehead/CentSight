@@ -146,7 +146,7 @@ export default {
         dark: {
           layout: {},
           colors: {
-            primary: '#D3664B',
+            primary: '#0f7d2d',
             yellow: '#f2e291',
             yellowOrange: '#f2b84b',
             orange: '#f28749',

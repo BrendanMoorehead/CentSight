@@ -25,11 +25,11 @@ export const chartTransactions = (month, year, transactions, type) => {
       return transactionDate === formattedDate && transaction.type === 'income';
     });
     const totalExpensesForDay = expenseTransactionsForDay.reduce(
-      (sum, transaction) => sum + transaction.amount,
+      (sum, transaction) => sum + Number(transaction.amount),
       0
     );
     const totalIncomeForDay = incomeTransactionsForDay.reduce(
-      (sum, transaction) => sum + transaction.amount,
+      (sum, transaction) => sum + Number(transaction.amount),
       0
     );
     daysArray.push({
@@ -46,5 +46,4 @@ export const chartTransactions = (month, year, transactions, type) => {
   }
 
   return daysArray;
-  //   const dailyData = filteredTransactions.map(())
 };
