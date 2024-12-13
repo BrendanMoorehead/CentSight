@@ -13,7 +13,7 @@ import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { getTransactionCellContent } from '../../../utils/tables';
 import TransactionModal from '../modals/TransactionModal';
-
+import { useNavigate } from 'react-router-dom';
 const FullTransactionTable = ({
   items,
   isLoading,
@@ -30,7 +30,7 @@ const FullTransactionTable = ({
   const [openTransactionModal, setOpenTransactionModal] = useState(false);
   const [transactionData, setTransactionData] = useState(null);
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   useEffect(() => {
     setPage(tablePage);
   }, [tablePage]);
@@ -51,6 +51,11 @@ const FullTransactionTable = ({
 
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+  const handleAccountsClick = (accountId) => {
+    navigate('/accounts', {
+      state: { accountId },
+    });
+  };
 
   const renderCell = useCallback(
     (user, columnKey, dispatch) => {
@@ -59,10 +64,11 @@ const FullTransactionTable = ({
         columnKey,
         dispatch,
         setOpenTransactionModal,
-        setTransactionData
+        setTransactionData,
+        handleAccountsClick
       );
     },
-    [dispatch]
+    [dispatch, handleAccountsClick]
   );
 
   const handleSubmit = (data) => {

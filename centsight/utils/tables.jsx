@@ -5,9 +5,12 @@ import {
   Button,
   DropdownMenu,
   DropdownItem,
+  CardBody,
 } from '@nextui-org/react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { batchDeleteTransactions } from '../src/store/transaction-actions';
+import { Card } from '@nextui-org/react';
+
 /**
  * Gets the jsx for each cell in a transaction table.
  *
@@ -20,7 +23,8 @@ export const getTransactionCellContent = (
   columnKey,
   dispatch,
   setOpenTransactionModal,
-  setTransactionData
+  setTransactionData,
+  handleAccountsClick
 ) => {
   const handleDelete = () => {
     dispatch(batchDeleteTransactions([transaction]));
@@ -59,10 +63,38 @@ export const getTransactionCellContent = (
         timeZone: 'UTC',
       });
       return <p>{date}</p>;
-    case 'account_to_id':
-      return <p>{transaction.receivingAccount}</p>;
-    case 'account_from_id':
-      return <p>{transaction.sendingAccount}</p>;
+    case 'account_to_id': {
+      if (
+        transaction.receivingAccount !== '' &&
+        transaction.receivingAccount !== null
+      ) {
+        return (
+          <Card
+            isPressable
+            onPress={() => handleAccountsClick(transaction.account_to_id)}
+          >
+            <CardBody>{transaction.receivingAccount}</CardBody>
+          </Card>
+        );
+      }
+      break;
+    }
+    case 'account_from_id': {
+      if (
+        transaction.sendingAccount !== '' &&
+        transaction.sendingAccount !== null
+      ) {
+        return (
+          <Card
+            isPressable
+            onPress={() => handleAccountsClick(transaction.account_from_id)}
+          >
+            <CardBody>{transaction.sendingAccount}</CardBody>
+          </Card>
+        );
+      }
+      break;
+    }
     case 'actions':
       return (
         <div className="relative flex justify-end items-center gap-2">
