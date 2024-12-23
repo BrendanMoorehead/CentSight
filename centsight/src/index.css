@@ -26,4 +26,13 @@ input:focus-visible {
   --tw-ring-offset-width: 0 !important;
   box-shadow: none !important;
   border-color: transparent !important;
+  input {
+    caret-color: white !important;
+  }
+  
+  /* Specifically for NextUI inputs */
+  .nextui-input, 
+  [data-slot="input"] {
+    caret-color: white !important;
+  }
 }
