@@ -25,6 +25,12 @@ const MonthSpendingChart = ({ month, year }) => {
       valueFormatter={dataFormatter}
       onValueChange={(v) => console.log(v)}
       curveType="monotoneX"
+      yAxisWidth={56}  // Add explicit width for Y axis
+      showYAxis={true}
+      showXAxis={true}
+      showLegend={true}
+      autoMinValue={true}
+      allowDecimals={false}
     />
   );
 };
