@@ -6,3 +6,24 @@ input {
   border: none;
   outline: none;
 }
+/* Target NextUI input focus states */
+input:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+}
+
+/* Target the specific NextUI input class */
+.focus-visible\:outline-none:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+}
+
+/* Target the input wrapper if needed */
+[data-focus="true"] {
+  --tw-ring-color: transparent !important;
+  --tw-ring-offset-width: 0 !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+}
