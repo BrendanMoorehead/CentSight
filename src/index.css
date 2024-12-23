@@ -1,0 +1,15 @@
+/* Prevent focus recursion */
+.no-focus-recursion {
+  -webkit-focus-ring-color: transparent !important;
+  outline: none !important;
+}
+
+/* Stop event propagation on focus */
+input:focus {
+  pointer-events: none;
+}
+
+/* Reset pointer events when not focused */
+input:not(:focus) {
+  pointer-events: auto;
+} 

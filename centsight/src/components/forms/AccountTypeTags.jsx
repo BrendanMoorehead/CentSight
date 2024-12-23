@@ -1,19 +1,12 @@
 /* eslint-disable react/prop-types */
-import { useState } from 'react';
 import { Tabs, Tab } from '@nextui-org/tabs';
 
-const AccountTypeTags = ({ onChange }) => {
-  const [selectedKey, setSelectedKey] = useState('chequing');
-  const handleSelectionChange = (key) => {
-    if (key !== selectedKey) {
-      setSelectedKey(key);
-      onChange(key);
-    }
-  };
+const AccountTypeTags = ({ onChange, type = 'chequing' }) => {
   return (
     <div>
       <Tabs
-        onSelectionChange={handleSelectionChange}
+        selectedKey={type}
+        onSelectionChange={onChange}
         fullWidth
         aria-label="Options"
         className="flex"
