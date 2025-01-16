@@ -18,11 +18,11 @@ import { getTransactionCellContent } from '../../utils/tables';
 import { useCallback } from 'react';
 import { parseISO, format } from 'date-fns';
 import { deleteTransaction } from '../store/transaction-actions';
+import { useNavigate } from 'react-router-dom';
 const TransactionsTable = () => {
   const dispatch = useDispatch();
-  const { transactions = [], loading: transactionsLoading } = useSelector(
-    (state) => state.transaction
-  );
+  const navigate = useNavigate();
+  const transactions = useSelector((state) => state.transaction.transactions);
   const { accounts = [], loading: accountsLoading } = useSelector(
     (state) => state.account
   );
@@ -31,11 +31,21 @@ const TransactionsTable = () => {
   );
 
   const allLoading =
-    transactionsLoading || accountsLoading || categoriesLoading;
+    accountsLoading || categoriesLoading;
 
+    const handleAccountsClick = useCallback((accountId) => {
+      navigate('/accounts', {
+        state: { accountId },
+      });
+    }, [navigate]);
+
+    const handleDelete = (transaction) => {
+      dispatch(deleteTransaction(transaction.id));
+    };
+    const handleEdit = () => {}
   const renderCell = useCallback((transaction, columnKey) => {
-    return getTransactionCellContent(transaction, columnKey);
-  }, []);
+    return getTransactionCellContent(transaction, columnKey, dispatch,handleDelete, handleEdit, handleAccountsClick);
+  }, [handleAccountsClick, dispatch]);
 
   // Filter and sort transactions
   const filteredTransactions = Array.isArray(transactions)
@@ -101,9 +111,7 @@ const TransactionsTable = () => {
       };
     });
   }
-  const handleDelete = (transaction) => {
-    dispatch(deleteTransaction(transaction.id));
-  };
+  
 
   return (
     <Table

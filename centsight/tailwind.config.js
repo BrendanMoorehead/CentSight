@@ -62,10 +62,10 @@ export default {
             inverted: colors.blue[950],
           },
           background: {
-            muted: '#131A2B',
-            subtle: colors.gray[800],
-            DEFAULT: colors.gray[900],
-            emphasis: colors.gray[300],
+            muted:  colors.stone[850],
+            subtle:  colors.stone[850],
+            DEFAULT:  colors.stone[850],
+            emphasis: colors.stone[850],
           },
           border: {
             DEFAULT: colors.gray[800],
@@ -151,6 +151,7 @@ export default {
             yellowOrange: '#f2b84b',
             orange: '#f28749',
             text: '#ffffff',
+            focus: 'transparent'
           },
         },
       },

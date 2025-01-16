@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import { Tabs, Tab } from '@nextui-org/tabs';
 import AccountTransactionsTable from '../AccountTransactionTable';
 import EditAccountDropdown from '../EditAccountDropdown';
+import AccountModal from '../modals/AccountModal';
 let tabs = [
   {
     id: 'past7days',
@@ -23,13 +24,16 @@ let tabs = [
   },
 ];
 const AccountsDetails = ({ account, transactions }) => {
+  const [openAccountModal, setOpenAccountModal] = useState(false);
   const [selectedTimePeriod, setSelectedTimePeriod] = useState('past7days');
   const filteredTransactions = transactions.filter(
     (transaction) =>
       transaction.account_from_id === account.id ||
       transaction.account_to_id === account.id
   );
-
+  const handleSubmit = (data) => {
+    console.log(data);
+  };
   //TODO: Pull time period filter capabilites to outside function to be used by a filter component.
   const handleTimePeriodChange = (id) => {
     setSelectedTimePeriod(id);
@@ -106,6 +110,7 @@ const AccountsDetails = ({ account, transactions }) => {
     maximumFractionDigits: 2,
   });
   return (
+    <>
     <div className="flex flex-col gap-8 flex-grow h-full">
       {/* ACCOUNT HEADER */}
       <div className="flex justify-between">
@@ -115,7 +120,7 @@ const AccountsDetails = ({ account, transactions }) => {
             {account.type.charAt(0).toUpperCase() + account.type.slice(1)}
           </p>
         </div>
-        <EditAccountDropdown account={account} />
+        <EditAccountDropdown account={account} editPress={() => setOpenAccountModal(true)}/>
       </div>
       {/* MAIN ACCOUNT DETAILS */}
       <div className="grid grid-cols-5 gap-4">
@@ -179,6 +184,15 @@ const AccountsDetails = ({ account, transactions }) => {
         />
       </div>
     </div>
+    <AccountModal
+      isOpen={openAccountModal}
+      closeModal={() => setOpenAccountModal(false)}
+      title="Edit Account"
+      buttonText="Update"
+      accountData={account}
+      onSubmit={handleSubmit}
+    />
+    </>
   );
 };
 

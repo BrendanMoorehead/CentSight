@@ -14,7 +14,7 @@ import { addAccount } from '../../store/account-actions';
  *  - closeModal (function): Function to close the modal.
  *  - userId (string): ID of the active user.
  */
-const AccountModal = ({ isOpen, closeModal, userId }) => {
+const AccountModal = ({ isOpen, closeModal, userId,title ="New Account", accountData, onSubmit, buttonText }) => {
   const dispatch = useDispatch();
 
   //Add an account and close the modal.
@@ -24,8 +24,8 @@ const AccountModal = ({ isOpen, closeModal, userId }) => {
   };
 
   return (
-    <ModalWrapper isOpen={isOpen} onClose={closeModal} title="New Account">
-      <AccountForm handleSubmit={handleOk} />
+    <ModalWrapper isOpen={isOpen} onClose={closeModal} title={title}>
+      <AccountForm handleSubmit={handleOk} accountData={accountData} buttonText={buttonText}/>
     </ModalWrapper>
   );
 };

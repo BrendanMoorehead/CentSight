@@ -10,6 +10,7 @@ const MonthSpendingChart = ({ month, year }) => {
   const [chartData, setChartData] = useState([]);
   useEffect(() => {
     console.log("Rendering with month:", month, "year:", year); // Debugging
+    //TODO: memoize chartTransactions
     const data = chartTransactions(month, year, transactions);
     setChartData(data);
   }, [month, year, transactions]);
@@ -25,6 +26,12 @@ const MonthSpendingChart = ({ month, year }) => {
       valueFormatter={dataFormatter}
       onValueChange={(v) => console.log(v)}
       curveType="monotoneX"
+      yAxisWidth={56}  // Add explicit width for Y axis
+      showYAxis={true}
+      showXAxis={true}
+      showLegend={true}
+      autoMinValue={true}
+      allowDecimals={false}
     />
   );
 };

@@ -1,69 +1,84 @@
 /* eslint-disable react/prop-types */
 import { useFormik } from 'formik';
 import { Button, Input } from '@nextui-org/react';
-import AccountTypeTags from './AccountTypeTags';
+import { Tabs, Tab } from '@nextui-org/react';
+import { useMemo } from 'react';
 
 const validate = (values) => {
   const errors = {};
-  if (values.name === '') {
+  if (values.name === null) {
     errors.name = 'Required';
   }
-  if (values.balance === '') {
+  if (values.balance === null) {
     errors.balance = 'Required';
   }
   return errors;
 };
 
-const AccountForm = ({ handleSubmit }) => {
+const AccountForm = ({ handleSubmit, accountData = null, buttonText = "Add"}) => {
+  const initialValues = useMemo(() => ({
+    type: accountData?.type || 'chequing',
+    name: accountData?.name || '',
+    balance: accountData?.balance || '',
+    id: accountData?.id || null,
+  }), [accountData]);
+console.log(initialValues);
   const formik = useFormik({
-    initialValues: {
-      type: 'chequing',
-      name: '',
-      balance: '',
-    },
+    initialValues,
     validate,
     onSubmit: (values) => {
       console.log(values);
       handleSubmit(values);
     },
+    validateOnChange: false,
+    enableReinitialize: true,
   });
+
   return (
     <form className="flex flex-col gap-4" onSubmit={formik.handleSubmit}>
-      <AccountTypeTags
-        onChange={(value) => formik.setFieldValue('type', value)}
-        name="type"
-      />
+      <Tabs
+        selectedKey={formik.values.type}
+        onSelectionChange={(key) => {
+          formik.setValues({ ...formik.values, type: key });
+        }}
+        fullWidth
+        aria-label="Options"
+        className="flex"
+      >
+        <Tab key="chequing" title="Chequing" />
+        <Tab key="credit" title="Credit" />
+        <Tab key="cash" title="Cash" />
+      </Tabs>
       <Input
         type="text"
         placeholder="Account name"
         label="Name"
         labelPlacement="outside"
-        errorMessage="Required"
-        isInvalid={formik.errors.name && formik.touched.name}
-        value={formik.values.name}
-        onChange={(e) => formik.setFieldValue('name', e.target.value)}
-        name="name"
+        errorMessage={formik.touched.name && formik.errors.name}
+        isInvalid={formik.touched.name && formik.errors.name}
+        {...formik.getFieldProps('name')}
       />
       <Input
         type="number"
         label="Balance"
         placeholder="0.00"
         labelPlacement="outside"
-        isInvalid={formik.errors.balance && formik.touched.balance}
-        errorMessage="Required"
-        value={formik.values.balance}
-        onChange={(e) => {
-          formik.setFieldValue('balance', e.target.value);
-        }}
         name="balance"
+        errorMessage={formik.touched.balance && formik.errors.balance}
+        isInvalid={formik.touched.balance && formik.errors.balance}
+        {...formik.getFieldProps('balance')}
         startContent={
           <div className="pointer-events-none flex items-center">
             <span className="text-default-400 text-small">$</span>
           </div>
         }
       />
-      <Button color="primary" className="my-2" type="submit">
-        Add
+      <Button 
+        color="primary" 
+        className="my-2" 
+        type="submit"
+      >
+        {buttonText}
       </Button>
     </form>
   );

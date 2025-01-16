@@ -6,3 +6,48 @@ input {
   border: none;
   outline: none;
 }
+/* Target NextUI input focus states */
+input:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+}
+
+/* Target the specific NextUI input class */
+.focus-visible\:outline-none:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+}
+
+/* Target the input wrapper if needed */
+[data-focus="true"] {
+  --tw-ring-color: transparent !important;
+  --tw-ring-offset-width: 0 !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+  input {
+    caret-color: white !important;
+  }
+  
+  /* Specifically for NextUI inputs */
+  .nextui-input, 
+  [data-slot="input"] {
+    caret-color: white !important;
+  }
+}
+/* Prevent focus recursion */
+.no-focus-recursion {
+  -webkit-focus-ring-color: transparent !important;
+  outline: none !important;
+}
+
+/* Stop event propagation on focus */
+input:focus {
+  pointer-events: none;
+}
+
+/* Reset pointer events when not focused */
+input:not(:focus) {
+  pointer-events: auto;
+}

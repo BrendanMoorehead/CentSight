@@ -145,7 +145,7 @@ const DashboardPage = () => {
               Recently Added Transactions
             </p>
             {transactions && transactions.length > 0 ? (
-              <TransactionsTable />
+              <TransactionsTable transactions={transactions} />
             ) : (
               <p>No transactions available</p>
             )}

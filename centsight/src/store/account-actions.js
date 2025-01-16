@@ -1,8 +1,8 @@
 import supabase from './../../utils/supabase';
 import { accountActions } from './account-slice';
+import { fetchTransactionsData } from './transaction-actions';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { fetchTransactionsData } from './transaction-actions';
 
 const cache = {
   accounts: null,
@@ -73,17 +73,30 @@ export const addAccount = (data) => {
   };
 };
 
+/**
+ * Function Name: updateBalance
+ * Description: Updates the balance of a given account in the database and state.
+ * Parameters:
+ *   - accountId (string): The id of the account to update.
+ *   - amount (number): The amount to add to the account.
+ *       - If wanting to subtract, pass a negative number.
+ * Side Effects:
+ *   - Toast notification of failure.
+ * Notes:
+ *   - No toast on success as this function is called when adding a transaction.
+ */
 export const updateBalance = (accountId, amount) => {
   return async (dispatch) => {
     const updateData = async (accountId, amount) => {
+      //Fetch the current balance of the account.
       const { data: currentData, error: fetchError } = await supabase
         .from('user_accounts')
         .select('balance')
         .eq('id', accountId)
         .single();
       if (fetchError) throw new Error(fetchError.message);
-      console.log('CURRENT BALANCE', accountId, currentData.balance, amount);
       const newBalance = Number(currentData.balance) + Number(amount);
+      //Update the balance and return the update account object.
       const { data, error } = await supabase
         .from('user_accounts')
         .update({ balance: newBalance })
@@ -97,7 +110,7 @@ export const updateBalance = (accountId, amount) => {
       dispatch(
         accountActions.overwriteAccount({
           id: accountId,
-          ...accountData[0], // Assuming accountData is an array with the updated account data
+          ...accountData[0],
         })
       );
       if (cache.accounts) {
@@ -111,13 +124,26 @@ export const updateBalance = (accountId, amount) => {
           };
       }
     } catch (error) {
-      console.error('failed to update account balance:', error.message);
+      toast.error(`Failed to update account balance.`, {
+        position: 'top-right',
+      });
     }
   };
 };
 
+/**
+ * Function Name: deleteAccount
+ * Description: Delete an account from the database and remove all associated transactions.
+ * Parameters:
+ *   - account (object): The account to delete.
+ * Side Effects:
+ *   - Toast notification of success or failure.
+ * Notes:
+ *  - Our database is set up to delete associated transactions when an account is deleted.
+ */
 export const deleteAccount = (account) => {
   return async (dispatch) => {
+    // Remove the account from the database.
     const deleteAccount = async (account) => {
       const { data, error } = await supabase
         .from('user_accounts')
@@ -127,16 +153,16 @@ export const deleteAccount = (account) => {
       return data;
     };
     try {
-      deleteAccount(account);
+      const data = await deleteAccount(account);
+      //Remove the account from state.
       dispatch(accountActions.deleteAccount(account));
-      fetchTransactionsData();
-      console.log('Account removed');
-      toast.success(`Account removed`, {
+      //Refetch the transactions.
+      dispatch(fetchTransactionsData());
+      toast.success(`Account deleted successfully.`, {
         position: 'top-right',
       });
     } catch (error) {
-      console.error(error.message);
-      toast.failure(`Failed to remove account`, {
+      toast.error(`Failed to delete account.`, {
         position: 'top-right',
       });
     }

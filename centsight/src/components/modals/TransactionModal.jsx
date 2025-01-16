@@ -30,7 +30,7 @@ const TransactionModal = ({
   const handleOk = (data) => {
     if (transactionData) {
       dispatch(
-        updateTransaction({ ...data, user_id: userId, id: transactionData.id })
+        updateTransaction({ ...data, user_id: userId, id: transactionData.id, account_to_id: data.receivingAccount_id, account_from_id: data.sendingAccount_id })
       );
     } else {
       console.log('ADD TRANSACTION', data);
