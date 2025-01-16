@@ -31,9 +31,6 @@ const AccountsDetails = ({ account, transactions }) => {
       transaction.account_from_id === account.id ||
       transaction.account_to_id === account.id
   );
-  const handleSubmit = (data) => {
-    console.log(data);
-  };
   //TODO: Pull time period filter capabilites to outside function to be used by a filter component.
   const handleTimePeriodChange = (id) => {
     setSelectedTimePeriod(id);
@@ -111,87 +108,89 @@ const AccountsDetails = ({ account, transactions }) => {
   });
   return (
     <>
-    <div className="flex flex-col gap-8 flex-grow h-full">
-      {/* ACCOUNT HEADER */}
-      <div className="flex justify-between">
-        <div className="flex flex-col">
-          <p className="text-headline text-2xl font-normal">{account.name}</p>
-          <p className="text-gray-300 text-lg font-headline font-extralight">
-            {account.type.charAt(0).toUpperCase() + account.type.slice(1)}
-          </p>
+      <div className="flex flex-col gap-8 flex-grow h-full">
+        {/* ACCOUNT HEADER */}
+        <div className="flex justify-between">
+          <div className="flex flex-col">
+            <p className="text-headline text-2xl font-normal">{account.name}</p>
+            <p className="text-gray-300 text-lg font-headline font-extralight">
+              {account.type.charAt(0).toUpperCase() + account.type.slice(1)}
+            </p>
+          </div>
+          <EditAccountDropdown
+            account={account}
+            editPress={() => setOpenAccountModal(true)}
+          />
         </div>
-        <EditAccountDropdown account={account} editPress={() => setOpenAccountModal(true)}/>
-      </div>
-      {/* MAIN ACCOUNT DETAILS */}
-      <div className="grid grid-cols-5 gap-4">
-        <Card className="col-span-2 flex">
-          <CardBody className="p-6 flex justify-end">
-            <p className="text-gray-300 text-6xl pb-2 font-headline font-light">
-              {formattedBalance}
-            </p>
-            <p className="text-gray-400 text-lg font-headline font-extralight">
-              Balance
-            </p>
-          </CardBody>
-        </Card>
-        <div className="col-span-3 flex-grow flex flex-col gap-4">
-          <Tabs
-            fullWidth
-            aria-label="Dynamic tabs"
-            items={tabs}
-            onSelectionChange={handleTimePeriodChange}
-          >
-            {(item) => <Tab key={item.id} title={item.label}></Tab>}
-          </Tabs>
-          <div className="grid grid-cols-3 gap-4">
-            <Card className="flex-grow">
-              <CardBody className="p-6">
-                <p className="text-gray-300 text-2xl font-headline">
-                  {numTransactions}
-                </p>
-                <p className="text-gray-400 text-lg font-headline font-extralight">
-                  Transactions
-                </p>
-              </CardBody>
-            </Card>
-            <Card className="flex-grow">
-              <CardBody className="p-6">
-                <p className="text-gray-300 text-2xl font-headline ">
-                  {formattedSpending}
-                </p>
-                <p className="text-gray-400 text-lg font-headline font-extralight">
-                  Spending
-                </p>
-              </CardBody>
-            </Card>
-            <Card className="flex-grow">
-              <CardBody className="p-6">
-                <p className="text-gray-300 text-2xl font-headline ">
-                  {formattedIncome}
-                </p>
-                <p className="text-gray-400 text-lg font-headline font-extralight">
-                  Income
-                </p>
-              </CardBody>
-            </Card>
+        {/* MAIN ACCOUNT DETAILS */}
+        <div className="grid grid-cols-5 gap-4">
+          <Card className="col-span-2 flex">
+            <CardBody className="p-6 flex justify-end">
+              <p className="text-gray-300 text-6xl pb-2 font-headline font-light">
+                {formattedBalance}
+              </p>
+              <p className="text-gray-400 text-lg font-headline font-extralight">
+                Balance
+              </p>
+            </CardBody>
+          </Card>
+          <div className="col-span-3 flex-grow flex flex-col gap-4">
+            <Tabs
+              fullWidth
+              aria-label="Dynamic tabs"
+              items={tabs}
+              onSelectionChange={handleTimePeriodChange}
+            >
+              {(item) => <Tab key={item.id} title={item.label}></Tab>}
+            </Tabs>
+            <div className="grid grid-cols-3 gap-4">
+              <Card className="flex-grow">
+                <CardBody className="p-6">
+                  <p className="text-gray-300 text-2xl font-headline">
+                    {numTransactions}
+                  </p>
+                  <p className="text-gray-400 text-lg font-headline font-extralight">
+                    Transactions
+                  </p>
+                </CardBody>
+              </Card>
+              <Card className="flex-grow">
+                <CardBody className="p-6">
+                  <p className="text-gray-300 text-2xl font-headline ">
+                    {formattedSpending}
+                  </p>
+                  <p className="text-gray-400 text-lg font-headline font-extralight">
+                    Spending
+                  </p>
+                </CardBody>
+              </Card>
+              <Card className="flex-grow">
+                <CardBody className="p-6">
+                  <p className="text-gray-300 text-2xl font-headline ">
+                    {formattedIncome}
+                  </p>
+                  <p className="text-gray-400 text-lg font-headline font-extralight">
+                    Income
+                  </p>
+                </CardBody>
+              </Card>
+            </div>
           </div>
         </div>
+        <div className="flex h-full">
+          <AccountTransactionsTable
+            transactions={filteredArray}
+            filter={selectedTimePeriod}
+          />
+        </div>
       </div>
-      <div className="flex h-full">
-        <AccountTransactionsTable
-          transactions={filteredArray}
-          filter={selectedTimePeriod}
-        />
-      </div>
-    </div>
-    <AccountModal
-      isOpen={openAccountModal}
-      closeModal={() => setOpenAccountModal(false)}
-      title="Edit Account"
-      buttonText="Update"
-      accountData={account}
-      onSubmit={handleSubmit}
-    />
+      <AccountModal
+        isOpen={openAccountModal}
+        closeModal={() => setOpenAccountModal(false)}
+        title="Edit Account"
+        buttonText="Update"
+        accountData={account}
+      />
     </>
   );
 };

@@ -2,35 +2,46 @@
 import { useFormik } from 'formik';
 import { Button, Input } from '@nextui-org/react';
 import { Tabs, Tab } from '@nextui-org/react';
-import { useMemo } from 'react';
 
 const validate = (values) => {
   const errors = {};
-  if (values.name === null) {
+  if (values.name === '') {
     errors.name = 'Required';
   }
-  if (values.balance === null) {
+  if (values.balance === '') {
     errors.balance = 'Required';
   }
   return errors;
 };
 
-const AccountForm = ({ handleSubmit, accountData = null, buttonText = "Add"}) => {
-  const initialValues = useMemo(() => ({
-    type: accountData?.type || 'chequing',
-    name: accountData?.name || '',
-    balance: accountData?.balance || '',
-    id: accountData?.id || null,
-  }), [accountData]);
-console.log(initialValues);
+const AccountForm = ({
+  handleSubmit,
+  accountData = null,
+  buttonText = 'Add',
+}) => {
+  let initialValues = {
+    type: 'chequing',
+    name: '',
+    balance: '0.00',
+    id: null,
+  };
+  if (accountData) {
+    initialValues = {
+      type: accountData?.type,
+      name: accountData?.name,
+      balance: accountData?.balance,
+      id: accountData?.id,
+    };
+  }
+  console.log(initialValues);
   const formik = useFormik({
-    initialValues,
+    initialValues: initialValues,
     validate,
     onSubmit: (values) => {
       console.log(values);
       handleSubmit(values);
     },
-    validateOnChange: false,
+    validateOnChange: true,
     enableReinitialize: true,
   });
 
@@ -38,8 +49,8 @@ console.log(initialValues);
     <form className="flex flex-col gap-4" onSubmit={formik.handleSubmit}>
       <Tabs
         selectedKey={formik.values.type}
-        onSelectionChange={(key) => {
-          formik.setValues({ ...formik.values, type: key });
+        onSelectionChange={(value) => {
+          formik.setFieldValue('type', value);
         }}
         fullWidth
         aria-label="Options"
@@ -54,9 +65,12 @@ console.log(initialValues);
         placeholder="Account name"
         label="Name"
         labelPlacement="outside"
-        errorMessage={formik.touched.name && formik.errors.name}
+        errorMessage={
+          formik.touched.name && formik.errors.name ? formik.errors.name : ''
+        }
         isInvalid={formik.touched.name && formik.errors.name}
-        {...formik.getFieldProps('name')}
+        value={formik.values.name}
+        onChange={(e) => formik.setFieldValue('name', e.target.value)}
       />
       <Input
         type="number"
@@ -64,24 +78,74 @@ console.log(initialValues);
         placeholder="0.00"
         labelPlacement="outside"
         name="balance"
-        errorMessage={formik.touched.balance && formik.errors.balance}
+        errorMessage={
+          formik.touched.balance && formik.errors.balance
+            ? formik.errors.balance
+            : ''
+        }
         isInvalid={formik.touched.balance && formik.errors.balance}
-        {...formik.getFieldProps('balance')}
+        value={formik.values.balance}
+        onChange={(e) => formik.setFieldValue('balance', e.target.value)}
         startContent={
           <div className="pointer-events-none flex items-center">
             <span className="text-default-400 text-small">$</span>
           </div>
         }
       />
-      <Button 
-        color="primary" 
-        className="my-2" 
-        type="submit"
-      >
+      <Button color="primary" className="my-2" type="submit">
         {buttonText}
       </Button>
     </form>
   );
 };
+
+// const AccountForm = ({
+//   handleSubmit,
+//   accountData = null,
+//   buttonText = 'Add',
+// }) => {
+//   let initialValues = {
+//     type: 'chequing',
+//     name: '',
+//     balance: '0.00',
+//     id: null,
+//   };
+//   if (accountData) {
+//     initialValues = {
+//       type: accountData?.type,
+//       name: accountData?.name,
+//       balance: accountData?.balance,
+//       id: accountData?.id,
+//     };
+//   }
+//   const handleTypeChange = (value) => {
+//     formik.setFieldValue('type', value);
+//   };
+//   const formik = useFormik({
+//     initialValues: initialValues,
+//     validate,
+//     onSubmit: (values) => {
+//       console.log(values);
+//       handleSubmit(values);
+//     },
+//     validateOnChange: true,
+//     validateOnBlur: true,
+//   });
+//   return (
+//     <form className="flex flex-col gap-4" onSubmit={formik.handleSubmit}>
+//       <Tabs
+//         fullWidth
+//         aria-label="Options"
+//         className="flex"
+//         selectedKey={formik.values.type}
+//         onSelectionChange={handleTypeChange}
+//       >
+//         <Tab key="expense" title="Expense"></Tab>
+//         <Tab key="income" title="Income"></Tab>
+//         <Tab key="transfer" title="Transfer"></Tab>
+//       </Tabs>
+//     </form>
+//   );
+// };
 
 export default AccountForm;

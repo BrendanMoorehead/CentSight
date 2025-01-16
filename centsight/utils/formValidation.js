@@ -1,34 +1,34 @@
 export const validateTransactionInput = (values) => {
   const errors = {};
-  for (const key in values) {
-    if (values.hasOwnProperty(key) && !values[key]) {
-      errors[key] = 'Required';
-    }
-  }
-  if (values.amount === '') {
+
+  // Check for required fields
+  if (!values.amount) {
     errors.amount = 'Required';
   }
-  if (values.category === '') {
+  if (!values.category) {
     errors.category = 'Required';
   }
-  if (values.subcategory === '') {
+  if (!values.subcategory) {
     errors.subcategory = 'Required';
   }
+  if (!values.date) {
+    errors.date = 'Required';
+  }
+
+  // Conditional checks based on transaction type
   if (
-    values.sendingAccount === '' &&
-    (values.type === 'expense' || values.type === 'transfer')
+    (values.type === 'expense' || values.type === 'transfer') &&
+    !values.sendingAccount
   ) {
     errors.sendingAccount = 'Required';
   }
 
   if (
-    values.recievingAccount === '' &&
-    (values.type === 'income' || values.type === 'transfer')
+    (values.type === 'income' || values.type === 'transfer') &&
+    !values.receivingAccount
   ) {
-    errors.recievingAccount = 'Required';
+    errors.receivingAccount = 'Required';
   }
-  if (values.date === '') {
-    errors.date = 'Required';
-  }
+
   return errors;
 };

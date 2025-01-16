@@ -20,7 +20,7 @@ export const fetchTransactionsData = () => {
         .eq('user_id', userData.user.id);
 
       if (transactionError) throw new Error(transactionError.message);
-
+      if (transactionData.length === 0) return null;
       // Fetch categories
       const { data: categoriesData, error: categoriesError } = await supabase
         .from('categories')
@@ -104,7 +104,7 @@ export const fetchTransactionsData = () => {
     try {
       const data = await fetchData();
       console.log('Fetching:', data);
-      dispatch(transactionActions.replaceTransactions(data));
+      if (data) dispatch(transactionActions.replaceTransactions(data));
       dispatch(transactionActions.setLoading(false));
     } catch (error) {
       console.error('Failed to fetch transactions:', error);
@@ -334,11 +334,11 @@ export const updateTransaction = (data) => {
         ); // Increase to receiving account
       }
 
-      toast.success(`Transaction updated`, { position: 'bottom-right' });
+      toast.success(`Transaction updated`, { position: 'top-right' });
     } catch (error) {
       console.log(error.message);
       toast.error(`Failed to update transaction`, {
-        position: 'bottom-right',
+        position: 'top-right',
       });
     }
   };

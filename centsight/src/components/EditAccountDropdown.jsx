@@ -8,7 +8,6 @@ import {
 import { useDispatch } from 'react-redux';
 import { deleteAccount } from '../store/account-actions';
 
-//TODO: Add functionality to the account editing dropdown.
 const EditAccountDropdown = ({ account, editPress }) => {
   const dispatch = useDispatch();
   const handleDeleteAccount = () => {
@@ -19,12 +18,14 @@ const EditAccountDropdown = ({ account, editPress }) => {
     editPress();
   };
   return (
-    <Dropdown closeOnSelect={false}>
+    <Dropdown>
       <DropdownTrigger>
         <Button variant="bordered">Edit</Button>
       </DropdownTrigger>
       <DropdownMenu aria-label="Static Actions" className="text-text">
-        <DropdownItem key="new" onPress={handleEditAccount}>Edit account</DropdownItem>
+        <DropdownItem key="new" onPress={handleEditAccount}>
+          Edit account
+        </DropdownItem>
         <DropdownItem
           key="delete"
           className="text-danger"

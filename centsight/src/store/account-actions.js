@@ -1,23 +1,13 @@
 import supabase from './../../utils/supabase';
-import { accountActions } from './account-slice';
+import { accountActions, accountSlice } from './account-slice';
 import { fetchTransactionsData } from './transaction-actions';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-const cache = {
-  accounts: null,
-  lastFetched: null,
-};
-
-const CACHE_EXPIRATION = 5 * 60 * 1000; // 5 minutes
 
 export const fetchAccountData = () => {
   return async (dispatch) => {
     dispatch(accountActions.setLoading());
     const fetchData = async () => {
-      if (cache.accounts && Date.now() - cache.lastFetched < CACHE_EXPIRATION) {
-        return cache.accounts;
-      }
       const { data, error } = await supabase.auth.getUser();
       if (error) throw new Error(error.message);
       const { data: accounts, error: accountsError } = await supabase
@@ -25,10 +15,6 @@ export const fetchAccountData = () => {
         .select()
         .eq('user_id', data.user.id);
       if (accountsError) throw new Error(accountsError.message);
-
-      //Set the cache with new data
-      cache.accounts = accounts;
-      cache.lastFetched = Date.now();
 
       return accounts;
     };
@@ -39,10 +25,52 @@ export const fetchAccountData = () => {
   };
 };
 
+/**
+ * Function Name: editAccount
+ * Description: Updates account values in the database and state.
+ * Parameters:
+ *   - account (object): The new data to update the account with.
+ * Side Effects:
+ *   - Toast notification on success or failure.
+ */
+export const editAccount = (data) => {
+  return async (dispatch) => {
+    const updateData = async (accountData) => {
+      const { data, error } = await supabase
+        .from('user_accounts')
+        .update({
+          user_id: accountData.user_id,
+          balance: accountData.balance,
+          type: accountData.type,
+          name: accountData.name,
+        })
+        .eq('id', accountData.id);
+      if (error) throw new Error(error.message);
+      return data;
+    };
+    try {
+      const newAccount = updateData(data);
+      dispatch(accountActions.overwriteAccount(newAccount));
+    } catch (error) {
+      console.log(error.message);
+      toast.error(`Failed to update account.`, {
+        position: 'top-right',
+      });
+    }
+  };
+};
+
+/**
+ * Function Name: addAccount
+ * Description: Adds an account to the database and state.
+ * Parameters:
+ *   - data (object): The data of the account to be written to database and state.
+ * Side Effects:
+ *   - Toast notification on success or failure.
+ */
 export const addAccount = (data) => {
   return async (dispatch) => {
     const addData = async (accountData) => {
-      console.log(accountData);
       const { data, error } = await supabase
         .from('user_accounts')
         .insert({
@@ -53,22 +81,23 @@ export const addAccount = (data) => {
         })
         .select('*');
       if (error) throw new Error(error.message);
-      const sanitizedData = {
+      //
+      const createdAccountData = {
         ...data[0],
       };
-
-      return sanitizedData;
+      return createdAccountData;
     };
     try {
       const accountData = await addData(data);
       dispatch(accountActions.addAccount(accountData));
-      if (cache.accounts) {
-        cache.accounts.push(accountData);
-      }
-      toast.success('Account added');
+      toast.success(`Account created successfully.`, {
+        position: 'top-right',
+      });
     } catch (error) {
-      toast.error('Failed to add account');
-      console.error(error.message);
+      console.log(error);
+      toast.error(`Failed to add account.`, {
+        position: 'top-right',
+      });
     }
   };
 };
@@ -113,17 +142,8 @@ export const updateBalance = (accountId, amount) => {
           ...accountData[0],
         })
       );
-      if (cache.accounts) {
-        const index = cache.accounts.findIndex(
-          (account) => account.id === accountId
-        );
-        if (index !== -1)
-          cache.accounts[index] = {
-            ...cache.accounts[index],
-            ...accountData[0],
-          };
-      }
     } catch (error) {
+      console.log(error);
       toast.error(`Failed to update account balance.`, {
         position: 'top-right',
       });

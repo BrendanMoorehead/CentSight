@@ -21,30 +21,32 @@ const MainLayout = () => {
       navigate('/auth');
     } else {
       // Fetch user data if it doesn't exist and is not currently loading
-      if (!auth.user && !auth.isLoading) {
+      if (!auth.isLoading && !auth.user) {
         dispatch(getUser());
       }
-
-      // Only fetch data if it doesn't already exist in the store
-      if (!categories || categories.length === 0) {
-        dispatch(fetchCategoryData());
-      }
-      if (!transactions || transactions.length === 0) {
-        dispatch(fetchTransactionsData());
-      }
-      if (!accounts || accounts.length === 0) {
-        dispatch(fetchAccountData());
-      }
     }
-  }, [
-    navigate,
-    auth.user,
-    auth.isLoading,
-    categories,
-    transactions,
-    accounts,
-    dispatch,
-  ]);
+  }, [navigate, auth.user, auth.isLoading, dispatch]);
+
+  useEffect(() => {
+    // Only fetch categories if they don't already exist in the store
+    if (auth.user && (!categories || categories.length === 0)) {
+      dispatch(fetchCategoryData());
+    }
+  }, [auth.user, categories, dispatch]);
+
+  useEffect(() => {
+    // Only fetch transactions if they don't already exist in the store
+    if (auth.user && (!transactions || transactions.length === 0)) {
+      dispatch(fetchTransactionsData());
+    }
+  }, [auth.user, transactions, dispatch]);
+
+  useEffect(() => {
+    // Only fetch accounts if they don't already exist in the store
+    if (auth.user && (!accounts || accounts.length === 0)) {
+      dispatch(fetchAccountData());
+    }
+  }, [auth.user, accounts, dispatch]);
 
   if (!auth.user) {
     return <Navigate to="/auth" replace />;

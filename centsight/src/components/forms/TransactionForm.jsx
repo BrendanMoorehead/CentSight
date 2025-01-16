@@ -84,15 +84,17 @@ const TransactionForm = ({
     initialValues: initialValues,
     validate: validateTransactionInput,
     onSubmit: (values) => {
+      console.log('Submitted values:', values);
+      console.log('Formik errors:', formik.errors);
       console.log(values);
       const date = new Date(
         values.date.year,
         values.date.month - 1,
         values.date.day
       );
-      const formattedDate = `${date.getFullYear()}-${
-        String(date.getMonth() + 1).padStart(2, '0')
-      }-${String(date.getDate()).padStart(2, '0')}`;
+      const formattedDate = `${date.getFullYear()}-${String(
+        date.getMonth() + 1
+      ).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
       values.date = formattedDate;
       handleSubmit(values);
     },
