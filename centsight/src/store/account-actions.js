@@ -1,8 +1,8 @@
 import supabase from './../../utils/supabase';
 import { accountActions } from './account-slice';
+import { fetchTransactionsData } from './transaction-actions';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { fetchTransactionsData } from './transaction-actions';
 
 const cache = {
   accounts: null,
@@ -116,8 +116,17 @@ export const updateBalance = (accountId, amount) => {
   };
 };
 
+/**
+ * Function Name: deleteAccount
+ * Description: Delete an account from the database and remove all associated transactions.
+ * Parameters:
+ *   - account (object): The account to delete.
+ * Notes:
+ *  - As set in the database, associated transactions are deleted when an account is deleted.
+ */
 export const deleteAccount = (account) => {
   return async (dispatch) => {
+    // Remove the account from the database.
     const deleteAccount = async (account) => {
       const { data, error } = await supabase
         .from('user_accounts')
@@ -127,16 +136,16 @@ export const deleteAccount = (account) => {
       return data;
     };
     try {
-      deleteAccount(account);
+      const data = await deleteAccount(account);
+      //Remove the account from state.
       dispatch(accountActions.deleteAccount(account));
-      dispatch(transactionActions.fetchTransactionsData());
-      console.log('Account removed');
-      toast.success(`Account removed`, {
+      //Refetch the transactions.
+      dispatch(fetchTransactionsData());
+      toast.success(`Account deleted successfully.`, {
         position: 'top-right',
       });
     } catch (error) {
-      console.error(error.message);
-      toast.failure(`Failed to remove account`, {
+      toast.error(`Failed to delete account.`, {
         position: 'top-right',
       });
     }
