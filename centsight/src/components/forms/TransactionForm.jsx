@@ -12,35 +12,7 @@ import {
   CalendarDate,
 } from '@internationalized/date';
 import { useState, useEffect } from 'react';
-const validate = (values) => {
-  const errors = {};
-  if (values.amount === null) {
-    errors.amount = 'Required';
-  }
-  if (values.category === '') {
-    errors.category = 'Required';
-  }
-  if (values.subcategory === '') {
-    errors.subcategory = 'Required';
-  }
-  if (
-    values.sendingAccount === '' &&
-    (values.type === 'expense' || values.type === 'transfer')
-  ) {
-    errors.sendingAccount = 'Required';
-  }
-
-  if (
-    values.recievingAccount === '' &&
-    (values.type === 'income' || values.type === 'transfer')
-  ) {
-    errors.recievingAccount = 'Required';
-  }
-  if (values.date === '') {
-    errors.date = 'Required';
-  }
-  return errors;
-};
+import { validateTransactionInput } from '../../../utils/formValidation';
 
 const TransactionForm = ({
   handleSubmit,
@@ -63,7 +35,7 @@ const TransactionForm = ({
     sendingAccount_id: '',
     receivingAccount: '',
     receivingAccount_id: '',
-    amount: 0.0,
+    amount: '',
     date: defaultDate,
   };
 
@@ -110,7 +82,7 @@ const TransactionForm = ({
   };
   const formik = useFormik({
     initialValues: initialValues,
-    validate,
+    validate: validateTransactionInput,
     onSubmit: (values) => {
       console.log(values);
       const date = new Date(
@@ -124,6 +96,8 @@ const TransactionForm = ({
       values.date = formattedDate;
       handleSubmit(values);
     },
+    validateOnChange: true, // Ensure validation on change
+    validateOnBlur: true,
   });
   return (
     <form className="flex flex-col gap-4" onSubmit={formik.handleSubmit}>
@@ -133,7 +107,11 @@ const TransactionForm = ({
         placeholder="0.00"
         labelPlacement="outside"
         isInvalid={formik.errors.amount && formik.touched.amount}
-        errorMessage="Required"
+        errorMessage={
+          formik.errors.amount && formik.touched.amount
+            ? formik.errors.amount
+            : ''
+        }
         className="text-text"
         value={formik.values.amount}
         onChange={(e) => {
@@ -165,6 +143,12 @@ const TransactionForm = ({
       <div className="flex gap-4">
         <Select
           label="Category"
+          isInvalid={formik.errors.category && formik.touched.category}
+          errorMessage={
+            formik.errors.category && formik.touched.category
+              ? formik.errors.category
+              : ''
+          }
           defaultSelectedKeys={[formik.values.category_id]}
           onSelectionChange={(key) => {
             const category = categories.find((cat) => cat.id === key.anchorKey);
@@ -175,6 +159,7 @@ const TransactionForm = ({
             setSelectedCategory(category);
           }}
           value={formik.values.category_id}
+          onBlur={() => formik.setFieldTouched('category_id', true, true)} // Ensure field is marked as touched
         >
           {categories.map((cat) => (
             <SelectItem className="text-text" key={cat.id}>
@@ -183,6 +168,12 @@ const TransactionForm = ({
           ))}
         </Select>
         <Select
+          isInvalid={formik.errors.subcategory && formik.touched.subcategory}
+          errorMessage={
+            formik.errors.subcategory && formik.touched.subcategory
+              ? formik.errors.subcategory
+              : ''
+          }
           label="Subcategory"
           defaultSelectedKeys={[formik.values.subcategory_id]}
           onSelectionChange={(key) => {
@@ -211,6 +202,14 @@ const TransactionForm = ({
       {(formik.values.type === 'expense' ||
         formik.values.type === 'transfer') && (
         <Select
+          isInvalid={
+            formik.errors.sendingAccount && formik.touched.sendingAccount
+          }
+          errorMessage={
+            formik.errors.sendingAccount && formik.touched.sendingAccount
+              ? formik.errors.sendingAccount
+              : ''
+          }
           defaultSelectedKeys={[formik.values.sendingAccount_id]}
           label="Sending account"
           onSelectionChange={(value) => {
@@ -231,6 +230,14 @@ const TransactionForm = ({
       {(formik.values.type === 'income' ||
         formik.values.type === 'transfer') && (
         <Select
+          isInvalid={
+            formik.errors.receivingAccount && formik.touched.receivingAccount
+          }
+          errorMessage={
+            formik.errors.receivingAccount && formik.touched.receivingAccount
+              ? formik.errors.receivingAccount
+              : ''
+          }
           defaultSelectedKeys={[formik.values.receivingAccount_id]}
           label="Receiving account"
           onSelectionChange={(value) => {

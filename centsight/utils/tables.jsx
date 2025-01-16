@@ -71,6 +71,7 @@ export const getTransactionCellContent = (
         return (
           <Card
             isPressable
+            className="bg-primary"
             onPress={() => handleAccountsClick(transaction.account_to_id)}
           >
             <CardBody>{transaction.receivingAccount}</CardBody>
@@ -87,6 +88,7 @@ export const getTransactionCellContent = (
         return (
           <Card
             isPressable
+            className="bg-primary"
             onPress={() => handleAccountsClick(transaction.account_from_id)}
           >
             <CardBody>{transaction.sendingAccount}</CardBody>
