@@ -121,6 +121,8 @@ export const updateBalance = (accountId, amount) => {
  * Description: Delete an account from the database and remove all associated transactions.
  * Parameters:
  *   - account (object): The account to delete.
+ * Side Effects:
+ *   - Toast notification of success or failure.
  * Notes:
  *  - As set in the database, associated transactions are deleted when an account is deleted.
  */
