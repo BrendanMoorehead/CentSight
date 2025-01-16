@@ -129,7 +129,7 @@ export const deleteAccount = (account) => {
     try {
       deleteAccount(account);
       dispatch(accountActions.deleteAccount(account));
-      fetchTransactionsData();
+      dispatch(transactionActions.fetchTransactionsData());
       console.log('Account removed');
       toast.success(`Account removed`, {
         position: 'top-right',

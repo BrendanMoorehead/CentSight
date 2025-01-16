@@ -22,9 +22,7 @@ import { useNavigate } from 'react-router-dom';
 const TransactionsTable = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { transactions = [], loading: transactionsLoading } = useSelector(
-    (state) => state.transaction
-  );
+  const transactions = useSelector((state) => state.transaction.transactions);
   const { accounts = [], loading: accountsLoading } = useSelector(
     (state) => state.account
   );
@@ -33,7 +31,7 @@ const TransactionsTable = () => {
   );
 
   const allLoading =
-    transactionsLoading || accountsLoading || categoriesLoading;
+    accountsLoading || categoriesLoading;
 
     const handleAccountsClick = useCallback((accountId) => {
       navigate('/accounts', {
@@ -47,7 +45,7 @@ const TransactionsTable = () => {
     const handleEdit = () => {}
   const renderCell = useCallback((transaction, columnKey) => {
     return getTransactionCellContent(transaction, columnKey, dispatch,handleDelete, handleEdit, handleAccountsClick);
-  }, [handleAccountsClick]);
+  }, [handleAccountsClick, dispatch]);
 
   // Filter and sort transactions
   const filteredTransactions = Array.isArray(transactions)

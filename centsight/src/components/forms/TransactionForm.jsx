@@ -119,8 +119,8 @@ const TransactionForm = ({
         values.date.day
       );
       const formattedDate = `${date.getFullYear()}-${
-        date.getMonth() + 1
-      }-${date.getDate()}`;
+        String(date.getMonth() + 1).padStart(2, '0')
+      }-${String(date.getDate()).padStart(2, '0')}`;
       values.date = formattedDate;
       handleSubmit(values);
     },
