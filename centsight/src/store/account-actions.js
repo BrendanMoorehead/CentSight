@@ -73,17 +73,30 @@ export const addAccount = (data) => {
   };
 };
 
+/**
+ * Function Name: updateBalance
+ * Description: Updates the balance of a given account in the database and state.
+ * Parameters:
+ *   - accountId (string): The id of the account to update.
+ *   - amount (number): The amount to add to the account.
+ *       - If wanting to subtract, pass a negative number.
+ * Side Effects:
+ *   - Toast notification of failure.
+ * Notes:
+ *   - No toast on success as this function is called when adding a transaction.
+ */
 export const updateBalance = (accountId, amount) => {
   return async (dispatch) => {
     const updateData = async (accountId, amount) => {
+      //Fetch the current balance of the account.
       const { data: currentData, error: fetchError } = await supabase
         .from('user_accounts')
         .select('balance')
         .eq('id', accountId)
         .single();
       if (fetchError) throw new Error(fetchError.message);
-      console.log('CURRENT BALANCE', accountId, currentData.balance, amount);
       const newBalance = Number(currentData.balance) + Number(amount);
+      //Update the balance and return the update account object.
       const { data, error } = await supabase
         .from('user_accounts')
         .update({ balance: newBalance })
@@ -97,7 +110,7 @@ export const updateBalance = (accountId, amount) => {
       dispatch(
         accountActions.overwriteAccount({
           id: accountId,
-          ...accountData[0], // Assuming accountData is an array with the updated account data
+          ...accountData[0],
         })
       );
       if (cache.accounts) {
@@ -111,7 +124,9 @@ export const updateBalance = (accountId, amount) => {
           };
       }
     } catch (error) {
-      console.error('failed to update account balance:', error.message);
+      toast.error(`Failed to update account balance.`, {
+        position: 'top-right',
+      });
     }
   };
 };
@@ -124,7 +139,7 @@ export const updateBalance = (accountId, amount) => {
  * Side Effects:
  *   - Toast notification of success or failure.
  * Notes:
- *  - As set in the database, associated transactions are deleted when an account is deleted.
+ *  - Our database is set up to delete associated transactions when an account is deleted.
  */
 export const deleteAccount = (account) => {
   return async (dispatch) => {
