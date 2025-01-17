@@ -23,10 +23,10 @@ let tabs = [
     label: 'All Time',
   },
 ];
-const AccountsDetails = ({ account, transactions }) => {
+const AccountsDetails = ({ account, transactions, userId }) => {
   const [openAccountModal, setOpenAccountModal] = useState(false);
   const [selectedTimePeriod, setSelectedTimePeriod] = useState('past7days');
-  const filteredTransactions = transactions.filter(
+  const filteredTransactions = transactions?.filter(
     (transaction) =>
       transaction.account_from_id === account.id ||
       transaction.account_to_id === account.id
@@ -37,6 +37,7 @@ const AccountsDetails = ({ account, transactions }) => {
   };
   const currentDate = new Date();
   const filteredArray = useMemo(() => {
+    if (!filteredTransactions) return [];
     return filteredTransactions.filter((item) => {
       const itemDate = new Date(item.date);
       if (isNaN(itemDate.getTime())) return false;
@@ -190,6 +191,7 @@ const AccountsDetails = ({ account, transactions }) => {
         title="Edit Account"
         buttonText="Update"
         accountData={account}
+        userId={userId}
       />
     </>
   );

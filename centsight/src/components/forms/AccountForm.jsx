@@ -39,6 +39,7 @@ const AccountForm = ({
     validate,
     onSubmit: (values) => {
       console.log(values);
+      values.balance = parseFloat(values.balance);
       handleSubmit(values);
     },
     validateOnChange: true,

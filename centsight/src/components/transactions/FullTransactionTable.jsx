@@ -19,6 +19,7 @@ const FullTransactionTable = ({
   isLoading,
   tablePage,
   setTablePage,
+  accounts,
 }) => {
   const [sortDescriptor, setSortDescriptor] = useState({
     column: 'date',
@@ -58,14 +59,15 @@ const FullTransactionTable = ({
   };
 
   const renderCell = useCallback(
-    (user, columnKey, dispatch) => {
+    (user, columnKey, dispatch, accounts) => {
       return getTransactionCellContent(
         user,
         columnKey,
         dispatch,
         setOpenTransactionModal,
         setTransactionData,
-        handleAccountsClick
+        handleAccountsClick,
+        accounts
       );
     },
     [dispatch, handleAccountsClick]
@@ -140,7 +142,7 @@ const FullTransactionTable = ({
             <TableRow key={transaction.id}>
               {(columnKey) => (
                 <TableCell>
-                  {renderCell(transaction, columnKey, dispatch)}
+                  {renderCell(transaction, columnKey, dispatch, accounts)}
                 </TableCell>
               )}
             </TableRow>

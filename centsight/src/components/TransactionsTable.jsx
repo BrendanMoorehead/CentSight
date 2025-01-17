@@ -30,22 +30,35 @@ const TransactionsTable = () => {
     (state) => state.category
   );
 
-  const allLoading =
-    accountsLoading || categoriesLoading;
+  const allLoading = accountsLoading || categoriesLoading;
 
-    const handleAccountsClick = useCallback((accountId) => {
+  const handleAccountsClick = useCallback(
+    (accountId) => {
       navigate('/accounts', {
         state: { accountId },
       });
-    }, [navigate]);
+    },
+    [navigate]
+  );
 
-    const handleDelete = (transaction) => {
-      dispatch(deleteTransaction(transaction.id));
-    };
-    const handleEdit = () => {}
-  const renderCell = useCallback((transaction, columnKey) => {
-    return getTransactionCellContent(transaction, columnKey, dispatch,handleDelete, handleEdit, handleAccountsClick);
-  }, [handleAccountsClick, dispatch]);
+  const handleDelete = (transaction) => {
+    dispatch(deleteTransaction(transaction.id));
+  };
+  const handleEdit = () => {};
+  const renderCell = useCallback(
+    (transaction, columnKey, accounts) => {
+      return getTransactionCellContent(
+        transaction,
+        columnKey,
+        dispatch,
+        handleDelete,
+        handleEdit,
+        handleAccountsClick,
+        accounts
+      );
+    },
+    [handleAccountsClick, dispatch]
+  );
 
   // Filter and sort transactions
   const filteredTransactions = Array.isArray(transactions)
@@ -111,7 +124,6 @@ const TransactionsTable = () => {
       };
     });
   }
-  
 
   return (
     <Table
@@ -141,7 +153,7 @@ const TransactionsTable = () => {
               <TableCell
                 className={'whitespace-nowrap overflow-hidden text-ellipsis'}
               >
-                {renderCell(item, columnKey)}
+                {renderCell(item, columnKey, accounts)}
               </TableCell>
             )}
           </TableRow>

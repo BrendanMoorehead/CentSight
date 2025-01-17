@@ -36,6 +36,7 @@ export const fetchAccountData = () => {
 export const editAccount = (data) => {
   return async (dispatch) => {
     const updateData = async (accountData) => {
+      console.log('passed data: ', accountData);
       const { data, error } = await supabase
         .from('user_accounts')
         .update({
@@ -45,12 +46,18 @@ export const editAccount = (data) => {
           name: accountData.name,
         })
         .eq('id', accountData.id);
+      console.log('new Data: ', data);
+      console.log('new Data: ', data);
       if (error) throw new Error(error.message);
       return data;
     };
     try {
-      const newAccount = updateData(data);
-      dispatch(accountActions.overwriteAccount(newAccount));
+      const newAccount = await updateData(data);
+      console.log('Updating account: ', data);
+      dispatch(accountActions.overwriteAccount(data));
+      toast.success(`Account details updated.`, {
+        position: 'top-right',
+      });
     } catch (error) {
       console.log(error.message);
       toast.error(`Failed to update account.`, {

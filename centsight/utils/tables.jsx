@@ -24,7 +24,8 @@ export const getTransactionCellContent = (
   dispatch,
   setOpenTransactionModal,
   setTransactionData,
-  handleAccountsClick
+  handleAccountsClick,
+  accounts
 ) => {
   const handleDelete = () => {
     dispatch(batchDeleteTransactions([transaction]));
@@ -35,6 +36,15 @@ export const getTransactionCellContent = (
     setTransactionData(transaction);
     setOpenTransactionModal(true);
   };
+
+  const receivingAccount = accounts?.find(
+    (account) => account.id === transaction.account_to_id
+  );
+
+  // Find the sending account based on account_from_id
+  const sendingAccount = accounts?.find(
+    (account) => account.id === transaction.account_from_id
+  );
 
   const cellValue = transaction[columnKey];
   switch (columnKey) {
@@ -72,9 +82,9 @@ export const getTransactionCellContent = (
           <Card
             isPressable
             className="bg-primary"
-            onPress={() => handleAccountsClick(transaction.account_to_id)}
+            onPress={() => handleAccountsClick(receivingAccount.id)}
           >
-            <CardBody>{transaction.receivingAccount}</CardBody>
+            <CardBody>{receivingAccount.name}</CardBody>
           </Card>
         );
       }
@@ -89,9 +99,9 @@ export const getTransactionCellContent = (
           <Card
             isPressable
             className="bg-primary"
-            onPress={() => handleAccountsClick(transaction.account_from_id)}
+            onPress={() => handleAccountsClick(sendingAccount.id)}
           >
-            <CardBody>{transaction.sendingAccount}</CardBody>
+            <CardBody>{sendingAccount.name}</CardBody>
           </Card>
         );
       }

@@ -43,7 +43,7 @@ const CategoryInfoSection = ({ category }) => {
 
   // Filter transactions for transactions that match the selected category.
   // TODO: Make changes based on what is decided on the above TODO.
-  const filteredTransactions = transactions.filter(
+  const filteredTransactions = transactions?.filter(
     (transaction) =>
       transaction.category_id && transaction.category_id === category.id
   );

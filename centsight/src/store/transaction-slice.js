@@ -23,6 +23,7 @@ export const transactionSlice = createSlice({
       state.error = null;
     },
     addTransaction(state, action) {
+      console.log(action.payload);
       state.transactions.push(action.payload);
       state.loading = false;
       state.error = null;

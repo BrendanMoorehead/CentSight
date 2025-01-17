@@ -47,7 +47,6 @@ const AccountsPage = () => {
           isOpen={openAccountModal}
           closeModal={() => setOpenAccountModal(false)}
           userId={auth.user.user.id}
-          accountData={activeAccount || null}
         />
       )}
       <div className="col-span-1">
@@ -96,6 +95,7 @@ const AccountsPage = () => {
               <AccountsDetails
                 account={activeAccount}
                 transactions={transactions}
+                userId={auth.user.user.id}
               />
             ) : (
               <div className="py-24 text-headline text-xl font-normal flex justify-center">

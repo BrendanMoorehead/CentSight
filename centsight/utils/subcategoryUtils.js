@@ -7,6 +7,7 @@
  */
 export const getSubcategoryFinancialDetails = (subcategories, transactions) => {
   //Accumulate and assign the transaction count, income, and spending to each subcategory.
+  if (!subcategories) return [];
   return subcategories.map((subcategory) => {
     const transactionCount = transactions.reduce(
       (acc, transaction) =>

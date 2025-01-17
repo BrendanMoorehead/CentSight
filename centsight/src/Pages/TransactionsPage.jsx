@@ -76,6 +76,7 @@ const TransactionsPage = () => {
   };
 
   const filteredTransactions = useMemo(() => {
+    if (!transactions) return [];
     return transactions.filter((transaction) => {
       const typeMatches =
         filteredType.length === 0 || filteredType.includes(transaction.type);
@@ -189,6 +190,7 @@ const TransactionsPage = () => {
         isLoading={false}
         tablePage={tablePage}
         setTablePage={setTablePage}
+        accounts={accounts}
       />
     </PageMargins>
   );

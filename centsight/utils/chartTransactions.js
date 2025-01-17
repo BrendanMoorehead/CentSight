@@ -1,10 +1,8 @@
 import { addDays, startOfMonth, endOfMonth, format, parseISO } from 'date-fns';
 export const chartTransactions = (month, year, transactions, type) => {
   if (!Array.isArray(transactions)) {
-    console.error('Transactions should be an array');
-    return [];
+    transactions = [];
   }
-  console.log('CHART CALLED');
   console.log(month, transactions);
   const start = startOfMonth(new Date(year, month));
   const end = endOfMonth(start);

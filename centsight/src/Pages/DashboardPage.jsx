@@ -49,8 +49,7 @@ const DashboardPage = () => {
   };
   const handleAccountsClick = (accountId) => {
     navigate('/accounts', {
-      state: 
-        {accountId},
+      state: { accountId },
     });
   };
 
@@ -145,7 +144,10 @@ const DashboardPage = () => {
               Recently Added Transactions
             </p>
             {transactions && transactions.length > 0 ? (
-              <TransactionsTable transactions={transactions} />
+              <TransactionsTable
+                transactions={transactions}
+                accounts={accounts}
+              />
             ) : (
               <p>No transactions available</p>
             )}
