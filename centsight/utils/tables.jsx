@@ -6,10 +6,10 @@ import {
   DropdownMenu,
   DropdownItem,
   CardBody,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { batchDeleteTransactions } from '../src/store/transaction-actions';
-import { Card } from '@nextui-org/react';
+import { Card } from "@heroui/react";
 
 /**
  * Gets the jsx for each cell in a transaction table.

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import SubcategoriesTable from './SubcategoriesTable';
 import ValueCard from '../reusable/ValueCard';
 import {
@@ -7,7 +7,7 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-} from '@nextui-org/dropdown';
+} from "@heroui/dropdown";
 import CategoryModal from '../modals/CategoryModal';
 import { useState } from 'react';
 import CategoryNameModal from '../modals/CategoryNameModal';

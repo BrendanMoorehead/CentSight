@@ -1,10 +1,10 @@
-import { Input, Button } from '@nextui-org/react';
+import { Input, Button } from "@heroui/react";
 import PageHeaderText from '../components/PageHeaderText';
 import { SearchIcon } from '@chakra-ui/icons';
 import TransactionModal from '../components/modals/TransactionModal';
 import { useSelector } from 'react-redux';
 import { useState, useMemo, useCallback, useEffect } from 'react';
-import { DateRangePicker } from '@nextui-org/react';
+import { DateRangePicker } from "@heroui/react";
 import TransactionFilterDropdown from '../components/TransactionFilterDropdown';
 import PageMargins from '../components/PageMargins';
 import FullTransactionTable from '../components/transactions/FullTransactionTable';

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Card } from '@nextui-org/card';
+import { Card } from "@heroui/card";
 import { formatAsCurrency } from '../../../utils/currencyUtils';
 /**
  * ValueCard Component

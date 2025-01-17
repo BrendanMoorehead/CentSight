@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Card, CardBody } from '@nextui-org/react';
+import { Card, CardBody } from "@heroui/react";
 
 /**
  * AccountCard Component

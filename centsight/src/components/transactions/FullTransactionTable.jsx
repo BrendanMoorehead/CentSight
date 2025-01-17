@@ -7,7 +7,7 @@ import {
   TableCell,
   Spinner,
   Pagination,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { transactionTableColumns } from '../../../utils/data';
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useDispatch } from 'react-redux';

@@ -8,7 +8,7 @@ import {
   NavbarItem,
   Button,
   Link,
-} from '@nextui-org/react';
+} from "@heroui/react";
 
 const headerLinks = [
   {

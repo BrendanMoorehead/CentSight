@@ -13,7 +13,7 @@ import {
   Button,
   DropdownMenu,
   DropdownItem,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { getTransactionCellContent } from '../../utils/tables';
 import { useCallback } from 'react';
 import { parseISO, format } from 'date-fns';

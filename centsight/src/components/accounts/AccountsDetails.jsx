@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
-import { Card, CardBody } from '@nextui-org/react';
+import { Card, CardBody } from "@heroui/react";
 import { useState, useMemo } from 'react';
-import { Tabs, Tab } from '@nextui-org/tabs';
+import { Tabs, Tab } from "@heroui/tabs";
 import AccountTransactionsTable from '../AccountTransactionTable';
 import EditAccountDropdown from '../EditAccountDropdown';
 import AccountModal from '../modals/AccountModal';

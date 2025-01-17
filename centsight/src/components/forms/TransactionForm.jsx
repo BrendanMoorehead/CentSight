@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
 import { useFormik } from 'formik';
-import { Tabs, Tab } from '@nextui-org/tabs';
-import { DatePicker, select } from '@nextui-org/react';
+import { Tabs, Tab } from "@heroui/tabs";
+import { DatePicker, select } from "@heroui/react";
 import { useSelector } from 'react-redux';
-import { Button, Input } from '@nextui-org/react';
-import { Select, SelectItem } from '@nextui-org/react';
+import { Button, Input } from "@heroui/react";
+import { Select, SelectItem } from "@heroui/react";
 import {
   getLocalTimeZone,
   today,

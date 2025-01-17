@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Tabs, Tab } from '@nextui-org/tabs';
+import { Tabs, Tab } from "@heroui/tabs";
 
 const AccountTypeTags = ({ onChange, type = 'chequing' }) => {
   return (

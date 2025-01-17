@@ -8,7 +8,7 @@ import {
   Input,
   Tabs,
   Tab,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { useEffect } from 'react';
 const validate = (values) => {
   const errors = {};

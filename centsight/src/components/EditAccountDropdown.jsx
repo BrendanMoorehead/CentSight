@@ -4,7 +4,7 @@ import {
   Button,
   DropdownMenu,
   DropdownItem,
-} from '@nextui-org/react';
+} from '@heroui/react';
 import { useDispatch } from 'react-redux';
 import { deleteAccount } from '../store/account-actions';
 

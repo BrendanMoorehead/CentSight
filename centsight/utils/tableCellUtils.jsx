@@ -4,7 +4,7 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { useCallback } from 'react';
 import BalanceUpdateChip from '../src/components/BalanceUpdateChip';

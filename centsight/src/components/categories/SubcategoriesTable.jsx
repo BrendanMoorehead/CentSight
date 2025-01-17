@@ -6,7 +6,7 @@ import {
   TableColumn,
   TableRow,
   TableCell,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { useDispatch } from 'react-redux';
 import { deleteSubcategory } from '../../store/category-actions';
 import { getSubcategoryFinancialDetails } from '../../../utils/subcategoryUtils';

@@ -1,7 +1,7 @@
 import FloatButtonGroup from '../components/floatbutton/FloatButtonGroup';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { Card, Select, SelectItem, ScrollShadow } from '@nextui-org/react';
+import { Card, Select, SelectItem, ScrollShadow } from "@heroui/react";
 import MonthSpendingChart from '../components/MonthSpendingChart';
 import SlimAccountCard from '../components/SlimAccountCard';
 import TransactionsTable from '../components/TransactionsTable';

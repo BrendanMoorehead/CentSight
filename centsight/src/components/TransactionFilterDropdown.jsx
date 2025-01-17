@@ -5,7 +5,7 @@ import {
   DropdownMenu,
   DropdownItem,
   DropdownSection,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import { useState } from 'react';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Card, CardBody } from '@nextui-org/react';
+import { Card, CardBody } from "@heroui/react";
 import { parseISO, format } from 'date-fns';
 const AverageSpendingCard = ({ transactions, type, title }) => {
   let monthlySpend = {};

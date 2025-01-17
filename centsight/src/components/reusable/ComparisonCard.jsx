@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Card, Tabs, Tab } from '@nextui-org/react';
+import { Card, Tabs, Tab } from "@heroui/react";
 
 /**
  * ComparisonCard Component

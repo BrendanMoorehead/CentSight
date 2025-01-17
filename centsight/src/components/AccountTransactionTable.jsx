@@ -9,7 +9,7 @@ import {
   TableCell,
   Pagination,
   Spinner,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import BalanceUpdateChip from '../components/BalanceUpdateChip';
 import { useCallback, useState, useMemo } from 'react';
 import { accountsGetEmptyTransactionTableString } from '../../utils/stringCreators';

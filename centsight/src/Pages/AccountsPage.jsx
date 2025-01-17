@@ -1,9 +1,9 @@
 import React from 'react';
-import { ScrollShadow, CheckboxGroup, Checkbox } from '@nextui-org/react';
+import { ScrollShadow, CheckboxGroup, Checkbox } from "@heroui/react";
 import { useSelector } from 'react-redux';
 import AccountCard from '../components/accounts/AccountCard';
 import SlimAccountCard from '../components/SlimAccountCard';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import { useState } from 'react';
 import AccountsDetails from '../components/accounts/AccountsDetails';
 import PageMargins from '../components/PageMargins';

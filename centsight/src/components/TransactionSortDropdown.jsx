@@ -13,7 +13,7 @@ import {
   Button,
   DropdownMenu,
   DropdownItem,
-} from '@nextui-org/react';
+} from "@heroui/react";
 import { ChevronDownIcon } from '@chakra-ui/icons';
 const TransactionSortDropdown = ({ title, data }) => {
   return (

@@ -7,7 +7,7 @@ import 'react-multi-carousel/lib/styles.css';
 import SubcategoriesTable from '../components/categories/SubcategoriesTable';
 import CategoryInfoSection from '../components/categories/CategoryInfoSection';
 import { useState } from 'react';
-import { Button } from '@nextui-org/react';
+import { Button } from "@heroui/react";
 import CategoryModal from '../components/modals/CategoryModal';
 import PageMargins from '../components/PageMargins';
 import PageHeaderText from '../components/PageHeaderText';

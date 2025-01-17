@@ -7,7 +7,7 @@ import { Provider } from 'react-redux';
 import { ChakraProvider } from '@chakra-ui/react';
 import { ConfigProvider } from 'antd';
 import { PrimeReactProvider } from 'primereact/api';
-import { NextUIProvider } from '@nextui-org/react';
+import { HeroUIProvider } from "@heroui/react";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './index.css';
@@ -24,7 +24,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   >
     <PrimeReactProvider>
       <ChakraProvider>
-        <NextUIProvider>
+        <HeroUIProvider>
           <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
               <main className="dark text-foreground bg-background">
@@ -33,7 +33,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               </main>
             </PersistGate>
           </Provider>
-        </NextUIProvider>
+        </HeroUIProvider>
       </ChakraProvider>
     </PrimeReactProvider>
   </ConfigProvider>

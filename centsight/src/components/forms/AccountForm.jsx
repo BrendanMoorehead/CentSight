@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useFormik } from 'formik';
-import { Button, Input } from '@nextui-org/react';
-import { Tabs, Tab } from '@nextui-org/react';
+import { Button, Input } from "@heroui/react";
+import { Tabs, Tab } from "@heroui/react";
 
 const validate = (values) => {
   const errors = {};
