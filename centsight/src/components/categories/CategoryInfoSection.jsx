@@ -35,18 +35,22 @@ const CategoryInfoSection = ({ category }) => {
   const auth = useSelector((state) => state.auth);
   // Select all transactions from Redux.
   // TODO: Transactions should be selected by a filter or passed as props. Currently, all transactions are selected which will potentially impact performace.
-  const transactions = useSelector((state) => state.transaction.transactions);
-
+  let transactions = useSelector((state) => state.transaction.transactions);
+  console.log('transactions', transactions);
+  if (transactions === null) transactions = [];
   // Default text if no category is selected.
   // TODO: Make into a component for styling an reusability purposes.
   if (!category) return <p>Select a category to start.</p>;
 
   // Filter transactions for transactions that match the selected category.
   // TODO: Make changes based on what is decided on the above TODO.
-  const filteredTransactions = transactions?.filter(
+  let filteredTransactions = [];
+  if (transactions.length > 0) {
+  filteredTransactions = transactions.filter(
     (transaction) =>
       transaction.category_id && transaction.category_id === category.id
   );
+}
 
   // Calculate the net income for transactions under the selected category.
   // TODO: Allow for filtering by time frame.

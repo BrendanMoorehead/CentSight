@@ -183,17 +183,19 @@ export const updateCategoryName = (categoryData) => {
         .from('user_categories')
         .update({ name: catData.name })
         .eq('id', catData.id)
-        .select();
+        .select('*');
       if (error) throw new Error(error.message);
-      return data[0];
+      return data;
     };
     try {
+      console.log('categoryData', categoryData);
       const data = await updateCategory(categoryData);
       //Update category details in Redux
-      dispatch(categoryActions.updateCategoryName(data));
-      toast.success(`${data.name} updated`);
+      dispatch(categoryActions.updateCategoryName(categoryData));
+      toast.success(`Category name updated.`);
     } catch (error) {
-      toast.error(`Failed to update category name`);
+      console.error(error.message);
+      toast.error(`Failed to update category name.`);
     }
   };
 };
